@@ -7,4 +7,5 @@ int main()
 	printf("LEX\n");
 	dynARR tmp;
 	dynARR_init(&tmp, 20);
+	dynARR_free(&tmp);
 }
