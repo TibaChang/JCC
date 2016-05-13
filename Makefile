@@ -1,21 +1,32 @@
 CC := gcc
-CFLAGS := -O0 -std=gnu99 -g3 -Wall -Werror 
+CFLAGS := -O0 -std=gnu99 -g3 -Wall -Werror -Wno-error=cpp
 
+JCC_DEBUG := JCC_DEBUG
 
-INCLUDES_DIR := ./include
-SRC_DIR   := ./src
+LEX_DIR          := ./lex
+CORE_DIR         := ./core
+SRC_DIR          := src
+INCLUDE_DIR      := include
+
+LEX_INCLUDES_DIR := $(LEX_DIR)/$(INCLUDE_DIR)
+LEX_SRC_DIR      := $(LEX_DIR)/$(SRC_DIR)
+CORE_INCLUDES_DIR:= $(CORE_DIR)/$(INCLUDE_DIR)
+CORE_SRC_DIR     := $(CORE_DIR)/$(SRC_DIR)
+
 
 TARGET := JCC
-CORE_SOURCE :=$(wildcard $(SRC_DIR)/*.c)
+LEX_SOURCE  :=$(wildcard $(LEX_SRC_DIR)/*.c)
+CORE_SOURCE :=$(wildcard $(CORE_SRC_DIR)/*.c)
 
 
 all:$(TARGET)
 
-$(info $(TARGET))
 
+#Open the debug output in JCC
+CFLAGS += -D$(JCC_DEBUG)
 
-$(TARGET):$(CORE_SOURCE)
-	$(CC) $(CFLAGS) $(addprefix -I,$($(1)_INC_DIR)) \
+$(TARGET):$(CORE_SOURCE) $(LEX_SOURCE)
+	$(CC) $(CFLAGS) $(addprefix -I,$(LEX_INCLUDES_DIR)) $(addprefix -I,$(CORE_INCLUDES_DIR)) \
           $^ -o $@
 
 clean:
