@@ -1,6 +1,6 @@
 #include <string.h>
 #include "stdlib.h"
-#include "tk_Hash.h"
+#include "tkWord_Hash.h"
 #include "dynARR.h"
 #include "debug.h"
 

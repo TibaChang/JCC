@@ -39,6 +39,7 @@ typedef enum {
 	kw_INT,      // int
 	kw_VOID,     // void
 	kw_STRUCT,   // struct
+
 	kw_IF,       // if
 	kw_ELSE,     // else
 	kw_FOR,      // for
