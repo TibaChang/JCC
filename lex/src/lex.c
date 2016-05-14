@@ -1,10 +1,12 @@
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "lex.h"
 #include "global_var.h"
 #include "token.h"
 #include "tkWord_Hash.h"
 #include "exception.h"
+#include "dynSTR.h"
 
 void init_lex(void)
 {
@@ -307,4 +309,229 @@ void getToken(void)
 
 	}/*END of switch*/
 }
+
+void preProcess(void)
+{
+	while (1) {
+		if ((cur_CHAR == ' ') || (cur_CHAR == '\t') || (cur_CHAR == '\r')) {
+			skip_white_space();
+		} else if (cur_CHAR == '/') {
+			/* look ahead one character */
+			getCHAR();
+			if (cur_CHAR == '*') {
+				parseComment();
+			} else {
+				ungetc(cur_CHAR, cur_File); /*put it back*/
+				cur_CHAR = '/';
+				break;
+			}
+		} else {
+			break;
+		}
+	}
+}
+
+
+void parseComment(void)
+{
+	getCHAR();
+	while (1) {
+		while (1) {
+			if ((cur_CHAR == '\n') || (cur_CHAR == '*') || (cur_CHAR == EOF)) {
+				break;
+			} else {
+				getCHAR();
+			}
+		}
+
+		if (cur_CHAR == '\n') {
+			cur_line_num++;
+			getCHAR();
+		} else if (cur_CHAR == '*') {
+			getCHAR();
+			if (cur_CHAR == '/') {
+				getCHAR();
+				return;
+			}
+		} else {
+			error("CANNOT find the end of comment until the end of file! \n");
+			return;
+		}
+	}
+}
+
+void skip_white_space(void)
+{
+	while ((cur_CHAR == ' ') || (cur_CHAR == '\t') || (cur_CHAR == '\r') || (cur_CHAR == '\n')) {
+		/*Windows*/
+		if (cur_CHAR == '\r') {
+			getCHAR();
+			if (cur_CHAR != '\n') {
+				return;
+			}
+			cur_line_num++;
+		}
+
+		/*Unix,excluding MAC OS*/
+		if (cur_CHAR == '\n') {
+
+			cur_line_num++;
+		}
+
+		printf("%c", cur_CHAR);
+		getCHAR();
+	}
+}
+
+uint32_t is_NOdigit(char c)
+{
+	return (((c >= 'a') && (c <= 'z')) || ((c >= 'A') && (c <= 'Z')) || (c == '_'));
+}
+
+uint32_t is_digit(char c)
+{
+	return ((c >= '0') && (c <= '9'));
+}
+
+void parse_identifier(void)
+{
+	dynSTR_reInit(&cur_tkSTR);
+	dynSTR_charConcat(&cur_tkSTR, cur_CHAR);
+	getCHAR();
+
+	while (is_NOdigit(cur_CHAR) || is_digit(cur_CHAR)) {
+		dynSTR_charConcat(&cur_tkSTR, cur_CHAR);
+		getCHAR();
+	}
+	dynSTR_charConcat(&cur_tkSTR, '\0');
+}
+
+void parse_num(void)
+{
+	dynSTR_reInit(&cur_tkSTR);
+	dynSTR_reInit(&sourceSTR);
+
+	do {
+		dynSTR_charConcat(&cur_tkSTR, cur_CHAR);
+		dynSTR_charConcat(&sourceSTR, cur_CHAR);
+		getCHAR();
+	} while (is_digit(cur_CHAR));
+
+	if (cur_CHAR == '.') {
+		do {
+			dynSTR_charConcat(&cur_tkSTR, cur_CHAR);
+			dynSTR_charConcat(&sourceSTR, cur_CHAR);
+			getCHAR();
+		} while (is_digit(cur_CHAR));
+	}
+
+	dynSTR_charConcat(&cur_tkSTR, '\0');
+	dynSTR_charConcat(&sourceSTR, '\0');
+	tkValue = atoi(cur_tkSTR.data);
+}
+
+
+/*
+ * sep:
+ * '\'' or '\"'
+ */
+void parse_string(char sep)
+{
+	char c;
+	dynSTR_reInit(&cur_tkSTR);
+	dynSTR_reInit(&sourceSTR);
+	dynSTR_charConcat(&sourceSTR, sep);
+	getCHAR();
+
+	while (1) {
+		/* Ex: "" or '' */
+		if (cur_CHAR == sep) {
+			break;
+		} else if (cur_CHAR == '\\') {
+			/*escapes*/
+			dynSTR_charConcat(&sourceSTR, cur_CHAR);
+			getCHAR();
+			switch (cur_CHAR) {
+			case '0':
+				c = '\0';
+				break;
+			case 'a':
+				c = '\a';
+				break;
+			case 'b':
+				c = '\b';
+				break;
+			case 't':
+				c = '\t';
+				break;
+			case 'n':
+				c = '\n';
+				break;
+			case 'v':
+				c = '\v';
+				break;
+			case 'f':
+				c = '\f';
+				break;
+			case 'r':
+				c = '\r';
+				break;
+			case '\"':
+				c = '\"';
+				break;
+			case '\'':
+				c = '\'';
+				break;
+			case '\\':
+				c = '\\';
+				break;
+			default:
+				c = cur_CHAR;
+				if ((c >= '!') && (c <= '~')) {
+					/*In the possible escapes range,it matches nothing!*/
+					warning("FOUND: NOT escapes-> \' \\%c \' !\n", c);
+				} else {
+					/*Impossible range for escapes!*/
+					warning("FOUND: NOT escapes-> \' \\0x%x \' \n", c);
+				}
+				break;
+			}
+			dynSTR_charConcat(&cur_tkSTR, c);
+			dynSTR_charConcat(&sourceSTR, cur_CHAR);
+			getCHAR();
+		} else {
+			dynSTR_charConcat(&cur_tkSTR, cur_CHAR);
+			dynSTR_charConcat(&sourceSTR, cur_CHAR);
+			getCHAR();
+		}
+	}
+
+	dynSTR_charConcat(&cur_tkSTR, '\0');
+
+	dynSTR_charConcat(&sourceSTR, sep);
+	dynSTR_charConcat(&sourceSTR, '\0');
+
+	getCHAR();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
