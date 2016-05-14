@@ -42,7 +42,7 @@ void expect(char *msg)
 
 void skip(uint32_t tk)
 {
-	if (current_token != tk) {
+	if (cur_token != tk) {
 		expect(get_tkstr(tk));
 	}
 	/*FIXME

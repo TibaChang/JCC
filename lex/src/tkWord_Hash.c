@@ -82,7 +82,7 @@ tkWord *tkW_search(char *p, uint32_t key_no)
 	tkWord *tkp = NULL;
 	for (tkWord *tkp_1 = tk_hashTable[key_no]; tkp_1 != NULL ; tkp_1 = tkp_1->next) {
 		if (!strncmp(p, tkp_1->str, tkp_1->str_len)) {
-			current_token = tkp_1->tkCode;
+			cur_token = tkp_1->tkCode;
 			tkp = tkp_1;
 			DBG_printf("In tkW_search() : find token!\n");
 			break;
