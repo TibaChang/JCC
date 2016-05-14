@@ -1,13 +1,9 @@
 #include <string.h>
-#include "stdlib.h"
+#include <stdlib.h>
+#include "global_var.h"
 #include "tkWord_Hash.h"
 #include "dynARR.h"
 #include "debug.h"
-
-uint32_t current_token;
-tkWord *tk_hashTable[MAX_KEY];
-dynARR tkTable;
-
 
 /*ref:https://en.wikipedia.org/wiki/MurmurHash*/
 uint32_t hash_func(const char *key, uint32_t len)

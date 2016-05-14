@@ -1,5 +1,6 @@
 #include <string.h>
 #include "lex.h"
+#include "global_var.h"
 #include "token.h"
 #include "tkWord_Hash.h"
 

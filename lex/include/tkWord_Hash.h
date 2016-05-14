@@ -1,7 +1,6 @@
 #ifndef __tkWord_Hash_H_
 #define __tkWord_Hash_H_
 #include <stdint.h>
-#include "dynARR.h"
 
 /*For hash_func*/
 #define ROT32(x, y) ((x << y) | (x >> (32 - y)))
@@ -22,16 +21,9 @@ typedef struct tkWord {
 	 */
 } tkWord;
 
-
-extern tkWord *tk_hashTable[MAX_KEY];
-extern dynARR tkTable;
-extern uint32_t current_token;
-
-
 tkWord *tkW_direct_insert(tkWord *tkp);
 tkWord *tkW_search(char *p, uint32_t key_no);
 tkWord *tkW_insert(char *p);
 void *mallocZ(uint32_t size);
-
 
 #endif
