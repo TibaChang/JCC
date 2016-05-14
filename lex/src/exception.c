@@ -38,24 +38,16 @@ void error(char *fmt, ...)
 
 void expect(char *msg)
 {
-	error("COMPILER EXPECT:%s", msg);
+	error("COMPILER EXPECTED:%s\n", msg);
 }
 
 void skip(uint32_t tk)
 {
 	if (cur_token != tk) {
-		expect(get_tkstr(tk));
+		expect(get_tkSTR(tk));
 	}
 	getToken();
 }
 
-char *get_tkstr(uint32_t tk_code)
-{
-	if (tk_code > tkTable.count) {
-		return NULL;
-	} else if ((tk_code >= tk_cINT) && (tk_code <= tk_cSTR)) {
-		return sourceSTR.data;
-	}
 
-	return (((tkWord*)tkTable.data[tk_code])->str);
-}
+

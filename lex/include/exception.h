@@ -14,6 +14,5 @@ void warning(char *fmt, ...);
 void error(char *fmt, ...);
 void expect(char *msg);
 void skip(uint32_t c);
-char *get_tkstr(uint32_t v);
 
 #endif

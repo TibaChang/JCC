@@ -23,11 +23,18 @@ all:$(TARGET)
 
 
 #Open the debug output in JCC
-CFLAGS += -D$(JCC_DEBUG)
+#CFLAGS += -D$(JCC_DEBUG)
 
 $(TARGET):$(CORE_SOURCE) $(LEX_SOURCE)
 	$(CC) $(CFLAGS) $(addprefix -I,$(LEX_INCLUDES_DIR)) $(addprefix -I,$(CORE_INCLUDES_DIR)) \
           $^ -o $@
+
+demo:$(TARGET)
+	./JCC example/ex_Indent.c
+
+demo_gdb:$(TARGET)
+	gdb --args ./JCC example/ex_Indent.c
+
 
 clean:
 	rm $(TARGET)

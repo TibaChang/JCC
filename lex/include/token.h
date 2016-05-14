@@ -1,5 +1,6 @@
 #ifndef __TOKEN_H_
 #define __TOKEN_H_
+#include <stdint.h>
 
 typedef enum {
 	/*OPERAND and SEPARATION SYMBOL*/
@@ -51,5 +52,7 @@ typedef enum {
 	/*IDENTIFIERS*/
 	tk_IDENT
 } TOKEN;
+
+char *get_tkSTR(uint32_t tk_code);
 
 #endif

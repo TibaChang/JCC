@@ -124,7 +124,7 @@ tkWord *tkW_insert(char *p)
 void *mallocZ(uint32_t size)
 {
 	void *ptr = malloc(size);
-	if ((!ptr) || size) {
+	if ((!ptr) && size) {
 		perror("mallocZ failed!\n");
 	}
 	memset(ptr, 0, size);

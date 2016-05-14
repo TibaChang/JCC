@@ -285,7 +285,7 @@ void getToken(void)
 			break;
 		}
 	case '\"': {
-			 parse_string(cur_CHAR);
+			parse_string(cur_CHAR);
 			cur_token = tk_cSTR;
 			break;
 		}
@@ -305,7 +305,7 @@ void getToken(void)
 void preProcess(void)
 {
 	while (1) {
-		if ((cur_CHAR == ' ') || (cur_CHAR == '\t') || (cur_CHAR == '\r')) {
+		if ((cur_CHAR == ' ') || (cur_CHAR == '\t') || (cur_CHAR == '\r') || (cur_CHAR == '\n')) {
 			skip_white_space();
 		} else if (cur_CHAR == '/') {
 			/* look ahead one character */
