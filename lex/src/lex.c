@@ -71,9 +71,8 @@ void getCHAR(void)
 
 void getToken(void)
 {
-	/*FIXME
-	 *preprocess();
-	 */
+	preProcess();
+
 	switch (cur_CHAR) {
 	case 'a':
 	case 'b':
@@ -129,9 +128,8 @@ void getToken(void)
 	case 'Z':
 	case '_': {
 			tkWord *tkp;
-			/*FIXME
-			 *parse_identifier();
-			 */
+			parse_identifier();
+
 			tkp = tkW_insert(cur_tkSTR.data);
 			cur_token = tkp->tkCode;
 			break;
@@ -147,9 +145,7 @@ void getToken(void)
 	case '7':
 	case '8':
 	case '9': {
-			/*FIXME
-			 *parse_num();
-			 */
+			parse_num();
 			cur_token = tk_cINT;
 			break;
 		}
@@ -283,17 +279,13 @@ void getToken(void)
 			break;
 		}
 	case '\'': {
-			/*FIXME
-			 *parse_string(cur_CHAR);
-			 */
+			parse_string(cur_CHAR);
 			cur_token = tk_cCHAR;
 			tkValue = *(char*)cur_tkSTR.data;
 			break;
 		}
 	case '\"': {
-			/*FIXME
-			 *parse_string(cur_CHAR);
-			 */
+			 parse_string(cur_CHAR);
 			cur_token = tk_cSTR;
 			break;
 		}

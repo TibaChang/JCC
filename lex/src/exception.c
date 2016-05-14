@@ -4,6 +4,7 @@
 #include "token.h"
 #include "tkWord_Hash.h"
 #include "exception.h"
+#include "lex.h"
 
 void handle_exception(int level, char *fmt, va_list ap)
 {
@@ -45,9 +46,7 @@ void skip(uint32_t tk)
 	if (cur_token != tk) {
 		expect(get_tkstr(tk));
 	}
-	/*FIXME
-	 * get_token();
-	 */
+	getToken();
 }
 
 char *get_tkstr(uint32_t tk_code)
