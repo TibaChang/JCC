@@ -12,7 +12,6 @@ typedef struct {
 void dynSTR_init(dynSTR *pSTR, uint32_t init_size);
 void dynSTR_free(dynSTR *pSTR);
 void dynSTR_reInit(dynSTR *pSTR);
-void dynSTR_realloc(dynSTR *pSTR, uint32_t new_size);
 void dynSTR_charConcat(dynSTR *pSTR, int ch);
 
 #endif

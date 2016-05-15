@@ -37,7 +37,7 @@ int dynARR_search(dynARR *pARR, int key)
 	return -1;
 }
 
-void dynARR_realloc(dynARR *pARR, uint32_t new_size)
+static void dynARR_realloc(dynARR *pARR, uint32_t new_size)
 {
 	if ((pARR == NULL) || (pARR->data == NULL) || (pARR->capacity == 0)) {
 		DBG_printf("In dynARR_realloc,pSTR must have data or capacity!\n");

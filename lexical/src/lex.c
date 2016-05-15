@@ -8,6 +8,15 @@
 #include "exception.h"
 #include "dynSTR.h"
 
+static void preProcess(void);
+static void parseComment(void);
+static void skip_white_space(void);
+static uint32_t is_NOdigit(char c); 
+static uint32_t is_digit(char c);
+static void parse_identifier(void);
+static void parse_num(void);
+static void parse_string(char sep);
+
 void init_lex(void)
 {
 	static tkWord keywords[] = {
@@ -302,7 +311,7 @@ void getToken(void)
 	}/*END of switch*/
 }
 
-void preProcess(void)
+static void preProcess(void)
 {
 	while (1) {
 		if ((cur_CHAR == ' ') || (cur_CHAR == '\t') || (cur_CHAR == '\r') || (cur_CHAR == '\n')) {
@@ -375,17 +384,17 @@ void skip_white_space(void)
 	}
 }
 
-uint32_t is_NOdigit(char c)
+static uint32_t is_NOdigit(char c)
 {
 	return (((c >= 'a') && (c <= 'z')) || ((c >= 'A') && (c <= 'Z')) || (c == '_'));
 }
 
-uint32_t is_digit(char c)
+static uint32_t is_digit(char c)
 {
 	return ((c >= '0') && (c <= '9'));
 }
 
-void parse_identifier(void)
+static void parse_identifier(void)
 {
 	dynSTR_reInit(&cur_tkSTR);
 	dynSTR_charConcat(&cur_tkSTR, cur_CHAR);
@@ -398,7 +407,7 @@ void parse_identifier(void)
 	dynSTR_charConcat(&cur_tkSTR, '\0');
 }
 
-void parse_num(void)
+static void parse_num(void)
 {
 	dynSTR_reInit(&cur_tkSTR);
 	dynSTR_reInit(&sourceSTR);
@@ -427,7 +436,7 @@ void parse_num(void)
  * sep:
  * '\'' or '\"'
  */
-void parse_string(char sep)
+static void parse_string(char sep)
 {
 	char c;
 	dynSTR_reInit(&cur_tkSTR);

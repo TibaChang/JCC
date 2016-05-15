@@ -5,6 +5,16 @@
 #include "dynARR.h"
 #include "debug.h"
 
+static void *mallocZ(uint32_t size)
+{
+	void *ptr = malloc(size);
+	if ((!ptr) && size) {
+		perror("mallocZ failed!\n");
+	}
+	memset(ptr, 0, size);
+	return ptr;
+}
+
 /*ref:https://en.wikipedia.org/wiki/MurmurHash*/
 uint32_t hash_func(const char *key, uint32_t len)
 {
@@ -121,15 +131,6 @@ tkWord *tkW_insert(char *p)
 }
 
 
-void *mallocZ(uint32_t size)
-{
-	void *ptr = malloc(size);
-	if ((!ptr) && size) {
-		perror("mallocZ failed!\n");
-	}
-	memset(ptr, 0, size);
-	return ptr;
-}
 
 
 

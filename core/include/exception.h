@@ -9,7 +9,6 @@ typedef enum {
 	LEVEL_ERROR,
 } ErrorLevel;
 
-void handle_exception(int level, char *fmt, va_list ap);
 void warning(char *fmt, ...);
 void error(char *fmt, ...);
 void expect(char *msg);

@@ -22,11 +22,11 @@ int main(int argc, char **argv)
 		color_token(LEX_NORMAL);
 	} while (cur_token != tk_EOF);
 
-	printf("Total code line number: %d lines\n", cur_line_num);
+	printf("  Total code line number: %d lines\n", cur_line_num);
 
 	cleanup();
 	fclose(cur_File);
-	printf("Lexical Analysis SUCCESS! File:%s \n", argv[1]);
+	printf("Lexical Analysis SUCCESS! File: %s \n", argv[1]);
 	return 0;
 }
 

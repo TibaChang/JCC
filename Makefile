@@ -3,10 +3,11 @@ CFLAGS := -O0 -std=gnu99 -g3 -Wall -Werror -Wno-error=cpp
 
 JCC_DEBUG := JCC_DEBUG
 
-LEX_DIR          := ./lex
+LEX_DIR          := ./lexical
 CORE_DIR         := ./core
 SRC_DIR          := src
 INCLUDE_DIR      := include
+EXAMPLE_DIR      := example
 
 LEX_INCLUDES_DIR := $(LEX_DIR)/$(INCLUDE_DIR)
 LEX_SRC_DIR      := $(LEX_DIR)/$(SRC_DIR)
@@ -30,10 +31,10 @@ $(TARGET):$(CORE_SOURCE) $(LEX_SOURCE)
           $^ -o $@
 
 demo:$(TARGET)
-	./JCC example/ex_Indent.c
+	./JCC $(EXAMPLE_DIR)/ex_Indent.c
 
 demo_gdb:$(TARGET)
-	gdb --args ./JCC example/ex_Indent.c
+	gdb --args ./$(TARGET) $(EXAMPLE_DIR)/ex_Indent.c
 
 
 clean:
@@ -45,5 +46,5 @@ cscope:
 
 astyle:
 	@echo "More details please see: coding-style.txt"
-	astyle --style=linux --indent=tab -p -U -K -H --suffix=none --recursive ./*.c
-	astyle --style=linux --indent=tab -p -U -K -H --suffix=none --recursive ./*.h
+	astyle --style=linux --indent=tab -p -U -K -H --suffix=none --exclude=$(EXAMPLE_DIR) --recursive ./*.c
+	astyle --style=linux --indent=tab -p -U -K -H --suffix=none --exclude=$(EXAMPLE_DIR) --recursive ./*.h

@@ -6,7 +6,7 @@
 #include "exception.h"
 #include "lex.h"
 
-void handle_exception(int level, char *fmt, va_list ap)
+static void handle_exception(int level, char *fmt, va_list ap)
 {
 	char buffer[1024];
 	vsprintf(buffer, fmt, ap);

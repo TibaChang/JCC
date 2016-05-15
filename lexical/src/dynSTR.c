@@ -33,7 +33,7 @@ void dynSTR_reInit(dynSTR *pSTR)
 	dynSTR_init(pSTR, 8); /*Init size = 8 bytes*/
 }
 
-void dynSTR_realloc(dynSTR *pSTR, uint32_t new_size)
+static void dynSTR_realloc(dynSTR *pSTR, uint32_t new_size)
 {
 	if ((pSTR == NULL) || (pSTR->data == NULL) || (pSTR->capacity == 0)) {
 		DBG_printf("In dynSTR_realloc,pSTR must have data or capacity!\n");
