@@ -28,23 +28,24 @@ extern char *cur_filename;
 
 /*Syntax analysis*/
 
-typedef enum{
-    SNTX_NUL,   /* No indent behavior */
-    SNTX_SP,    /* space */
-    SNTX_NL_ID, /* New Line and InDent,for every declaration,function definition and end of statement */
-    SNTX_DELAY  /* Confirm the format until the next word */
-}SyntaxState;
+typedef enum {
+	SNTX_NUL,   /* No indent behavior */
+	SNTX_SP,    /* space */
+	SNTX_NL_ID, /* New Line and InDent,for every declaration,function definition and end of statement */
+	SNTX_DELAY  /* Confirm the format until the next word */
+} SyntaxState;
 
-typedef enum{
-    SC_GLOBAL,
-    SC_LOCAL,
-    /*FIXME:
-     * There will be more definition here.
-     * */
-}StorageClass;
+typedef enum {
+	JC_GLOBAL,
+	JC_LOCAL,
+	/*FIXME:
+	 * There will be more definition here.
+	 * */
+} StorageClass;
 
 extern uint32_t syntax_state;
 extern uint32_t syntax_indent_level;
+
 /**************************************************************/
 
 #endif

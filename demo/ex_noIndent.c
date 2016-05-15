@@ -4,6 +4,10 @@ struct PP
 int a;
 }
 
+/*TEST 
+ *  *
+ *   * comment 1*/
+
 void main()
 {
 int testArr[50];

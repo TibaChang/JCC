@@ -11,4 +11,5 @@ void init(void);
 void cleanup(void);
 void color_token(int lex_state);
 
+
 #endif
