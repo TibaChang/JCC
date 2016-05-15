@@ -18,7 +18,7 @@ cd JCC
 
 Phase 0:Lexical Analysis
 ---------------------------
-- This is a coleror,it will color the target file,and output in terminal with color.
+- This is a coleror,it will color the target file,and output in the terminal with color.
 - Using the lexical analysis to identify for coloring.
 
 ```
