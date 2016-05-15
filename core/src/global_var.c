@@ -1,5 +1,7 @@
 #include "global_var.h"
 
+
+/*Lexical analysis*/
 tkWord *tk_hashTable[MAX_KEY];
 dynARR tkTable;
 dynSTR sourceSTR;
@@ -12,5 +14,9 @@ char *cur_filename;
 char cur_CHAR;
 FILE *cur_File;
 
+
+/*Syntax analysis*/
+uint32_t syntax_state;
+uint32_t syntax_indent_level;
 
 
