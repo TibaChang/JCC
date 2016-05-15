@@ -11,7 +11,7 @@
 static void preProcess(void);
 static void parseComment(void);
 static void skip_white_space(void);
-static uint32_t is_NOdigit(char c); 
+static uint32_t is_NOdigit(char c);
 static uint32_t is_digit(char c);
 static void parse_identifier(void);
 static void parse_num(void);

@@ -3,6 +3,8 @@ struct PP {
 	int a;
 }
 
+char sss = 'c';
+
 void main()
 {
 	int testArr[50];

@@ -7,7 +7,7 @@ LEX_DIR          := ./lexical
 CORE_DIR         := ./core
 SRC_DIR          := src
 INCLUDE_DIR      := include
-EXAMPLE_DIR      := example
+DEMO_DIR         := demo
 
 LEX_INCLUDES_DIR := $(LEX_DIR)/$(INCLUDE_DIR)
 LEX_SRC_DIR      := $(LEX_DIR)/$(SRC_DIR)
@@ -31,10 +31,10 @@ $(TARGET):$(CORE_SOURCE) $(LEX_SOURCE)
           $^ -o $@
 
 demo:$(TARGET)
-	./JCC $(EXAMPLE_DIR)/ex_Indent.c
+	./JCC $(DEMO_DIR)/ex_Indent.c
 
 demo_gdb:$(TARGET)
-	gdb --args ./$(TARGET) $(EXAMPLE_DIR)/ex_Indent.c
+	gdb --args ./$(TARGET) $(DEMO_DIR)/ex_Indent.c
 
 
 clean:
@@ -46,5 +46,5 @@ cscope:
 
 astyle:
 	@echo "More details please see: coding-style.txt"
-	astyle --style=linux --indent=tab -p -U -K -H --suffix=none --exclude=$(EXAMPLE_DIR) --recursive ./*.c
-	astyle --style=linux --indent=tab -p -U -K -H --suffix=none --exclude=$(EXAMPLE_DIR) --recursive ./*.h
+	astyle --style=linux --indent=tab -p -U -K -H --suffix=none --exclude=$(DEMO_DIR) --recursive ./*.c
+	astyle --style=linux --indent=tab -p -U -K -H --suffix=none --exclude=$(DEMO_DIR) --recursive ./*.h

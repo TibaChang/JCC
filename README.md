@@ -25,6 +25,10 @@ Phase 0:Lexical Analysis
 git checkout DEMO_LEX
 make demo
 ```
+![alt tag](https://raw.githubusercontent.com/JaredCJR/JCC/master/demo/pictures/phase_lexical.jpg)
+
+
+--------------------------
 
 
 
