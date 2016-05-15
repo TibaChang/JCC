@@ -19,6 +19,8 @@ TARGET := JCC
 LEX_SOURCE  :=$(wildcard $(LEX_SRC_DIR)/*.c)
 CORE_SOURCE :=$(wildcard $(CORE_SRC_DIR)/*.c)
 
+.PHONY: clean astyle cscope
+
 
 all:$(TARGET)
 
@@ -38,7 +40,7 @@ demo_gdb:$(TARGET)
 
 
 clean:
-	rm $(TARGET)
+	rm -f $(TARGET)
 
 
 cscope:
