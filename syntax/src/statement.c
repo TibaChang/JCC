@@ -62,8 +62,8 @@ void compound_statement(void)
 	while (cur_token != tk_END) {
 		statement();
 	}
-    syntax_state = SNTX_NL_ID;
-    getToken();
+	syntax_state = SNTX_NL_ID;
+	getToken();
 }
 
 

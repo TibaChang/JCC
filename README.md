@@ -16,20 +16,34 @@ git clone https://github.com/JaredCJR/JCC
 cd JCC
 ```
 
-Phase 0:Lexical Analysis
+Phase 1:Lexical Analysis
 ---------------------------
-- This is a coleror,it will color the target file,and output in the terminal with color.
-- Using the lexical analysis to identify for coloring.
+- This is a Token Colorer,it will color the target file tokens,and print in the terminal colorfully.
+- Using the lexical analysis to identify tokens for coloring.
 
 ```
 git checkout DEMO_LEX
+make clean
 make demo
 ```
 ![alt tag](https://raw.githubusercontent.com/JaredCJR/JCC/master/demo/pictures/phase_lexical.jpg)
 
 
---------------------------
+Phase 2:Syntax Analysis
+---------------------------
+- This is a Syntax Indenter,it will indent the codes with basic functionalities and Token Colorer.
+- Using syntax analysis to check basic grammars , based on Token Colorer.
+```
+git checkout master  (FIXME:Need to create a branch later)
+make clean
+make demo
+```
+![alt tag](https://raw.githubusercontent.com/JaredCJR/JCC/master/demo/pictures/phase_syntax.jpg)
 
+
+Phase 3:Semantic Analysis
+---------------------------
+NOT DONE!
 
 
 

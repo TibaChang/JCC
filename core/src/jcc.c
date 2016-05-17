@@ -14,7 +14,7 @@ int main(int argc, char **argv)
 		printf("Opening JCC source file failed!\n");
 		return -1;
 	}
-    cur_filename = argv[1];
+	cur_filename = argv[1];
 
 	init();
 
