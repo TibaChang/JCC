@@ -38,7 +38,7 @@ void init(void)
 
 void cleanup(void)
 {
-	printf("\ntkTable.count = %d \n", tkTable.count);
+	printf("tkTable.count = %d \n", tkTable.count);
 
 	for (TOKEN i = tk_IDENT; i < tkTable.count; i++) {
 		free(tkTable.data[i]);
