@@ -40,7 +40,7 @@ void cleanup(void)
 {
 	printf("\ntkTable.count = %d \n", tkTable.count);
 
-	for (uint32_t i = tk_IDENT; i < tkTable.count; i++) {
+	for (TOKEN i = tk_IDENT; i < tkTable.count; i++) {
 		free(tkTable.data[i]);
 	}
 	free(tkTable.data);

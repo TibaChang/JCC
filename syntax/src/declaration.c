@@ -124,7 +124,7 @@ int type_specifier(void)
 void struct_specifier(void)
 {
 	getToken();
-	uint32_t tk = cur_token;
+	TOKEN tk = cur_token;
 	syntax_state = SNTX_DELAY;
 	getToken();
 

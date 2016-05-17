@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <stdarg.h>
 #include "dynARR.h"
+#include "token.h"
 
 typedef enum {
 	LEVEL_WARNING,
@@ -12,6 +13,6 @@ typedef enum {
 void warning(char *fmt, ...);
 void error(char *fmt, ...);
 void expect(char *msg);
-void skip(uint32_t c);
+void skip(TOKEN tk);
 
 #endif

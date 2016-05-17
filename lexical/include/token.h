@@ -53,6 +53,6 @@ typedef enum {
 	tk_IDENT
 } TOKEN;
 
-char *get_tkSTR(uint32_t tk_code);
+char *get_tkSTR(TOKEN tk_code);
 
 #endif

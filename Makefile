@@ -27,7 +27,7 @@ INCLUDES_LIST := $(addprefix -I,$(LEX_INCLUDES_DIR)) \
 	             $(addprefix -I,$(SYNTAX_INCLUDES_DIR)) \
 	             $(addprefix -I,$(CORE_INCLUDES_DIR))
 
-.PHONY: all demo clean astyle cscope
+.PHONY: demo clean astyle cscope
 
 
 all:$(TARGET)

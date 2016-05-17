@@ -41,7 +41,7 @@ void expect(char *msg)
 	error("COMPILER EXPECTED:%s\n", msg);
 }
 
-void skip(uint32_t tk)
+void skip(TOKEN tk)
 {
 	if (cur_token != tk) {
 		expect(get_tkSTR(tk));

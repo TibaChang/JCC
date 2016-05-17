@@ -2,7 +2,7 @@
 #include "global_var.h"
 #include "tkWord_Hash.h"
 
-char *get_tkSTR(uint32_t tk_code)
+char *get_tkSTR(TOKEN tk_code)
 {
 	if (tk_code > tkTable.count) {
 		return NULL;

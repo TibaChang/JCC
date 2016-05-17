@@ -1,6 +1,7 @@
 #ifndef __tkWord_Hash_H_
 #define __tkWord_Hash_H_
 #include <stdint.h>
+#include "token.h"
 
 /*For hash_func*/
 #define ROT32(x, y) ((x << y) | (x >> (32 - y)))
@@ -10,7 +11,7 @@ uint32_t hash_func(const char *key, uint32_t len);
 
 /* single word definition for storage */
 typedef struct tkWord {
-	uint32_t tkCode;       /*token encoding*/
+	TOKEN tkCode;       /*token encoding*/
 	struct tkWord *next;   /*pointer to next token words if hash conflict happens*/
 	char *str;             /*token string(how to spell)*/
 	uint32_t str_len;      /*token string length*/
