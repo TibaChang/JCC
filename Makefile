@@ -41,10 +41,10 @@ $(TARGET):$(CORE_SOURCE) $(LEX_SOURCE) $(SYNTAX_SOURCE)
           $^ -o $@
 
 demo:$(TARGET)
-	./JCC $(DEMO_DIR)/ex_Indent.c
+	./JCC $(DEMO_DIR)/ex_noIndent.c
 
 demo_gdb:$(TARGET)
-	gdb --args ./$(TARGET) $(DEMO_DIR)/ex_Indent.c
+	gdb --args ./$(TARGET) $(DEMO_DIR)/ex_noIndent.c
 
 
 clean:

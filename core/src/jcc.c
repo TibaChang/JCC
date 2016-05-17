@@ -5,6 +5,7 @@
 #include "global_var.h"
 #include "token.h"
 #include "jcc.h"
+#include "declaration.h"
 
 int main(int argc, char **argv)
 {
@@ -13,20 +14,19 @@ int main(int argc, char **argv)
 		printf("Opening JCC source file failed!\n");
 		return -1;
 	}
+    cur_filename = argv[1];
 
 	init();
 
 	getCHAR();
-	do {
-		getToken();
-		color_token(LEX_NORMAL);
-	} while (cur_token != tk_EOF);
+	getToken();
+	translation_unit();
 
 	printf("  Total code line number: %d lines\n", cur_line_num);
 
 	cleanup();
 	fclose(cur_File);
-	printf("Lexical Analysis SUCCESS! File: %s \n", argv[1]);
+	printf("Syntax Analysis SUCCESS! File: %s \n", argv[1]);
 	return 0;
 }
 
@@ -67,7 +67,7 @@ void color_token(int lex_state)
 			} else if (cur_token >= tk_cINT) {
 				printf("%s", C_YELLOW);
 			} else {
-				printf("%s", C_RED);
+				printf("%s", C_WHILE_DARK);
 			}
 
 			printf("%s", get_tkSTR(cur_token));

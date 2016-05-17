@@ -6,6 +6,7 @@
 #include "exception.h"
 #include "lex.h"
 #include "syntax_indent.h"
+#include "expression.h"
 
 /***************************************
  *<translation_unit>::={<external_declaration>}<tk_EOF>

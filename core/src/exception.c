@@ -11,9 +11,9 @@ static void handle_exception(int level, char *fmt, va_list ap)
 	char buffer[1024];
 	vsprintf(buffer, fmt, ap);
 	if (compiler_stage == LEVEL_WARNING) {
-		printf("In the file:%s, line number:%d ,Compiler WARNING:%s\n", cur_filename, cur_line_num, buffer);
+		printf("\nIn the file:%s, line number:%d ,Compiler WARNING:%s\n", cur_filename, cur_line_num, buffer);
 	} else {
-		printf("In the file:%s, line number:%d ,Compiler ERROR:%s\n", cur_filename, cur_line_num, buffer);
+		printf("\nIn the file:%s, line number:%d ,Compiler ERROR:%s\n", cur_filename, cur_line_num, buffer);
 		exit(EXIT_FAILURE);
 	}
 }
@@ -38,7 +38,7 @@ void error(char *fmt, ...)
 
 void expect(char *msg)
 {
-	error("COMPILER EXPECTED:%s\n", msg);
+	error("\nCOMPILER EXPECTED:%s\n", msg);
 }
 
 void skip(TOKEN tk)

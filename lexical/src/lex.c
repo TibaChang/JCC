@@ -7,6 +7,7 @@
 #include "tkWord_Hash.h"
 #include "exception.h"
 #include "dynSTR.h"
+#include "syntax_indent.h"
 
 static void preProcess(void);
 static void parseComment(void);
@@ -309,6 +310,8 @@ void getToken(void)
 		}
 
 	}/*END of switch*/
+
+	syntax_indent();
 }
 
 static void preProcess(void)
