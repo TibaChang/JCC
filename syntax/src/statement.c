@@ -17,7 +17,7 @@
  *             | <for_statement>
  *             | <expression_statement>
  ********************************************/
-void statement(void)/*FIXME:maybe*/
+void statement(void)/*FIXME:arguments*/
 {
 	switch (cur_token) {
 	case tk_BEGIN:

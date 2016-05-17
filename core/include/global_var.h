@@ -26,8 +26,8 @@ extern FILE *cur_File;
 extern char *cur_filename;
 /**************************************************************/
 
-/*Syntax analysis*/
 
+/*Syntax analysis*/
 typedef enum {
 	SNTX_NUL,   /* No indent behavior */
 	SNTX_SP,    /* space */
@@ -36,11 +36,15 @@ typedef enum {
 } SyntaxState;
 
 typedef enum {
-	JC_GLOBAL,
-	JC_LOCAL,
-	/*FIXME:
+	JC_GLOBAL = 0x00f0,
+	JC_LOCAL  = 0x00f1,
+	/*FIXME:struct member
 	 * There will be more definition here.
-	 * */
+	 **/
+	JC_ANOM   = 0x10000000,
+	JC_STRUCT = 0x20000000,
+	JC_MEMBER = 0x40000000,
+	JC_PARAMS = 0x80000000,
 } StorageClass;
 
 extern uint32_t syntax_state;

@@ -72,7 +72,7 @@ uint32_t hash_func(const char *key, uint32_t len)
 tkWord *tkW_direct_insert(tkWord *tkp)
 {
 	uint32_t key_no;
-	/*FIXME
+	/*FIXME:struct member
 	 *sym_struct
 	 *sym_identifier
 	 */

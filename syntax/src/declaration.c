@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include "declaration.h"
+#include "statement.h"
 #include "global_var.h"
 #include "token.h"
 #include "exception.h"
@@ -236,7 +237,7 @@ void direct_declarator_postfix(void)
 		getToken();
 		if (cur_token == tk_cINT) {
 			getToken();
-			/*FIXMEi:maybe*/
+			/*FIXME:maybe*/
 		}
 		skip(tk_closeBR);
 		direct_declarator_postfix();
@@ -253,7 +254,7 @@ void direct_declarator_postfix(void)
  *
  * <parameter_type_list>::=<type_specifier>{<declarator>}{<tk_COMMA><type_specifier>{declarator}}{<tk_COMMA><tk_ELLIPSIS>}
  ****************************************/
-void parameter_type_list(void)/*FIXME:maybe*/
+void parameter_type_list(void)/*FIXME:argument*/
 {
 	getToken();
 	while (cur_token != tk_closePA) {
@@ -288,8 +289,7 @@ void parameter_type_list(void)/*FIXME:maybe*/
  ****************************************/
 void funcbody(void)
 {
-	/*FIXME:not implemented yet!*/
-	//compound_statement();
+	compound_statement();
 }
 
 
@@ -298,8 +298,7 @@ void funcbody(void)
  ****************************************/
 void initializer(void)
 {
-	/*FIXME:not implemented yet!*/
-	//assignment_expression();
+	assignment_expression();
 }
 
 

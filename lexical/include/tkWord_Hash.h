@@ -15,7 +15,7 @@ typedef struct tkWord {
 	struct tkWord *next;   /*pointer to next token words if hash conflict happens*/
 	char *str;             /*token string(how to spell)*/
 	uint32_t str_len;      /*token string length*/
-	/*FIXME:
+	/*FIXME:struct member
 	 *sym_struct
 	 *sym_identifier
 	 */
