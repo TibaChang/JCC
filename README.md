@@ -46,6 +46,57 @@ Phase 3:Semantic Analysis
 NOT DONE!
 
 
+Supported Functionality
+==============================
+- **Tokens:**
+  - Arithmetic Operators
+    - "+"
+    - "-"
+    - "*"
+    - "/"
+    - "%"
+  - Relation Oerators
+    - "=="
+    - "!="
+    - "<"
+    - "<="
+    - ">"
+    - ">="
+  - Assignment Operators
+    - "="
+  - Pointer Operators
+    - "->"
+    - "."
+    - "&"
+  - Others
+    - "(" and ")"
+    - "[" and "]"
+    - "{" and "}"
+    - ";"
+    - ","
+    - "..."
+- **Keywords:**
+  - Constants
+    - "tk_cINT" (number,  ex:999)
+    - "tk_cCHAR"(single character,  ex:'X')
+    - "tk_cSTR" (characters,  ex:"This is JCC\n")
+  - keywords
+    - "int"
+    - "char"
+    - "void"
+    - "struct"
+    - "if"
+    - "else"
+    - "for"
+    - "continue"
+    - "break"
+    - "sizeof"
+  - user defined
+    - Ex: int user_ident; ("user_ident" will be added.)
+
+
+
+
 
 AUTHOR:
 ====================================
