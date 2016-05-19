@@ -9,7 +9,7 @@ This is a final project for NCKU compiler system course.
 Quick Start:
 ====================================
 All the toolchain you need is GCC on Linux based system.
-Tested Platform: Ubuntu 16.04(x64)
+Tested Platform: Ubuntu 16.04(x64)(gcc version 5.3.1 20160413 (Ubuntu 5.3.1-14ubuntu2) )
 
 ```
 git clone https://github.com/JaredCJR/JCC
@@ -34,7 +34,7 @@ Phase 2:Syntax Analysis
 - This is a Syntax Indenter,it will indent the codes with basic functionalities and Token Colorer.
 - Using syntax analysis to check basic grammars , based on Token Colorer.
 ```
-git checkout master  (FIXME:Need to create a branch later)
+git checkout DEMO_SYNTAX
 make clean
 make demo
 ```
@@ -101,6 +101,15 @@ Phase 2:Syntax Analysis
 ---------------------------
 
 **Declaration**
+
+- In JCC,
+  - All of the code must start with declaration.
+    - Ex:`int x = 10;`
+    - Ex:`int add(int x,int y);`
+    - Ex:`add(1,2);`
+    - Ex:`void main(){ }`
+  - The `{ }` in above example,meaning `compound statement`,and you could use `statement` inside.
+
 ```
  * <translation_unit>::={<external_declaration>}<tk_EOF>
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
@@ -145,6 +154,19 @@ Phase 2:Syntax Analysis
 ```
 
 **Expression**
+
+- In JCC,
+  - `Expression` help us estabilish the relationship between `tokens`.
+    - Ex: `a >= b`
+    - Ex: `X.member = 2;`
+  - Help us support the arthimetic rules:`multiplication and division first,then addition and substration`
+    - Ex: `int x = 0-6*6;`
+      - `x is equal to -36`
+  - Pass arguments
+    - Ex: `add(x,y,z);`
+      - `(x,y,z)` is dealed here.
+  - We do not support bitwise operation.
+
 ```
  * <expression>::=<assignment_expression>{<tk_COMMA><assignment_expression>}
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
@@ -207,6 +229,13 @@ Phase 2:Syntax Analysis
 
 
 **Statement**
+- In JCC,
+  - `statement` help the `keywords` to be known.
+    - Ex: `if(a == c){ }`
+      - `if` is identified here.
+    - Ex: `return add(a,b);`
+      - `return` is identified here.
+
 ``` 
  * <statement>::=<compound_statement>
  *             | <if_statement>
@@ -223,7 +252,7 @@ Phase 2:Syntax Analysis
  * <if_statement>::=<kw_IF><tk_openPA><expression><tk_closePA><statement>[<kw_ELSE><statement>]
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
  * <for_statement>::=
- *               <kw_FOR><tk_openPA><expression_statement><expression_statement><expression><tk_closePA><statement>
+ *           <kw_FOR><tk_openPA><expression_statement><expression_statement><expression><tk_closePA><statement>
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
  * <continue_statement>::=<kw_CONTINUE><tk_SEMICOLON>
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
@@ -237,7 +266,7 @@ Phase 2:Syntax Analysis
 
 AUTHOR:
 ====================================
-- Jia-Rung Chang(張家榮)(or Jared)
+- Jia-Rung Chang(張家榮/Jared)
     - National Cheng Kung University,Taiwan
     - Major in Engineering Science(Computer Science)
 
