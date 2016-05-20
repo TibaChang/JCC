@@ -61,7 +61,7 @@ all:$(TARGET)
 #Open the debug output in JCC
 #CFLAGS += -D$(JCC_DEBUG)
 
-$(TARGET):$(CORE_SOURCE) $(LEX_SOURCE) $(SYNTAX_SOURCE)
+$(TARGET):$(CORE_SOURCE) $(LEX_SOURCE) $(SYNTAX_SOURCE) $(SEMANTIC_SOURCE)
 	$(CC) $(CFLAGS) $(INCLUDES_LIST) \
           $^ -o $@
 
