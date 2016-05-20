@@ -20,47 +20,48 @@
 #include "stack.h"
 #include "token.h"
 
+/*Storage type*/
+#define	 JC_GLOBAL   0x00F0  /*const. int/char/string/global var/function def  */
+#define  JC_LOCAL    0x00F1  /*local var in stack*/
+#define  JC_LLOCAL   0x00F2  /*register overflow to put in stack*/
+#define  JC_CMP      0x00F3  /*Using FLAG registers*/
+#define	 JC_ValMASK  0x00FF
+#define  JC_LVAL     0x0100  /*lvalue*/
+#define  JC_SYM      0x0200  /*symbol*/
+
+#define  JC_ANOM     0x10000000/*anonymous symbol*/
+#define  JC_STRUCT   0x20000000/*struct symbol*/
+#define  JC_MEMBER   0x40000000/*struct member*/
+#define  JC_PARAMS   0x80000000/*function parameters*/
+
+/*Type code*/
+#define  T_INT     0
+#define	 T_CHAR    1
+#define	 T_VOID    2
+#define	 T_PTR     3
+#define	 T_FUNC    4
+#define	 T_STRUCT  5
+
+#define	 T_BTYPE   0x000F
+#define	 T_ARRAY   0x0010
+
+
 typedef struct Type {
 	uint32_t data_type;
-	void *ref;/*FIXME:type problem,original version is "struct Symbol *"       */
+	struct Symbol *ref;
 } Type;
 
 typedef struct Symbol {
-	TOKEN tk_code;   /*token encoding*/
-	uint32_t reg;    /*symbol register*/
-	int value;           /*symbol value*/
-	struct Type type;       /*symbol type*//*FIXME*/
-	struct Symbol *next;/*pointer to relavent symbol*/
-	struct Symbol *prev;/*pointer to previous symbol with same name*/
+	TOKEN tk_code;       /*token encoding*/
+	uint32_t reg;        /*symbol register*/
+	int value;           /*symbol realation value*/
+	struct Type type;    /*symbol type*//*FIXME*/
+	struct Symbol *next; /*pointer to relavent symbol*/
+	struct Symbol *prev; /*pointer to previous symbol with same name*/
 } Symbol;
 
 
-enum e_TypeCode {
-	T_INT    = 0,
-	T_CHAR   = 1,
-	T_VOID   = 2,
-	T_PTR    = 3,
-	T_FUNC   = 4,
-	T_STRUCT = 5,
 
-	T_BTYPE  = 0x000F,
-	T_ARRAY  = 0x0010,
-};
-
-typedef enum {
-	JC_GLOBAL = 0x00F0, /*const. int/char/string/global var/function def  */
-	JC_LOCAL  = 0x00F1, /*local var in stack*/
-	JC_LLOCAL = 0x00F2, /*register overflow to put in stack*/
-	JC_CMP    = 0x00F3, /*Using FLAG registers*/
-	JC_ValMASK = 0x00FF,
-	JC_LVAL   = 0x0100, /*lvalue*/
-	JC_SYM    = 0x0200, /*symbol*/
-
-	JC_ANOM   = 0x10000000,/*anonymous symbol*/
-	JC_STRUCT = 0x20000000,/*struct symbol*/
-	JC_MEMBER = 0x40000000,/*struct member*/
-	JC_PARAMS = 0x80000000,/*function parameters*/
-} StorageClass;
 
 Symbol *sym_direct_push(Stack *ss, TOKEN tk, Type *type, int val);
 Symbol *sym_push(TOKEN tk, Type *type, uint32_t reg, int val);

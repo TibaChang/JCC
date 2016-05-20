@@ -70,7 +70,7 @@ Symbol *func_sym_push(TOKEN tk, Type *type)
 
 	ps = &((tkWord*)tkTable.data[tk])->sym_identifier;
 
-	/*If symbol shares the same name,put function symbol at last*/
+	/*If symbol shares the same name,put function symbol at last place*/
 	while (*ps != NULL) {
 		ps = &(*ps)->prev;
 	}

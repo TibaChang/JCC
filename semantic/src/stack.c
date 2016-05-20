@@ -44,7 +44,7 @@ void *stack_push(Stack *stack, void *element, uint32_t element_size)
 		stack->top = stack->base + stack->stack_size;
 		stack->stack_size = new_size;
 	}
-	*stack->top = (void*)malloc(element_size);
+	*stack->top = (void*)malloc(element_size);/*FIXME:malloc type correct?*/
 	memcpy(*stack->top, element, element_size);
 	stack->top++;
 	return *(stack->top - 1);
