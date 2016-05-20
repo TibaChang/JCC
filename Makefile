@@ -1,5 +1,5 @@
 CC := gcc
-CFLAGS := -O0 -std=gnu99 -g3 -Wall -Werror -Wno-error=cpp
+CFLAGS := -O0 -std=gnu99 -g3 -Wall -Werror -Wno-enum-compare
 
 JCC_DEBUG := JCC_DEBUG
 

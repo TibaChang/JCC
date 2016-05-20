@@ -18,6 +18,7 @@
 #define __tkWord_Hash_H_
 #include <stdint.h>
 #include "token.h"
+#include "symbol.h"
 
 /*For hash_func*/
 #define ROT32(x, y) ((x << y) | (x >> (32 - y)))
@@ -31,10 +32,8 @@ typedef struct tkWord {
 	struct tkWord *next;   /*pointer to next token words if hash conflict happens*/
 	char *str;             /*token string(how to spell)*/
 	uint32_t str_len;      /*token string length*/
-	/*FIXME:struct member
-	 *sym_struct
-	 *sym_identifier
-	 */
+	Symbol *sym_struct;
+	Symbol *sym_identifier;
 } tkWord;
 
 tkWord *tkW_direct_insert(tkWord *tkp);

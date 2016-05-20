@@ -23,6 +23,7 @@
 #include "tkWord_Hash.h"
 #include "dynARR.h"
 #include "dynSTR.h"
+#include "stack.h"
 
 /*Lexcial analysis*/
 extern tkWord *tk_hashTable[MAX_KEY];
@@ -51,21 +52,13 @@ typedef enum {
 	SNTX_DELAY  /* Confirm the format until the next word */
 } SyntaxState;
 
-typedef enum {
-	JC_GLOBAL = 0x00f0,
-	JC_LOCAL  = 0x00f1,
-	/*FIXME:struct member
-	 * There will be more definition here.
-	 **/
-	JC_ANOM   = 0x10000000,
-	JC_STRUCT = 0x20000000,
-	JC_MEMBER = 0x40000000,
-	JC_PARAMS = 0x80000000,
-} StorageClass;
-
 extern uint32_t syntax_state;
 extern uint32_t syntax_indent_level;
 
 /**************************************************************/
 
+/*Semantic analysis*/
+extern Stack global_sym_stack;
+extern Stack local_sym_stack;
+/**************************************************************/
 #endif

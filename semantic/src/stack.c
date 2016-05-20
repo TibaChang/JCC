@@ -75,9 +75,9 @@ void *stack_get_top(Stack *stack)
 uint32_t stack_is_empty(Stack *stack)
 {
 	if (stack->top == stack->base) {
-		return 1;
+		return STACK_IS_EMPTY;
 	} else {
-		return 0;
+		return STACK_IS_NOT_EMPTY;
 	}
 }
 

@@ -88,10 +88,8 @@ uint32_t hash_func(const char *key, uint32_t len)
 tkWord *tkW_direct_insert(tkWord *tkp)
 {
 	uint32_t key_no;
-	/*FIXME:struct member
-	 *sym_struct
-	 *sym_identifier
-	 */
+	tkp->sym_struct = NULL;
+	tkp->sym_identifier = NULL;
 	dynARR_add(&tkTable, tkp);
 	key_no = hash_func(tkp->str, tkp->str_len);
 
@@ -142,6 +140,9 @@ tkWord *tkW_insert(char *p)
 			*s++ = *p++;
 		}
 		*s = (char)'\0';
+
+		tkp->sym_struct = NULL;
+		tkp->sym_identifier = NULL;
 	}
 	return tkp;
 }

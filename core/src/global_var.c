@@ -35,4 +35,6 @@ FILE *cur_File;
 uint32_t syntax_state;
 uint32_t syntax_indent_level;
 
-
+/*Semantic analysis*/
+Stack global_sym_stack;
+Stack local_sym_stack;

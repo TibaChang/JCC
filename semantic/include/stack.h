@@ -18,6 +18,9 @@
 #define __STACK_H_
 #include <stdint.h>
 
+#define STACK_IS_EMPTY 1
+#define STACK_IS_NOT_EMPTY 0
+
 typedef struct {
 	void **base;
 	void **top;
