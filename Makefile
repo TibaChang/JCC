@@ -5,27 +5,52 @@ JCC_DEBUG := JCC_DEBUG
 
 LEX_DIR          := ./lexical
 SYNTAX_DIR       := ./syntax
+SEMANTIC_DIR     := ./semantic
 CORE_DIR         := ./core
 SRC_DIR          := src
 INCLUDE_DIR      := include
 DEMO_DIR         := demo
 
-LEX_INCLUDES_DIR    := $(LEX_DIR)/$(INCLUDE_DIR)
-LEX_SRC_DIR         := $(LEX_DIR)/$(SRC_DIR)
-SYNTAX_INCLUDES_DIR := $(SYNTAX_DIR)/$(INCLUDE_DIR)
-SYNTAX_SRC_DIR      := $(SYNTAX_DIR)/$(SRC_DIR)
-CORE_INCLUDES_DIR   := $(CORE_DIR)/$(INCLUDE_DIR)
-CORE_SRC_DIR        := $(CORE_DIR)/$(SRC_DIR)
+define DIR_Variable_Creator
+	$(1)_INCLUDES_DIR   := $($(1)_DIR)/$(INCLUDE_DIR)
+	$(1)_SRC_DIR        := $($(1)_DIR)/$(SRC_DIR)
+endef
 
+define Create_All_DIR_Variable
+	$(eval $(call DIR_Variable_Creator,$(1)))
+	$(eval $(call DIR_Variable_Creator,$(2)))
+	$(eval $(call DIR_Variable_Creator,$(3)))
+	$(eval $(call DIR_Variable_Creator,$(4)))
+endef
+
+define Phase_Source
+    $(1)_SOURCE := $(wildcard $($(1)_SRC_DIR)/*.c)
+endef
+
+define All_Source
+    $(eval $(call Phase_Source,$(1)))
+    $(eval $(call Phase_Source,$(2)))
+    $(eval $(call Phase_Source,$(3)))
+    $(eval $(call Phase_Source,$(4)))
+endef
+
+define All_Header
+	INCLUDES_LIST := $(addprefix -I,$($(1)_INCLUDES_DIR)) \
+					 $(addprefix -I,$($(2)_INCLUDES_DIR)) \
+					 $(addprefix -I,$($(3)_INCLUDES_DIR)) \
+					 $(addprefix -I,$($(4)_INCLUDES_DIR))
+endef
+
+define All_Variable
+	$(eval $(call Create_All_DIR_Variable,$(1),$(2),$(3),$(4)))
+	$(eval $(call All_Header,$(1),$(2),$(3),$(4)))
+	$(eval $(call All_Source,$(1),$(2),$(3),$(4)))
+endef
+
+$(eval $(call All_Variable,LEX,SYNTAX,SEMANTIC,CORE))
 
 TARGET := JCC
-LEX_SOURCE     :=$(wildcard $(LEX_SRC_DIR)/*.c)
-SYNTAX_SOURCE  :=$(wildcard $(SYNTAX_SRC_DIR)/*.c)
-CORE_SOURCE    :=$(wildcard $(CORE_SRC_DIR)/*.c)
 
-INCLUDES_LIST := $(addprefix -I,$(LEX_INCLUDES_DIR)) \
-	             $(addprefix -I,$(SYNTAX_INCLUDES_DIR)) \
-	             $(addprefix -I,$(CORE_INCLUDES_DIR))
 
 .PHONY: demo clean astyle cscope
 
