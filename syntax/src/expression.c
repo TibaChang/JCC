@@ -21,7 +21,6 @@
 #include "token.h"
 #include "exception.h"
 #include "lex.h"
-#include "syntax_indent.h"
 #include "statement.h"
 
 
@@ -170,10 +169,18 @@ void unary_expression(void)
  **************************************************/
 void sizeof_expression(void)
 {
+	uint32_t align, size;
+	Type type;
+
 	getToken();
 	skip(tk_openPA);
-	type_specifier();
+	type_specifier(&type);
 	skip(tk_closePA);
+
+	size = type_size(&type, &align);
+	if (size < 0) {
+		error("sizeof calcuating failed!");
+	}
 }
 
 
@@ -217,11 +224,22 @@ void postfix_expression(void)
  **************************************************/
 void primary_expression(void)
 {
+	uint32_t T_type;
+	Type type;
+	Symbol *s;
+
 	switch (cur_token) {
 	case tk_cINT:
 	case tk_cCHAR:
-	case tk_cSTR:
 		getToken();
+		break;
+	case tk_cSTR:
+		T_type = T_CHAR;
+		type.data_type = T_type;
+		mk_pointer(&type);
+		type.data_type |= T_ARRAY;
+		var_sym_put(&type, JC_GLOBAL, NOT_SPECIFIED, NOT_SPECIFIED);
+		initializer(&type);
 		break;
 	case tk_openPA:
 		getToken();
@@ -229,10 +247,19 @@ void primary_expression(void)
 		skip(tk_closePA);
 		break;
 	default:
-		if (cur_token < tk_IDENT) {
-			expect("Identifier or constant value(char/string/number)\n");
-		}
+		T_type = cur_token;
 		getToken();
+		if (cur_token < tk_IDENT) {
+			expect("Identifier or constant value(char/string/number)");
+		}
+		s = sym_search(T_type);
+		if (!s) {
+			if (cur_token != tk_openPA) {
+				error("'%s' is undeclared!", get_tkSTR(T_type));
+			}
+			s = func_sym_push(T_type, &default_func_type); /*Allowing function can be invoked without declaration*/
+			s->reg = JC_GLOBAL | JC_SYM;
+		}
 		break;
 	}
 }

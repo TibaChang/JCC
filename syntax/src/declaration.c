@@ -21,8 +21,8 @@
 #include "token.h"
 #include "exception.h"
 #include "lex.h"
-#include "syntax_indent.h"
 #include "expression.h"
+#include "symbol.h"
 
 /***************************************
  *<translation_unit>::={<external_declaration>}<tk_EOF>
@@ -62,35 +62,71 @@ void translation_unit(void)
  *
  * with the right "V",that line is "external_definition"
  * */
-void external_declaration(int scope)
+void external_declaration(uint32_t scope)
 {
-	if (!type_specifier()) {
-		expect("type_specifier!\n");
+	Type btype, type;
+	TOKEN tk;
+	int addr = 0;/*FIXME*/
+	uint32_t reg;
+	Symbol *sym;
+
+	if (!type_specifier(&btype)) {
+		expect("type_specifier!");
 	}
 
-	if (cur_token == tk_SEMICOLON) {
+	if ((btype.data_type == T_STRUCT) && (cur_token == tk_SEMICOLON)) {
 		getToken();
 		return;
 	}
 
 	while (1) {
-		declarator();
+		type = btype;
+		declarator(&type, &tk, NULL);
+
 		if (cur_token == tk_BEGIN) {
 			if (scope == JC_LOCAL) {
-				error("JCC does not support nested function definition!\n");
+				error("JCC does not support nested function definition!");
 			}
-			funcbody();
+
+			if ((type.data_type & T_BTYPE) != T_FUNC) {
+				expect("<FUNCTION DEFINITION>");
+			}
+
+			sym = sym_search(tk);
+			if (sym) { /*if function is already declared,give function definition*/
+				if ((sym->type.data_type & T_BTYPE) != (T_FUNC)) {
+					error("'%s' redefinition!", get_tkSTR(tk));
+				}
+				sym->type = type;
+			} else {
+				sym = func_sym_push(tk, &type);
+			}
+			sym->reg = JC_SYM | JC_GLOBAL;
+			funcbody(sym);
 			break;
 		} else {
-			if (cur_token == tk_ASSIGN) {
-				getToken();
-				initializer();
+			if ((type.data_type & T_BTYPE) == T_FUNC) { /*function declaration*/
+				if (sym_search(tk) == NULL) {
+					sym = sym_push(tk, &type, JC_GLOBAL | JC_SYM, NOT_SPECIFIED);
+				}
+			} else { /*variable declaration*/
+				reg = 0;
+				if (!(type.data_type & T_ARRAY)) {
+					reg |= JC_LVAL;
+				}
+				reg |= scope;
+
+				if (cur_token == tk_ASSIGN) {
+					getToken();
+					initializer(&type);
+				}
+				sym = var_sym_put(&type, reg, tk, addr);
 			}
+
 
 			if (cur_token == tk_COMMA) {
 				getToken();
 			} else {
-				syntax_state = SNTX_NL_ID;
 				skip(tk_SEMICOLON);
 				break;
 			}
@@ -104,28 +140,28 @@ void external_declaration(int scope)
  *                    <kw_VOID>  |
  *                    <struct_specifier>
  ***************************************/
-int type_specifier(void)
+int type_specifier(Type *type)
 {
-	int type_found = 0;
+	uint32_t type_found = 0;
 	switch (cur_token) {
 	case kw_CHAR:
+		type->data_type = T_CHAR;
 		type_found = 1;
-		syntax_state = SNTX_SP;
 		getToken();
 		break;
 	case kw_VOID:
+		type->data_type = T_VOID;
 		type_found = 1;
-		syntax_state = SNTX_SP;
 		getToken();
 		break;
 	case kw_INT:
+		type->data_type = T_INT;
 		type_found = 1;
-		syntax_state = SNTX_SP;
 		getToken();
 		break;
 	case kw_STRUCT:
-		syntax_state = SNTX_SP;
-		struct_specifier();
+		type->data_type = T_STRUCT;
+		struct_specifier(type);
 		type_found = 1;
 		break;
 	default:
@@ -139,46 +175,96 @@ int type_specifier(void)
  * <struct_specifier>::=<kw_STRUCT><IDENTIFIER><tk_BEGIN><struct_declaration_list><tk_END>
  *                    | <kw_STRUCT><IDENTIFIER>
  ***************************************/
-void struct_specifier(void)
+void struct_specifier(Type *type)
 {
+	Symbol *s;
+	Type type_1;
+	TOKEN tk;
+
 	getToken();
-	TOKEN tk = cur_token;
-	syntax_state = SNTX_DELAY;
+	tk = cur_token;
 	getToken();
 
-	if (cur_token == tk_BEGIN) {
-		syntax_state = SNTX_NL_ID;/*for struct definition*/
-	} else if (cur_token == tk_closePA) {
-		syntax_state = SNTX_NUL; /*for sizeof(struct struct_name)*/
-	} else {
-		syntax_state = SNTX_SP;
+	s = struct_search(tk);
+	if (!s) {
+		type_1.data_type = kw_STRUCT;
+		s = sym_push(tk | JC_STRUCT, &type_1, NOT_SPECIFIED, STRUCT_NOT_DEFINED);
+		s->reg = 0;
 	}
-	syntax_indent();
+
+	type->data_type = T_STRUCT;
+	type->ref = s;
 
 	if (tk < tk_IDENT) {
-		expect("struct name!\n");
+		expect("struct name!");
 	}
 
 	if (cur_token == tk_BEGIN) {
-		struct_declaration_list();
+		struct_declaration_list(type);
 	}
 }
+
+static uint32_t calc_align(uint32_t n, uint32_t align)
+{
+	return ((n + align - 1) & (~(align - 1)));
+}
+
 
 /****************************************
  * <struct_declaration_list>::=<struct_declaration>{<struct_declaration>}
  ****************************************/
-void struct_declaration_list(void)
+void struct_declaration_list(Type *type)
 {
-	syntax_state = SNTX_NL_ID;/*struct member put in the next line*/
-	syntax_indent_level++; /*struct member indent level++ */
+	uint32_t max_align, offset;
+	Symbol *s, **ps;
+	s = type->ref;
 
 	getToken();
+
+	if (s->value != STRUCT_NOT_DEFINED) {
+		error("struct is defined!");
+	}
+
+	max_align = 1;
+	ps = &s->next;
+	offset = 0;
+
 	while (cur_token != tk_END) {
-		struct_declaration();
+		struct_declaration(&max_align, &offset, &ps);
 	}
 	skip(tk_END);
 
-	syntax_state = SNTX_NL_ID;
+	s->value = calc_align(offset, max_align); /*struct size*/
+	s->reg = max_align;/*struct alignment*/
+}
+
+
+uint32_t type_size(Type *type, uint32_t *align)
+{
+	Symbol *s;
+	uint32_t base_type;
+
+	base_type = (type->data_type & T_BTYPE);
+	switch (base_type) {
+	case T_STRUCT:
+		s = type->ref;
+		*align = s->reg;
+		return s->value;
+	case T_PTR:
+		if (type->data_type & T_ARRAY) {
+			s = type->ref;
+			return (type_size(&s->type, align) * s->value);
+		} else {
+			*align = PTR_SIZE;
+			return PTR_SIZE;
+		}
+	case T_INT:
+		*align = 4;
+		return 4;
+	default:/*char,void,function*/
+		*align = 1;
+		return 1;
+	}
 }
 
 
@@ -190,19 +276,50 @@ void struct_declaration_list(void)
  *
  * <struct_declaration>::=<type_specifier><declarator>{<tk_COMMA><declarator>}<tk_SEMICOLON>
  ****************************************/
-void struct_declaration(void)
+void struct_declaration(uint32_t *max_align, uint32_t *offset, Symbol ***ps)
 {
-	type_specifier();
+	TOKEN tk;
+	uint32_t size, align, force_align;
+	Symbol *ss;
+	Type type_1, btype;
+
+	type_specifier(&btype);
+
 	while (1) {
-		declarator();
+		tk = 0;
+		type_1 = btype;
+		declarator(&type_1, &tk, &force_align);
+		size = type_size(&type_1, &align);
+
+		if (force_align & ALIGN_SET) {
+			align = force_align & ~ALIGN_SET;
+		}
+		*offset = calc_align(*offset, align);
+
+		if (align > *max_align) {
+			*max_align = align;
+		}
+
+		ss = sym_push(tk | JC_MEMBER, &type_1, NOT_SPECIFIED, *offset);
+		*offset += size;
+		**ps = ss;
+		*ps = &ss->next;
 
 		if (cur_token == tk_SEMICOLON) {
 			break;
 		}
 		skip(tk_COMMA);
 	}
-	syntax_state = SNTX_NL_ID;
 	skip(tk_SEMICOLON);
+}
+
+static void struct_member_alignment(uint32_t *force_align)
+{
+	/*JCC does not support align keyword*/
+	if (force_align == NULL) {
+		return;
+	}
+	*force_align = 1;
 }
 
 
@@ -215,26 +332,32 @@ void struct_declaration(void)
  *
  * <declarator>::={<tk_STAR>}<direct_declarator>
  ****************************************/
-void declarator(void)
+void declarator(Type *type, TOKEN *tk, uint32_t *force_align)
 {
+
 	while (cur_token == tk_STAR) {
+		mk_pointer(type);
 		getToken();
 	}
-	direct_declarator();
+	if (force_align) {
+		struct_member_alignment(force_align);
+	}
+	direct_declarator(type, tk);
 }
 
 
 /****************************************
  * <direct_declarator>::=<IDENTIFIER><direct_declarator_postfix>
  ****************************************/
-void direct_declarator(void)
+void direct_declarator(Type *type, TOKEN *tk)
 {
 	if (cur_token >= tk_IDENT) {
+		*tk = cur_token;
 		getToken();
 	} else {
-		expect("Identifier!\n");
+		expect("Identifier!");
 	}
-	direct_declarator_postfix();
+	direct_declarator_postfix(type);
 }
 
 
@@ -246,18 +369,24 @@ void direct_declarator(void)
  *                                | <tk_openPA><tk_closePA>
  * }
  ****************************************/
-void direct_declarator_postfix(void)
+void direct_declarator_postfix(Type *type)
 {
+	int val;
+	Symbol *s;
+
 	if (cur_token == tk_openPA) {
-		parameter_type_list();
+		parameter_type_list(type);
 	} else if (cur_token == tk_openBR) {
 		getToken();
 		if (cur_token == tk_cINT) {
 			getToken();
-			/*FIXME:maybe*/
+			val = tkValue;
 		}
 		skip(tk_closeBR);
-		direct_declarator_postfix();
+		direct_declarator_postfix(type);
+		s = sym_push(JC_ANOM, type, NOT_SPECIFIED, val);
+		type->data_type = T_ARRAY | T_PTR;
+		type->ref = s;
 	}
 }
 
@@ -271,55 +400,77 @@ void direct_declarator_postfix(void)
  *
  * <parameter_type_list>::=<type_specifier>{<declarator>}{<tk_COMMA><type_specifier>{declarator}}{<tk_COMMA><tk_ELLIPSIS>}
  ****************************************/
-void parameter_type_list(void)/*FIXME:argument*/
+void parameter_type_list(Type *type)
 {
+	TOKEN tk;
+	Symbol *s;/*FIXME:remove some variables seems to be garbage.*/
+	Type pt;
+
 	getToken();
+
 	while (cur_token != tk_closePA) {
-		if (!type_specifier()) {
-			error("Unknown type identifier!\n");
+		if (!type_specifier(&pt)) {
+			error("Unknown type identifier!");
 		}
-		declarator();
+
+		declarator(&pt, &tk, NULL);
+		s = sym_push(tk | JC_PARAMS, &pt, NOT_SPECIFIED, NOT_SPECIFIED);
+
 		if (cur_token == tk_closePA) {
 			break;
 		}
+
 		skip(tk_COMMA);
+
 		if (cur_token == tk_ELLIPSIS) {
 			/*FIXME:func_call*/
 			getToken();
 			break;
 		}
 	}
-	syntax_state = SNTX_DELAY;
 	skip(tk_closePA);
 
-	if (cur_token == tk_BEGIN) {
-		syntax_state = SNTX_NL_ID;
-	} else {
-		syntax_state = SNTX_NUL;
-	}
-	syntax_indent();
+	s = sym_push(JC_ANOM, type, NOT_SPECIFIED, NOT_SPECIFIED); /*FIXME:func_call is delete,JCC not support*/
+	type->data_type = T_FUNC;
+	type->ref = s;
 }
 
 
 /****************************************
  * <funcbody>::=<compound_statement>
  ****************************************/
-void funcbody(void)
+void funcbody(Symbol *sym)
 {
-	compound_statement();
+	/*put an anonymous symbol in local symbol table*/
+	sym_direct_push(&local_sym_stack, JC_ANOM, &int_type, NOT_SPECIFIED);
+
+	compound_statement(NULL, NULL);
+
+	/*clear local symbol stack*/
+	sym_pop(&local_sym_stack, NULL);
 }
 
 
 /****************************************
  * <initializer>::=<assignment_expression>
  ****************************************/
-void initializer(void)
+void initializer(Type *type)
 {
-	assignment_expression();
+	if (type->data_type & T_ARRAY) {
+		getToken();
+	} else {
+		assignment_expression();
+	}
 }
 
 
-
+void mk_pointer(Type *type)
+{
+	Symbol *s;
+	s = sym_push(JC_ANOM, type, NOT_SPECIFIED, NOT_DEFINED);
+	type->data_type = T_PTR;
+	type->ref = s;
+}
 
 
 

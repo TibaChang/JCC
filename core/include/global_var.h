@@ -24,6 +24,7 @@
 #include "dynARR.h"
 #include "dynSTR.h"
 #include "stack.h"
+#include "symbol.h"
 
 /*Lexcial analysis*/
 extern tkWord *tk_hashTable[MAX_KEY];
@@ -43,22 +44,15 @@ extern FILE *cur_File;
 extern char *cur_filename;
 /**************************************************************/
 
-
-/*Syntax analysis*/
-typedef enum {
-	SNTX_NUL,   /* No indent behavior */
-	SNTX_SP,    /* space */
-	SNTX_NL_ID, /* New Line and InDent,for every declaration,function definition and end of statement */
-	SNTX_DELAY  /* Confirm the format until the next word */
-} SyntaxState;
-
-extern uint32_t syntax_state;
-extern uint32_t syntax_indent_level;
-
-/**************************************************************/
-
 /*Semantic analysis*/
 extern Stack global_sym_stack;
 extern Stack local_sym_stack;
+
+extern Type char_pointer_type;
+extern Type int_type;
+extern Type default_func_type;
+
+extern Symbol *sym_sec_rdata;
+
 /**************************************************************/
 #endif

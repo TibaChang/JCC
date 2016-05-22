@@ -31,10 +31,15 @@ char cur_CHAR;
 FILE *cur_File;
 
 
-/*Syntax analysis*/
-uint32_t syntax_state;
-uint32_t syntax_indent_level;
 
 /*Semantic analysis*/
 Stack global_sym_stack;
 Stack local_sym_stack;
+
+Type char_pointer_type;
+Type int_type;
+Type default_func_type;
+
+Symbol *sym_sec_rdata;
+
+

@@ -42,8 +42,13 @@
 #define	 T_FUNC    4
 #define	 T_STRUCT  5
 
-#define	 T_BTYPE   0x000F
+#define	 T_BTYPE   0x000F /*base type mask:"int" to "struct"*/
 #define	 T_ARRAY   0x0010
+
+/*sym_push code*/
+#define NOT_SPECIFIED        0
+#define STRUCT_NOT_DEFINED  -1
+#define NOT_DEFINED         -1
 
 
 typedef struct Type {
@@ -52,10 +57,10 @@ typedef struct Type {
 } Type;
 
 typedef struct Symbol {
-	TOKEN tk_code;       /*token encoding*/
-	uint32_t reg;        /*symbol register*/
-	int value;           /*symbol realation value*/
-	struct Type type;    /*symbol type*//*FIXME*/
+	TOKEN tk_code;       /*token encoding,v*/
+	uint32_t reg;        /*symbol register,r,FIXME:name: scope,func_call(JCC not support) */
+	int value;           /*symbol realation value,c,FIXME:name: align,-1 for not deined,tkValue, */
+	struct Type type;    /*symbol type*/
 	struct Symbol *next; /*pointer to relavent symbol*/
 	struct Symbol *prev; /*pointer to previous symbol with same name*/
 } Symbol;

@@ -20,7 +20,6 @@
 #include "token.h"
 #include "exception.h"
 #include "lex.h"
-#include "syntax_indent.h"
 #include "statement.h"
 #include "expression.h"
 
@@ -33,14 +32,14 @@
  *             | <for_statement>
  *             | <expression_statement>
  ********************************************/
-void statement(void)/*FIXME:arguments*/
+void statement(uint32_t *break_sym, uint32_t *continue_sym)
 {
 	switch (cur_token) {
 	case tk_BEGIN:
-		compound_statement();
+		compound_statement(break_sym, continue_sym);
 		break;
 	case kw_IF:
-		if_statement();
+		if_statement(break_sym, continue_sym);
 		break;
 	case kw_RETURN:
 		return_statement();
@@ -52,7 +51,7 @@ void statement(void)/*FIXME:arguments*/
 		continue_statement();
 		break;
 	case kw_FOR:
-		for_statement();
+		for_statement(break_sym, continue_sym);
 		break;
 	default:
 		expression_statement();
@@ -65,10 +64,10 @@ void statement(void)/*FIXME:arguments*/
 /********************************************
  * <compound_statement>::=<tk_BEGIN>{<declaration>}{<statement>}<tk_END>
  ********************************************/
-void compound_statement(void)
+void compound_statement(uint32_t *break_sym, uint32_t *continue_sym)
 {
-	syntax_state = SNTX_NL_ID;
-	syntax_indent_level++;
+	Symbol *s;
+	s = (Symbol*)stack_get_top(&local_sym_stack);
 
 	getToken();
 	while (is_type_specifier(cur_token)) {
@@ -76,9 +75,9 @@ void compound_statement(void)
 	}
 
 	while (cur_token != tk_END) {
-		statement();
+		statement(break_sym, continue_sym);
 	}
-	syntax_state = SNTX_NL_ID;
+	sym_pop(&local_sym_stack, s);
 	getToken();
 }
 
@@ -109,7 +108,6 @@ void expression_statement(void)
 	if (cur_token != tk_SEMICOLON) {
 		expression();
 	}
-	syntax_state = SNTX_NL_ID;
 	skip(tk_SEMICOLON);
 }
 
@@ -118,19 +116,16 @@ void expression_statement(void)
 /********************************************
  * <if_statement>::=<kw_IF><tk_openPA><expression><tk_closePA><statement>[<kw_ELSE><statement>]
  ********************************************/
-void if_statement(void)
+void if_statement(uint32_t *break_sym, uint32_t *continue_sym)
 {
-	syntax_state = SNTX_SP;
 	getToken();
 	skip(tk_openPA);
 	expression();
-	syntax_state = SNTX_NL_ID;
 	skip(tk_closePA);
-	statement();
+	statement(break_sym, continue_sym);
 	if (cur_token == kw_ELSE) {
-		syntax_state = SNTX_NL_ID;
 		getToken();
-		statement();
+		statement(break_sym, continue_sym);
 	}
 }
 
@@ -139,7 +134,7 @@ void if_statement(void)
  * <for_statement>::=
  *               <kw_FOR><tk_openPA><expression_statement><expression_statement><expression><tk_closePA><statement>
  *******************************************/
-void for_statement(void)
+void for_statement(uint32_t *break_sym, uint32_t *continue_sym)
 {
 	getToken();
 	skip(tk_openPA);
@@ -159,9 +154,8 @@ void for_statement(void)
 		expression();
 	}
 
-	syntax_state = SNTX_NL_ID;
 	skip(tk_closePA);
-	statement();
+	statement(break_sym, continue_sym);
 }
 
 
@@ -171,7 +165,6 @@ void for_statement(void)
 void continue_statement(void)
 {
 	getToken();
-	syntax_state = SNTX_NL_ID;
 	skip(tk_SEMICOLON);
 }
 
@@ -182,7 +175,6 @@ void continue_statement(void)
 void break_statement(void)
 {
 	getToken();
-	syntax_state = SNTX_NL_ID;
 	skip(tk_SEMICOLON);
 }
 
@@ -193,19 +185,11 @@ void break_statement(void)
  *********************************************/
 void return_statement(void)
 {
-	syntax_state = SNTX_DELAY;
 	getToken();
-	if (cur_token == tk_SEMICOLON) {
-		syntax_state = SNTX_NUL;
-	} else {
-		syntax_state = SNTX_SP;
-	}
-	syntax_indent();
 
 	if (cur_token != tk_SEMICOLON) {
 		expression();
 	}
-	syntax_state = SNTX_NL_ID;
 	skip(tk_SEMICOLON);
 }
 

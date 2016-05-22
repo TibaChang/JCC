@@ -25,8 +25,6 @@ typedef enum {
 
 void init(void);
 void cleanup(void);
-void color_token(int lex_state);
-void syntax_indent(void);
 
 
 #endif

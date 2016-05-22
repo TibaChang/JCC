@@ -66,10 +66,10 @@ $(TARGET):$(CORE_SOURCE) $(LEX_SOURCE) $(SYNTAX_SOURCE) $(SEMANTIC_SOURCE)
           $^ -o $@
 
 demo:$(TARGET)
-	./JCC $(DEMO_DIR)/ex_noIndent.c
+	./JCC $(DEMO_DIR)/ex_Indent.c
 
 demo_gdb:$(TARGET)
-	gdb --args ./$(TARGET) $(DEMO_DIR)/ex_noIndent.c
+	gdb --args ./$(TARGET) $(DEMO_DIR)/ex_Indent.c
 
 
 clean:

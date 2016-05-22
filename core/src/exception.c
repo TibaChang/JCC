@@ -54,7 +54,7 @@ void error(char *fmt, ...)
 
 void expect(char *msg)
 {
-	error("\nCOMPILER EXPECTED:%s\n", msg);
+	error(" JCC EXPECTED:%s", msg);
 }
 
 void skip(TOKEN tk)

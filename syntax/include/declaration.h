@@ -16,18 +16,24 @@
 
 #ifndef __DECLARATION_H_
 #define __DECLARATION_H_
+#include "symbol.h"
+
+#define ALIGN_SET 0x100
+#define PTR_SIZE  4
 
 void translation_unit(void);
-void external_declaration(int scope);
-int type_specifier(void);
-void struct_specifier(void);
-void struct_declaration_list(void);
-void struct_declaration(void);
-void declarator(void);
-void direct_declarator(void);
-void direct_declarator_postfix(void);
-void parameter_type_list(void);
-void funcbody(void);
-void initializer(void);
+void external_declaration(uint32_t scope);
+int type_specifier(Type *type);
+void struct_specifier(Type *type);
+void struct_declaration_list(Type *type);
+void struct_declaration(uint32_t *max_align, uint32_t *offset, Symbol ***ps);
+void declarator(Type *type, TOKEN *tk, uint32_t *force_align);
+void direct_declarator(Type *type, TOKEN *tk);
+void direct_declarator_postfix(Type *type);
+void parameter_type_list(Type *type);
+void funcbody(Symbol *sym);
+void initializer(Type *type);
+void mk_pointer(Type *t);
+uint32_t type_size(Type *type, uint32_t *align);
 
 #endif
