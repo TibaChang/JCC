@@ -70,6 +70,7 @@ void external_declaration(uint32_t storage_type)
 	uint32_t storage_type_1;
 	Symbol *sym;
 
+	/*struct definition will be dealed here,the code below does not deal with struct definition*/
 	if (!type_specifier(&base_type)) {
 		expect("type_specifier!");
 	}
@@ -79,10 +80,17 @@ void external_declaration(uint32_t storage_type)
 		return;
 	}
 
+	/* function definition or variable declaration*/
 	while (1) {
 		type = base_type;
+		/* if encounter a variable/function declaration,cur_token is the token after the identifier
+		 *
+		 * if this is the second loop of the function definition,declarator() will do nothing,
+		 * then push the "function name symbol" into global stack.
+		 */
 		declarator(&type, &tk, NULL);
 
+		/*if we encountered a function declaration,and now the cur_token is "{" which is ready to define the function */
 		if (cur_token == tk_BEGIN) {
 			if (storage_type == JC_LOCAL) {
 				error("JCC does not support nested function definition!");
@@ -186,7 +194,7 @@ void struct_specifier(Type *type)
 	getToken();
 
 	s = struct_search(tk);
-    /*struct is not defined yet*/
+	/*if struct is not defined yet*/
 	if (!s) {
 		type_1.data_type = kw_STRUCT;
 		s = sym_push(tk | JC_STRUCT, &type_1, NOT_SPECIFIED, STRUCT_NOT_DEFINED);
@@ -217,7 +225,7 @@ void struct_declaration_list(Type *type)
 {
 	uint32_t max_align, offset;
 	Symbol *s, **ps;
-    /*get the "base symbol":sym_struct */
+	/*get the "base symbol":sym_struct */
 	s = type->ref;
 
 	getToken();
@@ -231,19 +239,19 @@ void struct_declaration_list(Type *type)
 	offset = 0;
 
 	while (cur_token != tk_END) {
-        /* If there is a struct:
-         * struct ex{int a[5][7]; int b,c,d; char e; };
-         * the stack will look like:
-         *     #stack high
-         *         e
-         *         d
-         *         c
-         *         b
-         *         a
-         *         5
-         *         7
-         *     #stack low
-         */
+		/* If there is a struct:
+		 * struct ex{int a[5][7]; int b,c,d; char e; };
+		 * the stack will look like:
+		 *     #stack high
+		 *         e
+		 *         d
+		 *         c
+		 *         b
+		 *         a
+		 *         5
+		 *         7
+		 *     #stack low
+		 */
 		struct_declaration(&max_align, &offset, &ps);
 	}
 	skip(tk_END);
@@ -317,13 +325,13 @@ void struct_declaration(uint32_t *max_align, uint32_t *offset, Symbol ***ps)
 		ss = sym_push(tk | JC_MEMBER, &type_1, NOT_SPECIFIED, *offset);
 		*offset += size;
 		**ps = ss;
-        /*if same type has several declaration, assign to the "next"
-         *Ex:
-         * struct name{ int a,b,c;};
-         * sym_a->next = sym_b
-         * sym_b->next = sym_c
-         * sym_c->next = NULL
-         */
+		/*if same type has several declaration, assign to the "next"
+		 *Ex:
+		 * struct name{ int a,b,c;};
+		 * sym_a->next = sym_b
+		 * sym_b->next = sym_c
+		 * sym_c->next = NULL
+		 */
 		*ps = &ss->next;
 
 		if (cur_token == tk_SEMICOLON) {
@@ -396,9 +404,10 @@ void direct_declarator_postfix(Type *type)
 	Symbol *s;
 
 	if (cur_token == tk_openPA) {
+		/*function declaration*/
 		parameter_type_list(type);
 	} else if (cur_token == tk_openBR) {
-        /*declarating an array as struct member*/
+		/*declarating an array as struct member*/
 		getToken();
 		if (cur_token == tk_cINT) {
 			getToken();

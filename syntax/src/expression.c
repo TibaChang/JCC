@@ -200,7 +200,7 @@ void postfix_expression(void)
 	while (1) {
 		if ((cur_token == tk_DOT) || (cur_token == tk_POINTTO)) {
 			getToken();
-			cur_token |= JC_MEMBER;/*FIXME:maybe*/
+			cur_token |= JC_MEMBER;
 			getToken();
 		} else if (cur_token == tk_openBR) {
 			getToken();

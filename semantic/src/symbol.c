@@ -57,7 +57,7 @@ Symbol *sym_push(uint32_t modified_tk, Type *type, uint32_t storage_type, int re
 		} else {
 			pps = &ts->sym_identifier;
 		}
-        /*Make prev point to itself,and return*/
+		/*Make prev point to itself,and return*/
 		ps->prev = *pps;
 		*pps = ps;
 	}
@@ -85,11 +85,11 @@ Symbol *func_sym_push(uint32_t tk, Type *type)
 Symbol *var_sym_put(Type *type, uint32_t storage_type, TOKEN tk, int addr)
 {
 	Symbol *sym = NULL;
-    /*local variables*/
+	/*local variables*/
 	if ((storage_type & JC_ValMASK) == JC_LOCAL) {
 		sym = sym_push(tk, type, storage_type, addr);
-    /*global varable*/
-	} else if (tk && ((storage_type & JC_ValMASK) == JC_GLOBAL) ) {
+		/*global varable*/
+	} else if (tk && ((storage_type & JC_ValMASK) == JC_GLOBAL)) {
 		sym = sym_search(tk);
 		if (sym) {
 			error("%s redefinition!\n", ((tkWord*)tkTable.data[tk])->str);

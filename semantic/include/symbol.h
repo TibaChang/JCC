@@ -42,7 +42,6 @@
 #define	 T_PTR     3
 #define	 T_FUNC    4
 #define	 T_STRUCT  5
-
 #define	 T_BTYPE   0x000F /*base type mask:"int" to "struct"*/
 #define	 T_ARRAY   0x0010
 
