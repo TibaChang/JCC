@@ -29,6 +29,6 @@ typedef enum {
 void warning(char *fmt, ...);
 void error(char *fmt, ...);
 void expect(char *msg);
-void skip(TOKEN tk);
+void skip(uint32_t tk);
 
 #endif

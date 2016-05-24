@@ -272,7 +272,7 @@ void getToken(void)
 }
 
 
-char *get_tkSTR(TOKEN tk_code)
+char *get_tkSTR(uint32_t tk_code)
 {
 	if (tk_code > tkTable.count) {
 		return NULL;

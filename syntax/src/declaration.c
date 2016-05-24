@@ -65,9 +65,7 @@ void translation_unit(void)
 void external_declaration(uint32_t storage_type)
 {
 	Type base_type, type;
-	TOKEN tk;
-	int addr = 0;/*FIXME*/
-	uint32_t storage_type_1;
+	uint32_t tk, storage_type_1;
 	Symbol *sym;
 
 	/*struct definition will be dealed here,the code below does not deal with struct definition*/
@@ -128,7 +126,7 @@ void external_declaration(uint32_t storage_type)
 					getToken();
 					initializer(&type);
 				}
-				sym = var_sym_put(&type, storage_type_1, tk, addr);
+				sym = var_sym_put(&type, storage_type_1, tk, NOT_SPECIFIED);
 			}
 
 
@@ -187,7 +185,7 @@ void struct_specifier(Type *type)
 {
 	Symbol *s;
 	Type type_1;
-	TOKEN tk;
+	uint32_t tk;
 
 	getToken();
 	tk = cur_token;
@@ -300,8 +298,7 @@ uint32_t type_size(Type *type, uint32_t *align)
  ****************************************/
 void struct_declaration(uint32_t *max_align, uint32_t *offset, Symbol ***ps)
 {
-	TOKEN tk;
-	uint32_t size, align, force_align;
+	uint32_t tk, size, align, force_align;
 	Symbol *ss;
 	Type type_1, base_type;
 

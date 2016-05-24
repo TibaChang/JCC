@@ -58,7 +58,7 @@ typedef struct Type {
 } Type;
 
 typedef struct Symbol {
-	TOKEN tk_code;       /*token encoding,v*/
+	uint32_t tk_code;       /*token encoding,v*/
 	uint32_t storage_type;        /*symbol register,r,reg,FIXME:name: scope,struct_align,func_call(JCC not support) */
 	int relation;           /*symbol realation value,c,value,FIXME:name: struct_size,struct_offset, -1 for not defined,tkValue, */
 	struct Type type;    /*symbol type*/
@@ -70,11 +70,11 @@ typedef struct Symbol {
 Symbol *sym_direct_push(Stack *ss, uint32_t modified_tk, Type *type, int relation);
 Symbol *sym_push(uint32_t modified_tk, Type *type, uint32_t storage_type, int relation);
 Symbol *func_sym_push(uint32_t tk, Type *type);
-Symbol *var_sym_put(Type *type, uint32_t storage_type, TOKEN tk, int addr);
+Symbol *var_sym_put(Type *type, uint32_t storage_type, uint32_t tk, int addr);
 Symbol *sec_sym_put(char *sec, int relation);
 void sym_pop(Stack *stack, Symbol *sym);
-Symbol *struct_search(TOKEN tk);
-Symbol *sym_search(TOKEN tk);
+Symbol *struct_search(uint32_t tk);
+Symbol *sym_search(uint32_t tk);
 
 
 #endif

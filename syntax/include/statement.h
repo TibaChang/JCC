@@ -20,7 +20,7 @@
 
 void statement(uint32_t *break_sym, uint32_t *continue_sym);
 void compound_statement(uint32_t *break_sym, uint32_t *continue_sym);
-uint32_t is_type_specifier(TOKEN tk_code);
+uint32_t is_type_specifier(uint32_t tk_code);
 void expression_statement(void);
 void if_statement(uint32_t *break_sym, uint32_t *continue_sym);
 void for_statement(uint32_t *break_sym, uint32_t *continue_sym);

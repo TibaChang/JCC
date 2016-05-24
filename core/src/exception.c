@@ -57,7 +57,7 @@ void expect(char *msg)
 	error(" JCC EXPECTED:%s", msg);
 }
 
-void skip(TOKEN tk)
+void skip(uint32_t tk)
 {
 	if (cur_token != tk) {
 		expect(get_tkSTR(tk));

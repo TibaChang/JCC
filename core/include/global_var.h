@@ -34,7 +34,7 @@ extern dynSTR sourceSTR;
 /* For identifying (new) token purpose. */
 extern dynSTR cur_tkSTR;
 extern int tkValue;
-extern TOKEN cur_token;
+extern uint32_t cur_token;
 extern uint32_t compiler_stage;
 extern uint32_t cur_line_num;
 /*Indicating where are we in the JCC source file.*/

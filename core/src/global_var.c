@@ -23,7 +23,7 @@ dynARR tkTable;
 dynSTR sourceSTR;
 dynSTR cur_tkSTR;
 int tkValue;
-TOKEN cur_token;
+uint32_t cur_token;
 uint32_t compiler_stage;
 uint32_t cur_line_num;
 char *cur_filename;

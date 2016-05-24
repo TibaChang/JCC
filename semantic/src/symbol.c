@@ -82,7 +82,7 @@ Symbol *func_sym_push(uint32_t tk, Type *type)
 }
 
 
-Symbol *var_sym_put(Type *type, uint32_t storage_type, TOKEN tk, int addr)
+Symbol *var_sym_put(Type *type, uint32_t storage_type, uint32_t tk, int addr)
 {
 	Symbol *sym = NULL;
 	/*local variables*/
@@ -142,7 +142,7 @@ void sym_pop(Stack *stack, Symbol *sym)
 }
 
 
-Symbol *struct_search(TOKEN tk)
+Symbol *struct_search(uint32_t tk)
 {
 	if (tk >= tkTable.count) {
 		return NULL;
@@ -152,7 +152,7 @@ Symbol *struct_search(TOKEN tk)
 }
 
 
-Symbol *sym_search(TOKEN tk)
+Symbol *sym_search(uint32_t tk)
 {
 	if (tk >= tkTable.count) {
 		return NULL;

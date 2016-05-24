@@ -71,6 +71,6 @@ typedef enum {
 
 void getCHAR(void);
 void getToken(void);
-char *get_tkSTR(TOKEN tk_code);
+char *get_tkSTR(uint32_t tk_code);
 
 #endif

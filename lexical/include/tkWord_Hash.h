@@ -28,7 +28,7 @@ uint32_t hash_func(const char *key, uint32_t len);
 
 /* single word definition for storage */
 typedef struct tkWord {
-	TOKEN tkCode;       /*token encoding*/
+	uint32_t tkCode;       /*token encoding*/
 	struct tkWord *next;   /*pointer to next token words if hash conflict happens*/
 	char *str;             /*token string(how to spell)*/
 	uint32_t str_len;      /*token string length*/

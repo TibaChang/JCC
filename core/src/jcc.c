@@ -70,7 +70,7 @@ void cleanup(void)
 	stack_destroy(&local_sym_stack);
 	stack_destroy(&global_sym_stack);
 
-	for (TOKEN i = tk_IDENT; i < tkTable.count; i++) {
+	for (uint32_t i = tk_IDENT; i < tkTable.count; i++) {
 		free(tkTable.data[i]);
 	}
 	free(tkTable.data);
