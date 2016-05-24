@@ -64,23 +64,23 @@ void translation_unit(void)
  * */
 void external_declaration(uint32_t storage_type)
 {
-	Type btype, type;
+	Type base_type, type;
 	TOKEN tk;
 	int addr = 0;/*FIXME*/
-	uint32_t reg;
+	uint32_t storage_type_1;
 	Symbol *sym;
 
-	if (!type_specifier(&btype)) {
+	if (!type_specifier(&base_type)) {
 		expect("type_specifier!");
 	}
 
-	if ((btype.data_type == T_STRUCT) && (cur_token == tk_SEMICOLON)) {
+	if ((base_type.data_type == T_STRUCT) && (cur_token == tk_SEMICOLON)) {
 		getToken();
 		return;
 	}
 
 	while (1) {
-		type = btype;
+		type = base_type;
 		declarator(&type, &tk, NULL);
 
 		if (cur_token == tk_BEGIN) {
@@ -110,17 +110,17 @@ void external_declaration(uint32_t storage_type)
 					sym = sym_push(tk, &type, JC_GLOBAL | JC_SYM, NOT_SPECIFIED);
 				}
 			} else { /*variable declaration*/
-				reg = 0;
+				storage_type_1 = 0;
 				if (!(type.data_type & T_ARRAY)) {
-					reg |= JC_LVAL;
+					storage_type_1 |= JC_LVAL;
 				}
-				reg |= storage_type;
+				storage_type_1 |= storage_type;
 
 				if (cur_token == tk_ASSIGN) {
 					getToken();
 					initializer(&type);
 				}
-				sym = var_sym_put(&type, reg, tk, addr);
+				sym = var_sym_put(&type, storage_type_1, tk, addr);
 			}
 
 
@@ -186,10 +186,10 @@ void struct_specifier(Type *type)
 	getToken();
 
 	s = struct_search(tk);
+    /*struct is not defined yet*/
 	if (!s) {
 		type_1.data_type = kw_STRUCT;
 		s = sym_push(tk | JC_STRUCT, &type_1, NOT_SPECIFIED, STRUCT_NOT_DEFINED);
-		s->storage_type = 0;
 	}
 
 	type->data_type = T_STRUCT;
@@ -217,6 +217,7 @@ void struct_declaration_list(Type *type)
 {
 	uint32_t max_align, offset;
 	Symbol *s, **ps;
+    /*get the "base symbol":sym_struct */
 	s = type->ref;
 
 	getToken();
@@ -230,12 +231,25 @@ void struct_declaration_list(Type *type)
 	offset = 0;
 
 	while (cur_token != tk_END) {
+        /* If there is a struct:
+         * struct ex{int a[5][7]; int b,c,d; char e; };
+         * the stack will look like:
+         *     #stack high
+         *         e
+         *         d
+         *         c
+         *         b
+         *         a
+         *         5
+         *         7
+         *     #stack low
+         */
 		struct_declaration(&max_align, &offset, &ps);
 	}
 	skip(tk_END);
 
-	s->relation = calc_align(offset, max_align); /*struct size*/
-	s->storage_type = max_align;/*struct alignment*/
+	s->relation = calc_align(offset, max_align); /*struct size for the "base symbol"*/
+	s->storage_type = max_align;/*struct alignment for the "base symbol"*/
 }
 
 
@@ -281,13 +295,13 @@ void struct_declaration(uint32_t *max_align, uint32_t *offset, Symbol ***ps)
 	TOKEN tk;
 	uint32_t size, align, force_align;
 	Symbol *ss;
-	Type type_1, btype;
+	Type type_1, base_type;
 
-	type_specifier(&btype);
+	type_specifier(&base_type);
 
 	while (1) {
 		tk = 0;
-		type_1 = btype;
+		type_1 = base_type;
 		declarator(&type_1, &tk, &force_align);
 		size = type_size(&type_1, &align);
 
@@ -303,6 +317,13 @@ void struct_declaration(uint32_t *max_align, uint32_t *offset, Symbol ***ps)
 		ss = sym_push(tk | JC_MEMBER, &type_1, NOT_SPECIFIED, *offset);
 		*offset += size;
 		**ps = ss;
+        /*if same type has several declaration, assign to the "next"
+         *Ex:
+         * struct name{ int a,b,c;};
+         * sym_a->next = sym_b
+         * sym_b->next = sym_c
+         * sym_c->next = NULL
+         */
 		*ps = &ss->next;
 
 		if (cur_token == tk_SEMICOLON) {
@@ -332,7 +353,7 @@ static void struct_member_alignment(uint32_t *force_align)
  *
  * <declarator>::={<tk_STAR>}<direct_declarator>
  ****************************************/
-void declarator(Type *type, TOKEN *tk, uint32_t *force_align)
+void declarator(Type *type, uint32_t *tk, uint32_t *force_align)
 {
 
 	while (cur_token == tk_STAR) {
@@ -349,7 +370,7 @@ void declarator(Type *type, TOKEN *tk, uint32_t *force_align)
 /****************************************
  * <direct_declarator>::=<IDENTIFIER><direct_declarator_postfix>
  ****************************************/
-void direct_declarator(Type *type, TOKEN *tk)
+void direct_declarator(Type *type, uint32_t *tk)
 {
 	if (cur_token >= tk_IDENT) {
 		*tk = cur_token;
@@ -367,24 +388,25 @@ void direct_declarator(Type *type, TOKEN *tk)
  *                                | <tk_openBR><tk_closeBR>
  *                                | <tk_openPA><parameter_type_list><tk_closePA>
  *                                | <tk_openPA><tk_closePA>
- * }
+ *                               }
  ****************************************/
 void direct_declarator_postfix(Type *type)
 {
-	int val;
+	int relation;
 	Symbol *s;
 
 	if (cur_token == tk_openPA) {
 		parameter_type_list(type);
 	} else if (cur_token == tk_openBR) {
+        /*declarating an array as struct member*/
 		getToken();
 		if (cur_token == tk_cINT) {
 			getToken();
-			val = tkValue;
+			relation = tkValue;
 		}
 		skip(tk_closeBR);
-		direct_declarator_postfix(type);
-		s = sym_push(JC_ANOM, type, NOT_SPECIFIED, val);
+		direct_declarator_postfix(type);/*only if multidimentional array will do something*/
+		s = sym_push(JC_ANOM, type, NOT_SPECIFIED, relation);
 		type->data_type = T_ARRAY | T_PTR;
 		type->ref = s;
 	}
@@ -402,7 +424,7 @@ void direct_declarator_postfix(Type *type)
  ****************************************/
 void parameter_type_list(Type *type)
 {
-	TOKEN tk;
+	uint32_t tk;
 	Symbol *s;/*FIXME:remove some variables seems to be garbage.*/
 	Type pt;
 
@@ -467,7 +489,7 @@ void initializer(Type *type)
 void mk_pointer(Type *type)
 {
 	Symbol *s;
-	s = sym_push(JC_ANOM, type, NOT_SPECIFIED, NOT_DEFINED);
+	s = sym_push(JC_ANOM, type, NOT_SPECIFIED, PTR_NOT_DEFINED);
 	type->data_type = T_PTR;
 	type->ref = s;
 }

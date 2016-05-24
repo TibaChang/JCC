@@ -57,6 +57,7 @@ Symbol *sym_push(uint32_t modified_tk, Type *type, uint32_t storage_type, int re
 		} else {
 			pps = &ts->sym_identifier;
 		}
+        /*Make prev point to itself,and return*/
 		ps->prev = *pps;
 		*pps = ps;
 	}

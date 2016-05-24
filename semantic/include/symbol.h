@@ -49,6 +49,7 @@
 /*sym_push code*/
 #define NOT_SPECIFIED        0
 #define STRUCT_NOT_DEFINED  -1
+#define PTR_NOT_DEFINED     -1
 #define NOT_DEFINED         -1
 
 
@@ -59,11 +60,11 @@ typedef struct Type {
 
 typedef struct Symbol {
 	TOKEN tk_code;       /*token encoding,v*/
-	uint32_t storage_type;        /*symbol register,r,reg,FIXME:name: scope,align,func_call(JCC not support) */
-	int relation;           /*symbol realation value,c,value,FIXME:name: struct_size, -1 for not defined,tkValue, */
+	uint32_t storage_type;        /*symbol register,r,reg,FIXME:name: scope,struct_align,func_call(JCC not support) */
+	int relation;           /*symbol realation value,c,value,FIXME:name: struct_size,struct_offset, -1 for not defined,tkValue, */
 	struct Type type;    /*symbol type*/
-	struct Symbol *next; /*pointer to relavent symbol*/
-	struct Symbol *prev; /*pointer to previous symbol with same name*/
+	struct Symbol *next; /*pointer to relavent symbol,ex: struct member declaration list,in struct_declaration()*/
+	struct Symbol *prev; /*pointer to previous symbol with same name,ex:base type of the struct will point to itself*/
 } Symbol;
 
 
