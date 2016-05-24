@@ -21,19 +21,20 @@
 #include "global_var.h"
 #include "exception.h"
 
-Symbol *sym_direct_push(Stack *ss, TOKEN tk, Type *type, int val)
+Symbol *sym_direct_push(Stack *ss, uint32_t modified_tk, Type *type, int relation)
 {
 	Symbol s, *p;
-	s.tk_code = tk;
+	s.tk_code = modified_tk;
 	s.type.data_type = type->data_type;
 	s.type.ref = type->ref;
-	s.value = val;
+	s.relation = relation;
 	s.next = NULL;
 	p = (Symbol*)stack_push(ss, &s, sizeof(Symbol));
 	return p;
 }
 
-Symbol *sym_push(TOKEN tk, Type *type, uint32_t reg, int val)
+/*the passed modified_tk does not mean TOKEN,it may be encode with Symbol type*/
+Symbol *sym_push(uint32_t modified_tk, Type *type, uint32_t storage_type, int relation)
 {
 	Symbol *ps, **pps;
 	tkWord *ts;
@@ -45,13 +46,13 @@ Symbol *sym_push(TOKEN tk, Type *type, uint32_t reg, int val)
 		ss = &global_sym_stack;
 	}
 
-	ps = sym_direct_push(ss, tk, type, val);
-	ps->reg = reg;
+	ps = sym_direct_push(ss, modified_tk, type, relation);
+	ps->storage_type = storage_type;
 
 	/*Do NOT record struct member and anonymous symbol*/
-	if ((tk & JC_STRUCT) || (tk < JC_ANOM)) {
-		ts = (tkWord*)tkTable.data[(tk & ~JC_STRUCT)];
-		if (tk & JC_STRUCT) {
+	if ((modified_tk & JC_STRUCT) || (modified_tk < JC_ANOM)) {
+		ts = (tkWord*)tkTable.data[(modified_tk & ~JC_STRUCT)];
+		if (modified_tk & JC_STRUCT) {
 			pps = &ts->sym_struct;
 		} else {
 			pps = &ts->sym_identifier;
@@ -63,10 +64,10 @@ Symbol *sym_push(TOKEN tk, Type *type, uint32_t reg, int val)
 }
 
 
-Symbol *func_sym_push(TOKEN tk, Type *type)
+Symbol *func_sym_push(uint32_t tk, Type *type)
 {
 	Symbol *s, **ps;
-	s = sym_direct_push(&global_sym_stack, tk, type, 0);
+	s = sym_direct_push(&global_sym_stack, tk, type, NOT_SPECIFIED);
 
 	ps = &((tkWord*)tkTable.data[tk])->sym_identifier;
 
@@ -80,17 +81,19 @@ Symbol *func_sym_push(TOKEN tk, Type *type)
 }
 
 
-Symbol *var_sym_put(Type *type, uint32_t reg, TOKEN tk, int addr)
+Symbol *var_sym_put(Type *type, uint32_t storage_type, TOKEN tk, int addr)
 {
 	Symbol *sym = NULL;
-	if ((reg & JC_ValMASK) == JC_LOCAL) {
-		sym = sym_push(tk, type, reg, addr);
-	} else if (tk && (reg & JC_ValMASK) == JC_GLOBAL) {
+    /*local variables*/
+	if ((storage_type & JC_ValMASK) == JC_LOCAL) {
+		sym = sym_push(tk, type, storage_type, addr);
+    /*global varable*/
+	} else if (tk && ((storage_type & JC_ValMASK) == JC_GLOBAL) ) {
 		sym = sym_search(tk);
 		if (sym) {
 			error("%s redefinition!\n", ((tkWord*)tkTable.data[tk])->str);
 		} else {
-			sym = sym_push(tk, type, reg | JC_SYM, 0);
+			sym = sym_push(tk, type, storage_type | JC_SYM, 0);
 		}
 	}
 	/*else:const string symbol*/
@@ -98,7 +101,7 @@ Symbol *var_sym_put(Type *type, uint32_t reg, TOKEN tk, int addr)
 }
 
 
-Symbol *sec_sym_put(char *sec, int val)
+Symbol *sec_sym_put(char *sec, int relation)
 {
 	tkWord *tp;
 	Symbol *s;
@@ -107,33 +110,33 @@ Symbol *sec_sym_put(char *sec, int val)
 	type.data_type = T_INT;
 	tp = tkW_insert(sec);
 	cur_token = tp->tkCode;
-	s = sym_push(cur_token, &type, JC_GLOBAL, val);
+	s = sym_push(cur_token, &type, JC_GLOBAL, relation);
 	return s;
 }
 
 
-void sym_pop(Stack *ptop, Symbol *sym)
+void sym_pop(Stack *stack, Symbol *sym)
 {
 	Symbol *s, **ps;
 	tkWord *ts;
-	TOKEN tk;
+	uint32_t modified_tk;
 
-	s = (Symbol*)stack_get_top(ptop);
+	s = (Symbol*)stack_get_top(stack);
 	while (s != sym) {
-		tk = s->tk_code;
+		modified_tk = s->tk_code;
 
 		/*update sym_struct and sym_identifier in the tkTable*/
-		if ((tk & JC_STRUCT) || (tk < JC_ANOM)) {
-			ts = (tkWord*)tkTable.data[(tk & ~JC_STRUCT)];
-			if (tk & JC_STRUCT) {
+		if ((modified_tk & JC_STRUCT) || (modified_tk < JC_ANOM)) {
+			ts = (tkWord*)tkTable.data[(modified_tk & ~JC_STRUCT)];
+			if (modified_tk & JC_STRUCT) {
 				ps = &ts->sym_struct;
 			} else {
 				ps = &ts->sym_identifier;
 			}
 			*ps = s->prev;
 		}
-		stack_pop(ptop);
-		s = (Symbol*)stack_get_top(ptop);
+		stack_pop(stack);
+		s = (Symbol*)stack_get_top(stack);
 	}
 }
 

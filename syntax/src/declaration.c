@@ -62,7 +62,7 @@ void translation_unit(void)
  *
  * with the right "V",that line is "external_definition"
  * */
-void external_declaration(uint32_t scope)
+void external_declaration(uint32_t storage_type)
 {
 	Type btype, type;
 	TOKEN tk;
@@ -84,7 +84,7 @@ void external_declaration(uint32_t scope)
 		declarator(&type, &tk, NULL);
 
 		if (cur_token == tk_BEGIN) {
-			if (scope == JC_LOCAL) {
+			if (storage_type == JC_LOCAL) {
 				error("JCC does not support nested function definition!");
 			}
 
@@ -101,7 +101,7 @@ void external_declaration(uint32_t scope)
 			} else {
 				sym = func_sym_push(tk, &type);
 			}
-			sym->reg = JC_SYM | JC_GLOBAL;
+			sym->storage_type = JC_SYM | JC_GLOBAL;
 			funcbody(sym);
 			break;
 		} else {
@@ -114,7 +114,7 @@ void external_declaration(uint32_t scope)
 				if (!(type.data_type & T_ARRAY)) {
 					reg |= JC_LVAL;
 				}
-				reg |= scope;
+				reg |= storage_type;
 
 				if (cur_token == tk_ASSIGN) {
 					getToken();
@@ -189,7 +189,7 @@ void struct_specifier(Type *type)
 	if (!s) {
 		type_1.data_type = kw_STRUCT;
 		s = sym_push(tk | JC_STRUCT, &type_1, NOT_SPECIFIED, STRUCT_NOT_DEFINED);
-		s->reg = 0;
+		s->storage_type = 0;
 	}
 
 	type->data_type = T_STRUCT;
@@ -221,7 +221,7 @@ void struct_declaration_list(Type *type)
 
 	getToken();
 
-	if (s->value != STRUCT_NOT_DEFINED) {
+	if (s->relation != STRUCT_NOT_DEFINED) {
 		error("struct is defined!");
 	}
 
@@ -234,8 +234,8 @@ void struct_declaration_list(Type *type)
 	}
 	skip(tk_END);
 
-	s->value = calc_align(offset, max_align); /*struct size*/
-	s->reg = max_align;/*struct alignment*/
+	s->relation = calc_align(offset, max_align); /*struct size*/
+	s->storage_type = max_align;/*struct alignment*/
 }
 
 
@@ -248,12 +248,12 @@ uint32_t type_size(Type *type, uint32_t *align)
 	switch (base_type) {
 	case T_STRUCT:
 		s = type->ref;
-		*align = s->reg;
-		return s->value;
+		*align = s->storage_type;
+		return s->relation;
 	case T_PTR:
 		if (type->data_type & T_ARRAY) {
 			s = type->ref;
-			return (type_size(&s->type, align) * s->value);
+			return (type_size(&s->type, align) * s->relation);
 		} else {
 			*align = PTR_SIZE;
 			return PTR_SIZE;

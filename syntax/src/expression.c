@@ -258,7 +258,7 @@ void primary_expression(void)
 				error("'%s' is undeclared!", get_tkSTR(T_type));
 			}
 			s = func_sym_push(T_type, &default_func_type); /*Allowing function can be invoked without declaration*/
-			s->reg = JC_GLOBAL | JC_SYM;
+			s->storage_type = JC_GLOBAL | JC_SYM;
 		}
 		break;
 	}

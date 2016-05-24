@@ -23,7 +23,7 @@ void stack_init(Stack *stack, uint32_t init_size)
 {
 	stack->base = (void**)malloc(sizeof(void**)*init_size);
 	if (!stack->base) {
-		error("Stack memory allocation failed!\n");
+		error("Stack memory allocation failed!");
 	} else {
 		stack->top = stack->base;
 		stack->stack_size = init_size;
@@ -44,7 +44,7 @@ void *stack_push(Stack *stack, void *element, uint32_t element_size)
 		stack->top = stack->base + stack->stack_size;
 		stack->stack_size = new_size;
 	}
-	*stack->top = (void*)malloc(element_size);/*FIXME:malloc type correct?*/
+	*stack->top = (void*)malloc(element_size);
 	memcpy(*stack->top, element, element_size);
 	stack->top++;
 	return *(stack->top - 1);

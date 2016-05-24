@@ -29,6 +29,7 @@
 #define  JC_LVAL     0x0100  /*lvalue*/
 #define  JC_SYM      0x0200  /*symbol*/
 
+/*Symbol type*/
 #define  JC_ANOM     0x10000000/*anonymous symbol*/
 #define  JC_STRUCT   0x20000000/*struct symbol*/
 #define  JC_MEMBER   0x40000000/*struct member*/
@@ -58,22 +59,20 @@ typedef struct Type {
 
 typedef struct Symbol {
 	TOKEN tk_code;       /*token encoding,v*/
-	uint32_t reg;        /*symbol register,r,FIXME:name: scope,func_call(JCC not support) */
-	int value;           /*symbol realation value,c,FIXME:name: align,-1 for not deined,tkValue, */
+	uint32_t storage_type;        /*symbol register,r,reg,FIXME:name: scope,align,func_call(JCC not support) */
+	int relation;           /*symbol realation value,c,value,FIXME:name: struct_size, -1 for not defined,tkValue, */
 	struct Type type;    /*symbol type*/
 	struct Symbol *next; /*pointer to relavent symbol*/
 	struct Symbol *prev; /*pointer to previous symbol with same name*/
 } Symbol;
 
 
-
-
-Symbol *sym_direct_push(Stack *ss, TOKEN tk, Type *type, int val);
-Symbol *sym_push(TOKEN tk, Type *type, uint32_t reg, int val);
-Symbol *func_sym_push(TOKEN tk, Type *type);
-Symbol *var_sym_put(Type *type, uint32_t reg, TOKEN tk, int addr);
-Symbol *sec_sym_put(char *sec, int val);
-void sym_pop(Stack *ptop, Symbol *sym);
+Symbol *sym_direct_push(Stack *ss, uint32_t modified_tk, Type *type, int relation);
+Symbol *sym_push(uint32_t modified_tk, Type *type, uint32_t storage_type, int relation);
+Symbol *func_sym_push(uint32_t tk, Type *type);
+Symbol *var_sym_put(Type *type, uint32_t storage_type, TOKEN tk, int addr);
+Symbol *sec_sym_put(char *sec, int relation);
+void sym_pop(Stack *stack, Symbol *sym);
 Symbol *struct_search(TOKEN tk);
 Symbol *sym_search(TOKEN tk);
 

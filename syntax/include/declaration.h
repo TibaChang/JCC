@@ -22,7 +22,7 @@
 #define PTR_SIZE  4
 
 void translation_unit(void);
-void external_declaration(uint32_t scope);
+void external_declaration(uint32_t storage_type);
 int type_specifier(Type *type);
 void struct_specifier(Type *type);
 void struct_declaration_list(Type *type);
