@@ -20,7 +20,7 @@ Phase 1:Lexical Analysis
 ---------------------------
 - This is a Token Colorer,it will color the target file tokens,and print in the terminal colorfully.
 - Using the lexical analysis to identify tokens for coloring.
-
+- How to demo:
 ```
 git checkout DEMO_LEX
 make clean
@@ -33,6 +33,7 @@ Phase 2:Syntax Analysis
 ---------------------------
 - This is a Syntax Indenter,it will indent the codes with basic functionalities and Token Colorer.
 - Using syntax analysis to check basic grammars , based on Token Colorer.
+- How to demo:
 ```
 git checkout DEMO_SYNTAX
 make clean
@@ -41,9 +42,29 @@ make demo
 ![alt tag](https://raw.githubusercontent.com/JaredCJR/JCC/master/demo/pictures/phase_syntax.jpg)
 
 
+
 Phase 3:Semantic Analysis
 ---------------------------
-NOT DONE!
+- This will scan the source files and record the corresponding information into the `symbol table`.
+- `Symbol table` contains two stack -> `global_sym_stack` and `local_sym_stack`
+- The correspoind behavior of the semantics can see the comments inside the source files in the [syntax dir](https://github.com/JaredCJR/JCC/tree/master/syntax/src) and the [demo_result.txt](https://github.com/JaredCJR/JCC/tree/master/demo/demo_result.txt),which explains elaborately!
+- How to demo:
+```
+git checkout DEMO_SEMANTIC
+make clean
+make demo
+```
+![alt tag](https://raw.githubusercontent.com/JaredCJR/JCC/master/demo/pictures/phase_semantic.jpg)
+
+- This picture shows part of the [demo_result.txt](https://github.com/JaredCJR/JCC/tree/master/demo/demo_result.txt).
+- JCC use [GDB](https://www.gnu.org/software/gdb/) as the tool for this auto-demo.
+  - GDB help us to check the `symbol table` without messing up the code!
+  - GDB do the automatic test based on the [GDB script](https://github.com/JaredCJR/JCC/tree/master/demo/demo_autoGDB)
+
+
+Phase 4:Code Generation
+---------------------------
+
 
 
 Supported Functionality
@@ -262,6 +283,10 @@ Phase 2:Syntax Analysis
  *                    | <kw_RETURN><expression><tk_SEMICOLON>
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
 ```
+
+Phase 3:Semantic Analysis
+---------------------------
+- The correspoind behavior of the semantics can see the comments inside the source files in the [syntax dir](https://github.com/JaredCJR/JCC/tree/master/syntax/src) and the [demo_result.txt](https://github.com/JaredCJR/JCC/tree/master/demo/demo_result.txt),which explains elaborately!
 
 
 AUTHOR:
