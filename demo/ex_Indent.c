@@ -1,18 +1,14 @@
+/*comments*/
 
-struct PP {
-	int a;
+struct srt
+{
+    int x;
+    int y;
 };
 
-/*TEST 
- *
- * comment 1*/
-
-char sss = 'c';
-
-
-
-void main(){
-    struct PP P_instance;
+void main()
+{
+    struct srt srt_object;
     char *p_str;
 }
 

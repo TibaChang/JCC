@@ -66,7 +66,8 @@ $(TARGET):$(CORE_SOURCE) $(LEX_SOURCE) $(SYNTAX_SOURCE) $(SEMANTIC_SOURCE)
           $^ -o $@
 
 demo:$(TARGET)
-	./JCC $(DEMO_DIR)/ex_Indent.c
+	gdb -x ./demo/demo_autoGDB --args ./$(TARGET) $(DEMO_DIR)/ex_Indent.c
+	#./JCC $(DEMO_DIR)/ex_Indent.c
 
 demo_gdb:$(TARGET)
 	gdb --args ./$(TARGET) $(DEMO_DIR)/ex_Indent.c
