@@ -3,7 +3,7 @@ Jared's C Compiler : Build a mini C compiler(x86-64) from scratch.
 
 This is an unfinished C compiler.
 ====================================
-This is a final project for NCKU compiler system course.
+This is a term-project for [NCKU compiler system course](http://class-qry.acad.ncku.edu.tw/syllabus/online_display.php?syear=0104&sem=2&co_no=Q355300&class_code=).
 
 
 Quick Start:
@@ -48,6 +48,7 @@ Phase 3:Semantic Analysis
 - This will scan the source files and record the corresponding information into the `symbol table`.
 - `Symbol table` contains two stack -> `global_sym_stack` and `local_sym_stack`
 - The correspoind behavior of the semantics can see the comments inside the source files in the [syntax dir](https://github.com/JaredCJR/JCC/tree/master/syntax/src) and the [demo_result.txt](https://github.com/JaredCJR/JCC/tree/master/demo/demo_result.txt),which explains elaborately!
+  - You can see the explaination in [demo_result.txt](https://github.com/JaredCJR/JCC/tree/master/demo/demo_result.txt) after `<=================`
 - How to demo:
 ```
 git checkout DEMO_SEMANTIC
@@ -60,6 +61,10 @@ make demo
 - JCC use [GDB](https://www.gnu.org/software/gdb/) as the tool for this auto-demo.
   - GDB help us to check the `symbol table` without messing up the code!
   - GDB do the automatic test based on the [GDB script](https://github.com/JaredCJR/JCC/tree/master/demo/demo_autoGDB)
+
+**IMPORTANT**
+- If you would like to see the stack change on your own source code,the local stack will destroied after the `index` leave `local scope`
+  - We only have one `local stack` for `symbol table` ,so the `local stack` will no longer exist after the `index` move outside the corresponding scope.
 
 
 Phase 4:Code Generation
@@ -287,6 +292,7 @@ Phase 2:Syntax Analysis
 Phase 3:Semantic Analysis
 ---------------------------
 - The correspoind behavior of the semantics can see the comments inside the source files in the [syntax dir](https://github.com/JaredCJR/JCC/tree/master/syntax/src) and the [demo_result.txt](https://github.com/JaredCJR/JCC/tree/master/demo/demo_result.txt),which explains elaborately!
+  - You can see the explaination in [demo_result.txt](https://github.com/JaredCJR/JCC/tree/master/demo/demo_result.txt) after `<=================`
 
 
 AUTHOR:
@@ -294,4 +300,5 @@ AUTHOR:
 - Jia-Rung Chang(張家榮/Jared)
     - National Cheng Kung University,Taiwan
     - Major in Engineering Science(Computer Science)
+    - email: jaredcjr.tw@gmail.com
 
