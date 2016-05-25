@@ -64,11 +64,11 @@ void init(void)
 
 void cleanup(void)
 {
-	printf("\ntkTable.count = %d \n", tkTable.count);
-
 	sym_pop(&global_sym_stack, NULL);
 	stack_destroy(&local_sym_stack);
 	stack_destroy(&global_sym_stack);
+
+	printf("\ntkTable.count = %d \n", tkTable.count);
 
 	for (uint32_t i = tk_IDENT; i < tkTable.count; i++) {
 		free(tkTable.data[i]);

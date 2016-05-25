@@ -56,7 +56,7 @@ void translation_unit(void)
  * int a;                        V
  * int add(int x,int y)          V
  * {
- *     int z;                    V
+ *     int z;                    
  *     z = x+y;
  * }
  *
@@ -70,7 +70,7 @@ void external_declaration(uint32_t storage_type)
 
 	/*struct definition will be dealed here,the code below does not deal with struct definition*/
 	if (!type_specifier(&base_type)) {
-		expect("type_specifier!");
+		expect("<type_specifier>");
 	}
 
 	if ((base_type.data_type == T_STRUCT) && (cur_token == tk_SEMICOLON)) {
@@ -81,14 +81,14 @@ void external_declaration(uint32_t storage_type)
 	/* function definition or variable declaration*/
 	while (1) {
 		type = base_type;
-		/* if encounter a variable/function declaration,cur_token is the token after the identifier
+		/* If encounter a variable/function declaration,cur_token is the token after the identifier.
 		 *
-		 * if this is the second loop of the function definition,declarator() will do nothing,
+		 * If this is the second loop of the function definition,declarator() will do nothing,
 		 * then push the "function name symbol" into global stack.
 		 */
 		declarator(&type, &tk, NULL);
 
-		/*if we encountered a function declaration,and now the cur_token is "{" which is ready to define the function */
+		/*If we encountered a function declaration,and now the cur_token is "{" which is ready to define the function */
 		if (cur_token == tk_BEGIN) {
 			if (storage_type == JC_LOCAL) {
 				error("JCC does not support nested function definition!");
@@ -115,7 +115,7 @@ void external_declaration(uint32_t storage_type)
 				if (sym_search(tk) == NULL) {
 					sym = sym_push(tk, &type, JC_GLOBAL | JC_SYM, NOT_SPECIFIED);
 				}
-			} else { /*variable declaration*/
+			} else { /*variable/pointer declaration*/
 				storage_type_1 = 0;
 				if (!(type.data_type & T_ARRAY)) {
 					storage_type_1 |= JC_LVAL;
@@ -126,9 +126,8 @@ void external_declaration(uint32_t storage_type)
 					getToken();
 					initializer(&type);
 				}
-				sym = var_sym_put(&type, storage_type_1, tk, NOT_SPECIFIED);
+				sym = var_sym_put(&type, storage_type_1, tk, NOT_SPECIFIED);/*FIXME:addr*/
 			}
-
 
 			if (cur_token == tk_COMMA) {
 				getToken();
@@ -166,8 +165,8 @@ int type_specifier(Type *type)
 		getToken();
 		break;
 	case kw_STRUCT:
-		type->data_type = T_STRUCT;
 		struct_specifier(type);
+		type->data_type = T_STRUCT;
 		type_found = 1;
 		break;
 	default:
@@ -191,6 +190,10 @@ void struct_specifier(Type *type)
 	tk = cur_token;
 	getToken();
 
+	if (tk < tk_IDENT) {
+		expect("struct name!");
+	}
+
 	s = struct_search(tk);
 	/*if struct is not defined yet*/
 	if (!s) {
@@ -201,18 +204,20 @@ void struct_specifier(Type *type)
 	type->data_type = T_STRUCT;
 	type->ref = s;
 
-	if (tk < tk_IDENT) {
-		expect("struct name!");
-	}
-
 	if (cur_token == tk_BEGIN) {
 		struct_declaration_list(type);
 	}
 }
 
-static uint32_t calc_align(uint32_t n, uint32_t align)
+
+/* Ex:
+ * calc_align(9,1) = 9
+ * calc_align(9,2) = 10
+ * calc_align(9,4) = 12
+ */
+static uint32_t calc_align(uint32_t size, uint32_t align)
 {
-	return ((n + align - 1) & (~(align - 1)));
+	return ((size + align - 1) & (~(align - 1)));
 }
 
 
@@ -229,7 +234,7 @@ void struct_declaration_list(Type *type)
 	getToken();
 
 	if (s->relation != STRUCT_NOT_DEFINED) {
-		error("struct is defined!");
+		error("struct is defined");
 	}
 
 	max_align = 1;
@@ -258,7 +263,7 @@ void struct_declaration_list(Type *type)
 	s->storage_type = max_align;/*struct alignment for the "base symbol"*/
 }
 
-
+/*return size of the type*/
 uint32_t type_size(Type *type, uint32_t *align)
 {
 	Symbol *s;
@@ -341,10 +346,7 @@ void struct_declaration(uint32_t *max_align, uint32_t *offset, Symbol ***ps)
 
 static void struct_member_alignment(uint32_t *force_align)
 {
-	/*JCC does not support align keyword*/
-	if (force_align == NULL) {
-		return;
-	}
+    /*JCC does not support alignment keyword*/
 	*force_align = 1;
 }
 
@@ -360,7 +362,6 @@ static void struct_member_alignment(uint32_t *force_align)
  ****************************************/
 void declarator(Type *type, uint32_t *tk, uint32_t *force_align)
 {
-
 	while (cur_token == tk_STAR) {
 		mk_pointer(type);
 		getToken();
@@ -406,6 +407,7 @@ void direct_declarator_postfix(Type *type)
 	} else if (cur_token == tk_openBR) {
 		/*declarating an array as struct member*/
 		getToken();
+        relation = NOT_DEFINED; 
 		if (cur_token == tk_cINT) {
 			getToken();
 			relation = tkValue;
@@ -430,19 +432,32 @@ void direct_declarator_postfix(Type *type)
  ****************************************/
 void parameter_type_list(Type *type)
 {
-	uint32_t tk;
-	Symbol *s;/*FIXME:remove some variables seems to be garbage.*/
+	uint32_t tk = 0;
+	Symbol *s,**pLast,*pFirst;
 	Type pt;
 
 	getToken();
 
+    pFirst = NULL;
+    pLast = &pFirst;
+
 	while (cur_token != tk_closePA) {
 		if (!type_specifier(&pt)) {
-			error("Unknown type identifier!");
+			error("Invalid type identifier!");
 		}
 
 		declarator(&pt, &tk, NULL);
 		s = sym_push(tk | JC_PARAMS, &pt, NOT_SPECIFIED, NOT_SPECIFIED);
+        /* If there are several parameters,the "next" pointer points to the next parameter
+         * Ex.
+         * int func(int x,int y,int z){}
+         * sym_x->next = sym_y;
+         * sym_y->next = sym_z;
+         * sym_z->next = NULL;
+         */
+        *pLast = s;
+        pLast = &s->next;
+
 
 		if (cur_token == tk_closePA) {
 			break;
@@ -451,14 +466,14 @@ void parameter_type_list(Type *type)
 		skip(tk_COMMA);
 
 		if (cur_token == tk_ELLIPSIS) {
-			/*FIXME:func_call*/
 			getToken();
 			break;
 		}
 	}
 	skip(tk_closePA);
 
-	s = sym_push(JC_ANOM, type, NOT_SPECIFIED, NOT_SPECIFIED); /*FIXME:func_call is delete,JCC not support*/
+	s = sym_push(JC_ANOM, type, NOT_SPECIFIED, NOT_SPECIFIED); /*JCC does not support func_call*/
+    s->next = pFirst;/*Make "anomyous symbol->next" point to the "first parameter symbol" */
 	type->data_type = T_FUNC;
 	type->ref = s;
 }

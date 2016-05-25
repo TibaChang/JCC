@@ -179,7 +179,7 @@ void sizeof_expression(void)
 
 	size = type_size(&type, &align);
 	if (size < 0) {
-		error("sizeof calcuating failed!");
+		error("sizeof calcuation failed!");
 	}
 }
 
@@ -234,11 +234,10 @@ void primary_expression(void)
 		getToken();
 		break;
 	case tk_cSTR:
-		T_type = T_CHAR;
-		type.data_type = T_type;
+		type.data_type = T_CHAR;
 		mk_pointer(&type);
 		type.data_type |= T_ARRAY;
-		var_sym_put(&type, JC_GLOBAL, NOT_SPECIFIED, NOT_SPECIFIED);
+		var_sym_put(&type, JC_GLOBAL, NOT_SPECIFIED, NOT_SPECIFIED);/*FIXME:addr*/
 		initializer(&type);
 		break;
 	case tk_openPA:

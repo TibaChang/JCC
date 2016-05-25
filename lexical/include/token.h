@@ -20,7 +20,7 @@
 
 typedef enum {
 	/*OPERAND and SEPARATION SYMBOL*/
-	tk_PLUS,     // +
+	tk_PLUS = 1,     // +
 	tk_MINUS,    // -
 	tk_STAR,     // *
 	tk_DIVIDE,   // /
