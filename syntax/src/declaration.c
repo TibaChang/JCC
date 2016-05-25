@@ -56,7 +56,7 @@ void translation_unit(void)
  * int a;                        V
  * int add(int x,int y)          V
  * {
- *     int z;                    
+ *     int z;
  *     z = x+y;
  * }
  *
@@ -116,7 +116,7 @@ void external_declaration(uint32_t storage_type)
 					sym = sym_push(tk, &type, JC_GLOBAL | JC_SYM, NOT_SPECIFIED);
 				}
 			} else { /*variable/pointer declaration*/
-				storage_type_1 = 0;
+				storage_type_1 = NOT_SPECIFIED;
 				if (!(type.data_type & T_ARRAY)) {
 					storage_type_1 |= JC_LVAL;
 				}
@@ -346,7 +346,7 @@ void struct_declaration(uint32_t *max_align, uint32_t *offset, Symbol ***ps)
 
 static void struct_member_alignment(uint32_t *force_align)
 {
-    /*JCC does not support alignment keyword*/
+	/*JCC does not support alignment keyword*/
 	*force_align = 1;
 }
 
@@ -407,7 +407,7 @@ void direct_declarator_postfix(Type *type)
 	} else if (cur_token == tk_openBR) {
 		/*declarating an array as struct member*/
 		getToken();
-        relation = NOT_DEFINED; 
+		relation = NOT_DEFINED;
 		if (cur_token == tk_cINT) {
 			getToken();
 			relation = tkValue;
@@ -433,13 +433,13 @@ void direct_declarator_postfix(Type *type)
 void parameter_type_list(Type *type)
 {
 	uint32_t tk = 0;
-	Symbol *s,**pLast,*pFirst;
+	Symbol *s, **pLast, *pFirst;
 	Type pt;
 
 	getToken();
 
-    pFirst = NULL;
-    pLast = &pFirst;
+	pFirst = NULL;
+	pLast = &pFirst;
 
 	while (cur_token != tk_closePA) {
 		if (!type_specifier(&pt)) {
@@ -448,15 +448,15 @@ void parameter_type_list(Type *type)
 
 		declarator(&pt, &tk, NULL);
 		s = sym_push(tk | JC_PARAMS, &pt, NOT_SPECIFIED, NOT_SPECIFIED);
-        /* If there are several parameters,the "next" pointer points to the next parameter
-         * Ex.
-         * int func(int x,int y,int z){}
-         * sym_x->next = sym_y;
-         * sym_y->next = sym_z;
-         * sym_z->next = NULL;
-         */
-        *pLast = s;
-        pLast = &s->next;
+		/* If there are several parameters,the "next" pointer points to the next parameter
+		 * Ex.
+		 * int func(int x,int y,int z){}
+		 * sym_x->next = sym_y;
+		 * sym_y->next = sym_z;
+		 * sym_z->next = NULL;
+		 */
+		*pLast = s;
+		pLast = &s->next;
 
 
 		if (cur_token == tk_closePA) {
@@ -473,7 +473,7 @@ void parameter_type_list(Type *type)
 	skip(tk_closePA);
 
 	s = sym_push(JC_ANOM, type, NOT_SPECIFIED, NOT_SPECIFIED); /*JCC does not support func_call*/
-    s->next = pFirst;/*Make "anomyous symbol->next" point to the "first parameter symbol" */
+	s->next = pFirst;/*Make "anomyous symbol->next" point to the "first parameter symbol" */
 	type->data_type = T_FUNC;
 	type->ref = s;
 }

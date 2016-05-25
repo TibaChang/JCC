@@ -1,4 +1,4 @@
-b cleanup                                                                                                   
+b syntax/src/statement.c:79                                
 r
 
 define print_global_stack
@@ -92,4 +92,6 @@ end
 traverse_global_stack
 traverse_local_stack
 
+c
 q
+
