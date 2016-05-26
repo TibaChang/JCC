@@ -33,7 +33,7 @@ end
 
 define traverse_global_stack
     set $index = 0
-    set $end_of_loop = 7
+    set $end_of_loop = $arg0
     while(1)
         if $index > $end_of_loop
             loop_break
@@ -77,7 +77,7 @@ end
 
 define traverse_local_stack
     set $index = 0
-    set $end_of_loop = 3
+    set $end_of_loop = $arg0
     while(1)
         if $index > $end_of_loop
             loop_break
@@ -89,8 +89,8 @@ define traverse_local_stack
 end
 
 
-traverse_global_stack
-traverse_local_stack
+traverse_global_stack 7
+traverse_local_stack 3
 
 c
 q
