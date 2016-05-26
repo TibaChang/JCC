@@ -69,7 +69,7 @@ make demo
 
 Phase 4:Code Generation
 ---------------------------
-
+NOT doen!
 
 
 Supported Functionality
@@ -293,6 +293,21 @@ Phase 3:Semantic Analysis
 ---------------------------
 - The correspoind behavior of the semantics can see the comments inside the source files in the [syntax dir](https://github.com/JaredCJR/JCC/tree/master/syntax/src) and the [demo_result.txt](https://github.com/JaredCJR/JCC/tree/master/demo/demo_result.txt),which explains elaborately!
   - You can see the explaination in [demo_result.txt](https://github.com/JaredCJR/JCC/tree/master/demo/demo_result.txt) after `<=================`
+
+
+How to debug the JCC
+===========================
+- If you would like to print somee information in you terminal
+  - JCC provide an API `DBG_printf`, you could use it as [printf](http://linux.die.net/man/3/printf) in Linux.
+    - REMEMBER:You need to uncomment `CFLAGS += -D$(JCC_DEBUG)` in the [Makefile](https://github.com/JaredCJR/JCC/blob/master/Makefile)
+    - `DBG_printf` is define [here](https://github.com/JaredCJR/JCC/blob/master/core/include/debug.h)
+- If you would like to use GNU debugger with JCC
+  - `make demo_gdb`
+    - It will call `gdb` or `gdbtui` with JCC to load the default demo source file.
+    - You can write a `gdb script` for `gdb` family,such as the branch `DEMO_SEMANTIC` does.
+
+
+
 
 
 AUTHOR:
