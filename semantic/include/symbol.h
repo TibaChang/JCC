@@ -30,10 +30,11 @@
 #define  JC_SYM      0x0200  /*symbol*/
 
 /*Symbol type*/
-#define  JC_ANOM     0x10000000/*anonymous symbol*/
-#define  JC_STRUCT   0x20000000/*struct symbol*/
-#define  JC_MEMBER   0x40000000/*struct member*/
-#define  JC_PARAMS   0x80000000/*function parameters*/
+#define  JC_ANOM        0x10000000/*anonymous symbol*/
+#define  JC_STRUCT      0x20000000/*struct symbol*/
+#define  JC_MEMBER      0x40000000/*struct member*/
+#define  JC_PARAMS      0x80000000/*function parameters*/
+#define  JC_SymTypeMASK 0xF0000000
 
 /*Type code*/
 #define  T_INT     0
@@ -50,6 +51,8 @@
 #define STRUCT_NOT_DEFINED  -1
 #define PTR_NOT_DEFINED     -1
 #define NOT_DEFINED         -1
+#define VAR_NOT_INIT         0
+#define VAR_HAS_INIT         1
 
 
 typedef struct Type {
@@ -59,8 +62,8 @@ typedef struct Type {
 
 typedef struct Symbol {
 	uint32_t tk_code;       /*token encoding,v*/
-	uint32_t storage_type;        /*symbol register,r,reg,FIXME:name: scope,struct_align,func_call(JCC not support) */
-	int relation;           /*symbol realation value,c,value,FIXME:name: struct_size,struct_offset, -1 for not defined,tkValue, */
+	uint32_t storage_type;        /*symbol register,r,reg,FIXME:name: scope,JC_STRUCT:struct_align*/
+	int relation;           /*symbol realation value,c,value,FIXME:name: struct_size,JC_MEMBER:struct_offset, -1 for not defined,tkValue, */
 	struct Type type;    /*symbol type*/
 	struct Symbol *next; /*pointer to relavent symbol,ex: struct member declaration list,in struct_declaration()*/
 	struct Symbol *prev; /*pointer to previous symbol with same name,ex:base type of the struct will point to itself*/

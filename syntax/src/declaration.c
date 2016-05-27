@@ -23,6 +23,8 @@
 #include "lex.h"
 #include "expression.h"
 #include "symbol.h"
+#include "var_storage.h"
+#include "genVar.h"
 
 /***************************************
  *<translation_unit>::={<external_declaration>}<tk_EOF>
@@ -126,7 +128,24 @@ void external_declaration(uint32_t storage_type)
 					getToken();
 					initializer(&type);
 				}
-				sym = var_sym_put(&type, storage_type_1, tk, NOT_SPECIFIED);/*FIXME:addr*/
+
+				/*push into symbol table*/
+				if (isVarHasInit()) {
+					sym = var_sym_put(&type, storage_type_1, tk, tkValue);
+				} else {
+					sym = var_sym_put(&type, storage_type_1, tk, NOT_SPECIFIED);
+				}
+
+				/*Avoiding gen code for "mother/symbol type" */
+				if (!(sym->tk_code & JC_SymTypeMASK)) {
+					if (sym->storage_type & JC_GLOBAL) {
+						genGlobalVar(sym);
+					} else {
+						//FIXME
+						//genLocalVar(sym);
+					}
+				}
+				clearVarInitFlag();
 			}
 
 			if (cur_token == tk_COMMA) {

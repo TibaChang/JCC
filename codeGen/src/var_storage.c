@@ -14,37 +14,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+
 #include "global_var.h"
-#include "token.h"
+#include "var_storage.h"
 
-/*Lexical analysis*/
-tkWord *tk_hashTable[MAX_KEY];
-dynARR tkTable;
-dynSTR sourceSTR;
-dynSTR cur_tkSTR;
-int tkValue;
-uint32_t cur_token;
-uint32_t compiler_stage;
-uint32_t cur_line_num;
-char *cur_filename;
-char cur_CHAR;
-FILE *cur_File;
+void clearVarInitFlag(void)
+{
+	var_has_init = VAR_NOT_INIT;
+}
+
+void setVarInitFlag(void)
+{
+	var_has_init = VAR_HAS_INIT;
+}
 
 
+uint32_t isVarHasInit(void)
+{
+	if (var_has_init == VAR_HAS_INIT) {
+		return VAR_HAS_INIT;
+	} else {
+		return VAR_NOT_INIT;
+	}
+}
 
-/*Semantic analysis*/
-Stack global_sym_stack;
-Stack local_sym_stack;
 
-Type char_pointer_type;
-Type int_type;
-Type default_func_type;
 
-uint32_t var_has_init;
-
-Symbol *sym_sec_rdata;
-
-/*Code generation*/
-FILE *output_File;
 
 

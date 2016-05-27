@@ -25,6 +25,8 @@
 #include "declaration.h"
 #include "stack.h"
 #include "symbol.h"
+#include "var_storage.h"
+#include "genProlog.h"
 
 
 int main(int argc, char **argv)
@@ -42,6 +44,8 @@ int main(int argc, char **argv)
 	output_name[strlen(cur_filename) - 2] = '\0';
 	strcat(output_name, ".s");
 	output_File = fopen(output_name, "w");
+	genFileProlog(output_File, output_name);
+
 
 	init();
 
@@ -69,6 +73,8 @@ void init(void)
 	mk_pointer(&char_pointer_type);
 	default_func_type.data_type = T_FUNC;
 	default_func_type.ref = sym_push(JC_ANOM, &int_type, NOT_SPECIFIED, NOT_SPECIFIED);
+
+	clearVarInitFlag();
 }
 
 void cleanup(void)

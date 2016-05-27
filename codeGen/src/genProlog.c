@@ -14,37 +14,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "global_var.h"
-#include "token.h"
-
-/*Lexical analysis*/
-tkWord *tk_hashTable[MAX_KEY];
-dynARR tkTable;
-dynSTR sourceSTR;
-dynSTR cur_tkSTR;
-int tkValue;
-uint32_t cur_token;
-uint32_t compiler_stage;
-uint32_t cur_line_num;
-char *cur_filename;
-char cur_CHAR;
-FILE *cur_File;
+#include "genProlog.h"
 
 
-
-/*Semantic analysis*/
-Stack global_sym_stack;
-Stack local_sym_stack;
-
-Type char_pointer_type;
-Type int_type;
-Type default_func_type;
-
-uint32_t var_has_init;
-
-Symbol *sym_sec_rdata;
-
-/*Code generation*/
-FILE *output_File;
+void genFileProlog(FILE * file, char *file_name)
+{
+	fprintf(file, ".file   \"%s\"\n\n\n", file_name);
+}
 
 

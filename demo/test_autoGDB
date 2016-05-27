@@ -1,5 +1,5 @@
-b main
-#b external_declaration
+#b main
+b external_declaration
 #b syntax/src/statement.c:79                                
 r
 

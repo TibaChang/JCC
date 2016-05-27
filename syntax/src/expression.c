@@ -22,7 +22,7 @@
 #include "exception.h"
 #include "lex.h"
 #include "statement.h"
-
+#include "var_storage.h"
 
 /**************************************************
  * <expression>::=<assignment_expression>{<tk_COMMA><assignment_expression>}
@@ -231,6 +231,7 @@ void primary_expression(void)
 	switch (cur_token) {
 	case tk_cINT:
 	case tk_cCHAR:
+		setVarInitFlag();
 		getToken();
 		break;
 	case tk_cSTR:

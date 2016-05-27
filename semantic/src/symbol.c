@@ -82,19 +82,19 @@ Symbol *func_sym_push(uint32_t tk, Type *type)
 }
 
 
-Symbol *var_sym_put(Type *type, uint32_t storage_type, uint32_t tk, int addr)
+Symbol *var_sym_put(Type *type, uint32_t storage_type, uint32_t tk, int value)
 {
 	Symbol *sym = NULL;
 	/*local variables*/
 	if ((storage_type & JC_ValMASK) == JC_LOCAL) {
-		sym = sym_push(tk, type, storage_type, addr);
+		sym = sym_push(tk, type, storage_type, value);
 		/*global varable*/
 	} else if (tk && ((storage_type & JC_ValMASK) == JC_GLOBAL)) {
 		sym = sym_search(tk);
 		if (sym) {
 			error("%s redefinition!\n", ((tkWord*)tkTable.data[tk])->str);
 		} else {
-			sym = sym_push(tk, type, storage_type | JC_SYM, 0);
+			sym = sym_push(tk, type, storage_type | JC_SYM, value);
 		}
 	}
 	/*else:const string symbol*/
