@@ -54,5 +54,9 @@ extern Type default_func_type;
 
 extern Symbol *sym_sec_rdata;
 
+/*Code generation*/
+extern FILE *output_File;
+
+
 /**************************************************************/
 #endif

@@ -1,14 +1,4 @@
-/*comments*/
 
-struct srt
-{
-    int x;
-    int y;
-};
+int x;
 
-void main()
-{
-    struct srt srt_object;
-    char *p_str;
-}
 

@@ -17,6 +17,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 #include "lex.h"
 #include "global_var.h"
 #include "token.h"
@@ -24,6 +25,7 @@
 #include "declaration.h"
 #include "stack.h"
 #include "symbol.h"
+
 
 int main(int argc, char **argv)
 {
@@ -34,6 +36,13 @@ int main(int argc, char **argv)
 	}
 	cur_filename = argv[1];
 
+	/*open the output file*/
+	char output_name[20];
+	strncpy(output_name, cur_filename, strlen(cur_filename));
+	output_name[strlen(cur_filename) - 2] = '\0';
+	strcat(output_name, ".s");
+	output_File = fopen(output_name, "w");
+
 	init();
 
 	getCHAR();
@@ -42,7 +51,8 @@ int main(int argc, char **argv)
 
 	cleanup();
 	fclose(cur_File);
-	printf("Semantic Analysis SUCCESS! File: %s \n\n", argv[1]);
+	fclose(output_File);
+	printf("Code Generation SUCCESS! File: %s \n\n", argv[1]);
 	return 0;
 }
 
@@ -53,7 +63,6 @@ void init(void)
 
 	stack_init(&local_sym_stack, 8);
 	stack_init(&global_sym_stack, 8);
-	sym_sec_rdata = sec_sym_put(".rdata", 0);
 
 	int_type.data_type = T_INT;
 	char_pointer_type.data_type = T_CHAR;

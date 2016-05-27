@@ -66,11 +66,10 @@ $(TARGET):$(CORE_SOURCE) $(LEX_SOURCE) $(SYNTAX_SOURCE) $(SEMANTIC_SOURCE)
           $^ -o $@
 
 demo:$(TARGET)
-	gdb -x ./demo/demo_autoGDB --args ./$(TARGET) $(DEMO_DIR)/demo_code.c
-	#./JCC $(DEMO_DIR)/demo_code.c
+	./JCC $(DEMO_DIR)/demo_code.c
 
 demo_gdb:$(TARGET)
-	gdbtui --args ./$(TARGET) $(DEMO_DIR)/demo_code.c
+	gdbtui -x ./demo/test_autoGDB --args ./$(TARGET) $(DEMO_DIR)/demo_code.c
 
 
 clean:

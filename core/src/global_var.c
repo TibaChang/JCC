@@ -42,4 +42,7 @@ Type default_func_type;
 
 Symbol *sym_sec_rdata;
 
+/*Code generation*/
+FILE *output_File;
+
 
