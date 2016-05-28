@@ -32,7 +32,7 @@ void genFuncProlog(Symbol *sym)
 	asmPrintf("    .type   %s, @function\n", func_name);
 	asmPrintf("%s:\n", func_name);
 	asmPrintf("    pushq   %%rbp\n");
-	asmPrintf("    movq    %%rsp, %%rbp\n");
+	asmPrintf("    movq    %%rsp, %%rbp\n\n");
 }
 
 

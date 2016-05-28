@@ -1,9 +1,10 @@
-int x = 5;
 
-void add(void)
+void main()
 {
-}
+    int i_without_init;
+    int i_tiwh_init = 10;
+    char c_without_init;
+    char c_with_init = 'a';
 
-void main(void)
-{
+    int *p2i_without_init;
 }

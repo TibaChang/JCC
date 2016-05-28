@@ -21,10 +21,10 @@
 #include "token.h"
 
 /*Storage type*/
-#define	 JC_GLOBAL   0x00F0  /*const. int/char/string/global var/function def  */
-#define  JC_LOCAL    0x00F1  /*local var in stack*/
-#define  JC_LLOCAL   0x00F2  /*register overflow to put in stack*/
-#define  JC_CMP      0x00F3  /*Using FLAG registers*/
+#define	 JC_GLOBAL   0x0001  /*const. int/char/string/global var/function def  */
+#define  JC_LOCAL    0x0002  /*local var in stack*/
+#define  JC_LLOCAL   0x0004  /*register overflow to put in stack*/
+#define  JC_CMP      0x0008  /*Using FLAG registers*/
 #define	 JC_ValMASK  0x00FF
 #define  JC_LVAL     0x0100  /*lvalue*/
 #define  JC_SYM      0x0200  /*symbol*/
@@ -61,12 +61,13 @@ typedef struct Type {
 } Type;
 
 typedef struct Symbol {
-	uint32_t tk_code;       /*token encoding,v*/
-	uint32_t storage_type;        /*symbol register,r,reg,FIXME:name: scope,JC_STRUCT:struct_align*/
-	int relation;           /*symbol realation value,c,value,FIXME:name: struct_size,JC_MEMBER:struct_offset, -1 for not defined,tkValue, */
-	struct Type type;    /*symbol type*/
-	struct Symbol *next; /*pointer to relavent symbol,ex: struct member declaration list,in struct_declaration()*/
-	struct Symbol *prev; /*pointer to previous symbol with same name,ex:base type of the struct will point to itself*/
+	uint32_t tk_code;     /*token encoding,v*/
+	uint32_t storage_type;/*scope / struct_align(JC_STRUCT)  */
+	int relation;         /*struct_size / struct_offset(JC_MEMBER) / -1 for not defined / tkValue */
+	uint32_t fp_offset;   /*local variable: fp offset */
+	struct Type type;     /*symbol type*/
+	struct Symbol *next;  /*pointer to relavent symbol,ex: struct member declaration list,in struct_declaration()*/
+	struct Symbol *prev;  /*pointer to previous symbol with same name,ex:base type of the struct will point to itself*/
 } Symbol;
 
 

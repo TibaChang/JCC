@@ -142,8 +142,7 @@ void external_declaration(uint32_t storage_type)
 					if (sym->storage_type & JC_GLOBAL) {
 						genGlobalVar(sym);
 					} else {
-						//FIXME
-						//genLocalVar(sym);
+						genLocalVar(sym);
 					}
 				}
 				clearVarInitFlag();
@@ -509,6 +508,9 @@ void funcbody(Symbol *sym)
 
 	/*put an anonymous symbol in local symbol table*/
 	sym_direct_push(&local_sym_stack, JC_ANOM, &int_type, NOT_SPECIFIED);
+
+	/* reset the FP offset variable */
+	clearFP_offset();
 
 	compound_statement(NULL, NULL);
 

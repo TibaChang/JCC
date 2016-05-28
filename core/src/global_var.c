@@ -42,9 +42,7 @@ Type default_func_type;
 
 uint32_t var_has_init;
 
-Symbol *sym_sec_rdata;
-
 /*Code generation*/
 FILE *output_File;
-
+uint32_t FP_offset;
 

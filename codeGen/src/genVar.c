@@ -17,6 +17,8 @@
 #include "symbol.h"
 #include "exception.h"
 #include "var_storage.h"
+#include "global_var.h"
+#include "genInstr.h"
 
 
 void genGlobalVar(Symbol *sym)
@@ -71,5 +73,47 @@ void genGlobalVar(Symbol *sym)
 	}
 }
 
+/*when leaving the current local scope*/
+void clearFP_offset(void)
+{
+	FP_offset = 0;
+}
+
+
+static void updateSYM_FPoffset(Symbol *sym, uint32_t size)
+{
+	FP_offset -= size;
+	sym->fp_offset = FP_offset;
+}
+
+
+void genLocalVar(Symbol *sym)
+{
+	uint32_t size, data_type;
+
+	data_type = sym->type.data_type & JC_ValMASK;
+	switch (data_type) {
+	case T_INT:
+		size = 4;
+		break;
+	case T_PTR:
+		size = 8;
+		break;
+	case T_CHAR:
+		size = 1;
+		break;
+	case T_STRUCT:
+		size = (sym->type.ref->relation & 0xFFFF);
+		break;
+	default:
+		error("UNDEFIND variable allocation!");
+		break;
+	}
+
+	asmPrintf("    subq    $%d, %%rsp\n", size);
+	updateSYM_FPoffset(sym, size);
+	instrMOV_VAL_OFFSET(size, sym->relation, sym->fp_offset);
+	asmPrintf("\n");
+}
 
 

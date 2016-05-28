@@ -52,13 +52,11 @@ extern Type char_pointer_type;
 extern Type int_type;
 extern Type default_func_type;
 
-
-extern Symbol *sym_sec_rdata;
+extern uint32_t var_has_init;
 
 /*Code generation*/
 extern FILE *output_File;
-
-extern uint32_t var_has_init;
+extern uint32_t FP_offset;
 
 /**************************************************************/
 #endif

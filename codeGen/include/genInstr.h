@@ -13,22 +13,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef __genVar_H_
-#define __genVar_H_
+#ifndef __GEN_INSTR_H_
+#define __GEN_INSTR_H_
 
-#include "symbol.h"
 #include "global_var.h"
+#include "stdint.h"
 
+/*instruction type*/
+#define VALUE_REG     0x0
+#define REG_REG       0x1
+#define VALUE_OFFSET  0x2
 
-#define asmPrintf(...)  fprintf(output_File,__VA_ARGS__)
+#define instrMOV_VAL_REG(byte_size,value,reg)          instrMOV(VALUE_REG, byte_size, value, reg, NULL, NULL)
+#define instrMOV_REG_REG(byte_size, reg_1, reg_2)      instrMOV(REG_REG, byte_size, NULL, reg_1, reg_2, NULL)
+#define instrMOV_VAL_OFFSET(byte_size, value, offset)  instrMOV(VALUE_OFFSET, byte_size, value, NULL, NULL, offset)
 
-#define dSIZE_8bits      "byte"
-#define dSIZE_32bits     "long"
-#define dSIZE_64bits     "quad"
-
-void genGlobalVar(Symbol *sym);
-void clearFP_offset(void);
-void genLocalVar(Symbol *sym);
+void instrMOV(uint32_t instrType, uint32_t byte_size, uint32_t value, char *reg_1, char *reg_2, uint32_t offset);
 
 
 
