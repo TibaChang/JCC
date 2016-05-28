@@ -17,9 +17,11 @@
 #define __genFunc_H_
 
 #include <stdio.h>
+#include "symbol.h"
 
 void genFileTitle(FILE * file, char *file_name);
-
+void genFuncProlog(Symbol *sym);
+void genFuncEpilog(Symbol *sym);
 
 
 #endif

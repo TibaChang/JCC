@@ -25,6 +25,7 @@
 #include "symbol.h"
 #include "var_storage.h"
 #include "genVar.h"
+#include "genFunc.h"
 
 /***************************************
  *<translation_unit>::={<external_declaration>}<tk_EOF>
@@ -503,6 +504,9 @@ void parameter_type_list(Type *type)
  ****************************************/
 void funcbody(Symbol *sym)
 {
+	/*generating function prolog*/
+	genFuncProlog(sym);
+
 	/*put an anonymous symbol in local symbol table*/
 	sym_direct_push(&local_sym_stack, JC_ANOM, &int_type, NOT_SPECIFIED);
 
@@ -510,6 +514,9 @@ void funcbody(Symbol *sym)
 
 	/*clear local symbol stack*/
 	sym_pop(&local_sym_stack, NULL);
+
+	/*generating function epilog*/
+	genFuncEpilog(sym);
 }
 
 

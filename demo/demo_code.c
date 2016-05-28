@@ -1,13 +1,9 @@
+int x = 5;
 
-int x = 1000;
+void add(void)
+{
+}
 
-int a,b,c = 100;
-
-int aa = 5, cc = 100000;
-
-char ch_a = 'Z';
-char ch_z = 'a';
-
-int main()
+void main(void)
 {
 }
