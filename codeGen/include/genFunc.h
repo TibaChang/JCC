@@ -13,13 +13,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+#ifndef __genFunc_H_
+#define __genFunc_H_
 
-#include "genProlog.h"
+#include <stdio.h>
+
+void genFileTitle(FILE * file, char *file_name);
 
 
-void genFileProlog(FILE * file, char *file_name)
-{
-	fprintf(file, ".file   \"%s\"\n\n\n", file_name);
-}
 
+#endif
 

@@ -69,10 +69,12 @@ void compound_statement(uint32_t *break_sym, uint32_t *continue_sym)
 	Symbol *s;
 	s = (Symbol*)stack_get_top(&local_sym_stack);
 
+    /*JCC only support declarae local variable before any statement*/
 	getToken();
 	while (is_type_specifier(cur_token)) {
 		external_declaration(JC_LOCAL);
 	}
+    
 
 	while (cur_token != tk_END) {
 		statement(break_sym, continue_sym);

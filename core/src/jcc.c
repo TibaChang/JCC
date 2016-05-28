@@ -26,7 +26,7 @@
 #include "stack.h"
 #include "symbol.h"
 #include "var_storage.h"
-#include "genProlog.h"
+#include "genFunc.h"
 
 
 int main(int argc, char **argv)
@@ -44,7 +44,7 @@ int main(int argc, char **argv)
 	output_name[strlen(cur_filename) - 2] = '\0';
 	strcat(output_name, ".s");
 	output_File = fopen(output_name, "w");
-	genFileProlog(output_File, output_name);
+	genFileTitle(output_File, output_name);
 
 
 	init();
