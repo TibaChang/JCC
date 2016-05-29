@@ -224,7 +224,7 @@ void postfix_expression(void)
  **************************************************/
 void primary_expression(void)
 {
-	uint32_t T_type;
+	uint32_t tk_expression;
 	Type type;
 	Symbol *s;
 
@@ -247,17 +247,17 @@ void primary_expression(void)
 		skip(tk_closePA);
 		break;
 	default:
-		T_type = cur_token;
+		tk_expression = cur_token;
 		getToken();
-		if (cur_token < tk_IDENT) {
+		if (tk_expression < tk_IDENT) {
 			expect("Identifier or constant value(char/string/number)");
 		}
-		s = sym_search(T_type);
+		s = sym_search(tk_expression);
 		if (!s) {
 			if (cur_token != tk_openPA) {
-				error("'%s' is undeclared!", get_tkSTR(T_type));
+				error("'%s' is undeclared!", get_tkSTR(tk_expression));
 			}
-			s = func_sym_push(T_type, &default_func_type); /*Allowing function can be invoked without declaration*/
+			s = func_sym_push(tk_expression, &default_func_type); /*Allowing function can be invoked without declaration*/
 			s->storage_type = JC_GLOBAL | JC_SYM;
 		}
 		break;

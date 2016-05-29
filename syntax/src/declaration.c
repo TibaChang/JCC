@@ -491,7 +491,7 @@ void parameter_type_list(Type *type)
 	}
 	skip(tk_closePA);
 
-	s = sym_push(JC_ANOM, type, NOT_SPECIFIED, NOT_SPECIFIED); /*JCC does not support func_call*/
+	s = sym_push(JC_ANOM, type, NOT_SPECIFIED, NOT_SPECIFIED);
 	s->next = pFirst;/*Make "anomyous symbol->next" point to the "first parameter symbol" */
 	type->data_type = T_FUNC;
 	type->ref = s;
