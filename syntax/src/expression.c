@@ -248,7 +248,7 @@ void primary_expression(void)
 	default:
 		T_type = cur_token;
 		getToken();
-		if (cur_token < tk_IDENT) {
+		if (T_type < tk_IDENT) {
 			expect("Identifier or constant value(char/string/number)");
 		}
 		s = sym_search(T_type);
