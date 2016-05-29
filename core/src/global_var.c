@@ -41,8 +41,15 @@ Type int_type;
 Type default_func_type;
 
 uint32_t var_has_init;
+uint32_t FuncConstValFlag;
 
 /*Code generation*/
 FILE *output_File;
 uint32_t FP_offset;
+uint32_t FuncPara_count;
+uint32_t FuncParaIndex;
+uint32_t CodeGenStatus;
+Stack FuncArg_stack;
+
+
 

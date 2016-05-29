@@ -16,6 +16,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "lex.h"
 #include "global_var.h"
 #include "token.h"
@@ -372,6 +373,7 @@ static void parse_identifier(void)
 {
 	dynSTR_reInit(&cur_tkSTR);
 	dynSTR_charConcat(&cur_tkSTR, cur_CHAR);
+	tkValue = cur_CHAR;
 	getCHAR();
 
 	while (is_NOdigit(cur_CHAR) || is_digit(cur_CHAR)) {

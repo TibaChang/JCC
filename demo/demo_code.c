@@ -1,10 +1,24 @@
 
+void add(int x,int y,int z)
+{
+}
+
+int g = 2;
+
+
+void sub(int a,int b,int c)
+{
+}
+
+int gx = 5;
+int gy = 10;
+
 void main()
 {
-    int i_without_init;
-    int i_tiwh_init = 10;
-    char c_without_init;
-    char c_with_init = 'a';
+    int lx = 5;
 
-    int *p2i_without_init;
+    /*add(g,lx,7);*/
+    sub(gx,gy,100);
 }
+
+

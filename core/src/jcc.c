@@ -67,6 +67,7 @@ void init(void)
 
 	stack_init(&local_sym_stack, 8);
 	stack_init(&global_sym_stack, 8);
+	stack_init(&FuncArg_stack, 8);
 
 	int_type.data_type = T_INT;
 	char_pointer_type.data_type = T_CHAR;
@@ -82,6 +83,7 @@ void cleanup(void)
 	sym_pop(&global_sym_stack, NULL);
 	stack_destroy(&local_sym_stack);
 	stack_destroy(&global_sym_stack);
+	stack_destroy(&FuncArg_stack);
 
 	printf("\ntkTable.count = %d \n", tkTable.count);
 

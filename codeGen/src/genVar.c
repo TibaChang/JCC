@@ -112,7 +112,7 @@ void genLocalVar(Symbol *sym)
 
 	asmPrintf("    subq    $%d, %%rsp\n", size);
 	updateSYM_FPoffset(sym, size);
-	instrMOV_VAL_OFFSET(size, sym->relation, sym->fp_offset);
+	instrMOV_VAL_OFFSET(size, sym->relation, "rbp", sym->fp_offset);
 	asmPrintf("\n");
 }
 

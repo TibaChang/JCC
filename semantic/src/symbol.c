@@ -102,19 +102,6 @@ Symbol *var_sym_put(Type *type, uint32_t storage_type, uint32_t tk, int value)
 }
 
 
-Symbol *sec_sym_put(char *sec, int relation)
-{
-	tkWord *tp;
-	Symbol *s;
-	Type type;
-
-	type.data_type = T_INT;
-	tp = tkW_insert(sec);
-	cur_token = tp->tkCode;
-	s = sym_push(cur_token, &type, JC_GLOBAL, relation);
-	return s;
-}
-
 
 void sym_pop(Stack *stack, Symbol *sym)
 {

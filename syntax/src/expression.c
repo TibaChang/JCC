@@ -23,6 +23,8 @@
 #include "lex.h"
 #include "statement.h"
 #include "var_storage.h"
+#include "genFunc.h"
+#include "genInstr.h"
 
 /**************************************************
  * <expression>::=<assignment_expression>{<tk_COMMA><assignment_expression>}
@@ -226,19 +228,39 @@ void primary_expression(void)
 {
 	uint32_t tk_expression;
 	Type type;
-	Symbol *s;
+	Symbol s;
+	Symbol *ss;
 
 	switch (cur_token) {
 	case tk_cINT:
+		setVarInitFlag();
+
+		/*if pass parameter to a function*/
+		if (CodeGenStatus == FuncParaAccept) {
+			setFuncConstValFlag();
+			s.type.data_type = T_INT;
+			genFuncCall(&s);
+			clearFuncConstValFlag();
+		}
+		getToken();
+		break;
 	case tk_cCHAR:
 		setVarInitFlag();
+
+		/*if pass parameter to a function*/
+		if (CodeGenStatus == FuncParaAccept) {
+			setFuncConstValFlag();
+			s.type.data_type = T_CHAR;
+			genFuncCall(&s);
+			clearFuncConstValFlag();
+		}
 		getToken();
 		break;
 	case tk_cSTR:
 		type.data_type = T_CHAR;
 		mk_pointer(&type);
 		type.data_type |= T_ARRAY;
-		var_sym_put(&type, JC_GLOBAL, NOT_SPECIFIED, NOT_SPECIFIED);/*FIXME:addr*/
+		var_sym_put(&type, JC_GLOBAL, NOT_SPECIFIED, NOT_SPECIFIED);/*FIXME:string value*/
 		initializer(&type);
 		break;
 	case tk_openPA:
@@ -252,14 +274,16 @@ void primary_expression(void)
 		if (tk_expression < tk_IDENT) {
 			expect("Identifier or constant value(char/string/number)");
 		}
-		s = sym_search(tk_expression);
-		if (!s) {
+		ss = sym_search(tk_expression);
+		if (!ss) {
 			if (cur_token != tk_openPA) {
 				error("'%s' is undeclared!", get_tkSTR(tk_expression));
 			}
-			s = func_sym_push(tk_expression, &default_func_type); /*Allowing function can be invoked without declaration*/
-			s->storage_type = JC_GLOBAL | JC_SYM;
+			ss = func_sym_push(tk_expression, &default_func_type); /*Allowing function can be invoked without declaration*/
+			ss->storage_type = JC_GLOBAL | JC_SYM;
 		}
+		/*generating function call asm*/
+		genFuncCall(ss);
 		break;
 	}
 }

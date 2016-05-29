@@ -59,6 +59,9 @@ define print_local_stack
 	print "-----relation-----"
 	p/x ((Symbol*)local_sym_stack.base[$arg0])->relation
 
+    print "-----fp_offset-----"
+    p/x ((Symbol*)local_sym_stack.base[$arg0])->fp_offset
+
 	print "-----type->data_type-----"
 	p/x ((Symbol*)local_sym_stack.base[$arg0])->type->data_type
 
@@ -89,8 +92,10 @@ define traverse_local_stack
 end
 
 
-traverse_global_stack 7
-traverse_local_stack 3
+traverse_global_stack 5
+
+#traverse_local_stack 1
+
 
 c
 q

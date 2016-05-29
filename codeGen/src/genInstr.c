@@ -17,6 +17,26 @@
 #include "genInstr.h"
 #include "genVar.h"
 #include "exception.h"
+#include "global_var.h"
+
+void set_CodeGenStatus(uint32_t status, uint32_t arg)
+{
+	switch (status) {
+	case FuncParaNum:
+		FuncPara_count = arg;
+		break;
+	case FuncParaAccept:
+		CodeGenStatus = FuncParaAccept;
+		break;
+	case FuncParaClear:
+		FuncPara_count = 0;
+		CodeGenStatus = FuncParaClear;
+		break;
+	default:
+		error("CodeGen status error!");
+		break;
+	}
+}
 
 
 /* Suffix	Name	      Size
@@ -29,12 +49,17 @@ static void instrAddSuffix(char *origin_instr, uint32_t byte_size)
 {
 	char *suffix;
 	switch (byte_size) {
+	/*
+		case 1:
+			suffix = "b";
+			break;
+		case 4:
+			suffix = "l";
+			break;
+	*/
+	/*JCC all use 8-bytes regs*/
 	case 1:
-		suffix = "b";
-		break;
 	case 4:
-		suffix = "l";
-		break;
 	case 8:
 		suffix = "q";
 		break;
@@ -48,7 +73,7 @@ static void instrAddSuffix(char *origin_instr, uint32_t byte_size)
 
 
 /*user should not use this function directly,the macro is better*/
-void instrMOV(uint32_t instrType, uint32_t byte_size, uint32_t value, char *reg_1, char *reg_2, uint32_t offset)
+void instrMOV(uint32_t instrType, uint32_t byte_size, uint32_t value, char *reg_1, char *reg_2, uint32_t offset, char *sym_name)
 {
 	char instr[5] = "mov";
 	instrAddSuffix(instr, byte_size);
@@ -62,7 +87,13 @@ void instrMOV(uint32_t instrType, uint32_t byte_size, uint32_t value, char *reg_
 		asmPrintf("%s    %%%s, %%%s\n", instr, reg_1, reg_2);
 		break;
 	case VALUE_OFFSET:
-		asmPrintf("%s    $%d, %d(%%rbp)\n", instr, value, offset);
+		asmPrintf("%s    $%d, %d(%%%s)\n", instr, value, offset, reg_1);
+		break;
+	case OFFSET_REG:
+		asmPrintf("%s    %d(%%%s), %%%s\n", instr, offset, reg_1, reg_2);
+		break;
+	case symOFFSET_REG:
+		asmPrintf("%s    %s(%%%s), %%%s\n", instr, sym_name, reg_1, reg_2);
 		break;
 	default:
 		error("MOV instruction type error");

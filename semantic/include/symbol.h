@@ -28,6 +28,7 @@
 #define	 JC_ValMASK  0x00FF
 #define  JC_LVAL     0x0100  /*lvalue*/
 #define  JC_SYM      0x0200  /*symbol*/
+#define  JC_CONST    0x0010  /*pass a const value to function*/
 
 /*Symbol type*/
 #define  JC_ANOM        0x10000000/*anonymous symbol*/
@@ -64,7 +65,7 @@ typedef struct Symbol {
 	uint32_t tk_code;     /*token encoding,v*/
 	uint32_t storage_type;/*scope / struct_align(JC_STRUCT)  */
 	int relation;         /*struct_size / struct_offset(JC_MEMBER) / -1 for not defined / tkValue */
-	uint32_t fp_offset;   /*local variable: fp offset */
+	int fp_offset;   /*local variable: fp offset */
 	struct Type type;     /*symbol type*/
 	struct Symbol *next;  /*pointer to relavent symbol,ex: struct member declaration list,in struct_declaration()*/
 	struct Symbol *prev;  /*pointer to previous symbol with same name,ex:base type of the struct will point to itself*/

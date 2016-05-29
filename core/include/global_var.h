@@ -53,10 +53,15 @@ extern Type int_type;
 extern Type default_func_type;
 
 extern uint32_t var_has_init;
+extern uint32_t FuncConstValFlag;
 
 /*Code generation*/
 extern FILE *output_File;
-extern uint32_t FP_offset;
+extern uint32_t FP_offset;/*local variable frame pointer offset*/
+extern uint32_t FuncPara_count;/*calculating function call parameter numbers*/
+extern uint32_t FuncParaIndex;/*current function parameter number*/
+extern uint32_t CodeGenStatus;
+extern Stack FuncArg_stack;/*used to store args information*/
 
 /**************************************************************/
 #endif

@@ -13,23 +13,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef __genFunc_H_
-#define __genFunc_H_
+#ifndef __FUNC_ARG_H
+#define __FUNC_ARG_H
 
-#include <stdio.h>
-#include "symbol.h"
+#include <stdint.h>
 
-#define FuncIsPassingConstVal     1
-#define FuncNotPassingConstVal    0
+#define PARAMETER       "%%%%parameter"
+#define NOT_GLOBAL_VAR  "%%%%NOT_GLOBAL_VAR"
 
-void setFuncConstValFlag(void);
-void clearFuncConstValFlag(void);
-uint32_t isFuncPassConstVal(void);
+typedef struct {
+	char funcName[31];/*for parameter,this will be NULL*/
+	uint32_t arg_scope;/*local/global*/
+	char global_name[31];/*for global variable*/
+	int fp_offset;/*for local variable*/
+	void *value_ref;
+} FuncArgs;
 
-void genFileTitle(FILE * file, char *file_name);
-void genFuncProlog(Symbol *sym);
-void genFuncEpilog(Symbol *sym);
-void genFuncCall(Symbol *sym);
+FuncArgs *FuncArgs_push(char *funcName, uint32_t arg_scope, char *global_name, uint32_t global_name_len, int offset, void *value);
+FuncArgs *FuncArgs_getTop(void);
+void FuncArgs_pop(void);
 
 #endif
 

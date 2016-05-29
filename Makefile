@@ -1,5 +1,5 @@
 CC := gcc
-CFLAGS := -O0 -std=gnu99 -g3 -Wall -Werror
+CFLAGS := -O0 -std=gnu99 -g3 -Wall -Werror -Wno-unused-function -Wno-unused-but-set-variable
 
 JCC_DEBUG := JCC_DEBUG
 
@@ -80,6 +80,9 @@ demo:$(TARGET)
 
 demo_gdb:$(TARGET)
 	gdbtui -x ./demo/test_autoGDB --args ./$(TARGET) $(DEMO_SOURCE_FILE)
+
+gdb_traverse_stack:$(TARGET)
+	gdb -x ./demo/demo_autoGDB --args ./$(TARGET) $(DEMO_SOURCE_FILE) > traverse_result.txt
 
 
 clean:
