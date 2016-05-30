@@ -98,11 +98,11 @@ static void add_FuncPara(Symbol *sym)
 		if (sym->storage_type & JC_GLOBAL) {
 			char GlobalVar_name[31];
 			strncpy(GlobalVar_name, get_tkSTR(sym->tk_code), strlen(get_tkSTR(sym->tk_code)));
-			FuncArgs_push(NOT_SPECIFIED, sym->storage_type & 0x13, GlobalVar_name, strlen(get_tkSTR(sym->tk_code)), sym->fp_offset, &sym->relation);
+			FuncArgs_push(NOT_SPECIFIED, sym->storage_type & 0x13, GlobalVar_name, strlen(get_tkSTR(sym->tk_code)), sym->fp_offset, sym->relation);
 		} else if (sym->storage_type & JC_LOCAL) {
-			FuncArgs_push(NOT_SPECIFIED, sym->storage_type & 0x13, NOT_SPECIFIED, NOT_SPECIFIED, sym->fp_offset , &sym->relation);
+			FuncArgs_push(NOT_SPECIFIED, sym->storage_type & 0x13, NOT_SPECIFIED, NOT_SPECIFIED, sym->fp_offset , sym->relation);
 		} else if (sym->storage_type & JC_CONST) {
-			FuncArgs_push(NOT_SPECIFIED, sym->storage_type & 0x13, NOT_SPECIFIED, NOT_SPECIFIED, NOT_SPECIFIED, &sym->relation);
+			FuncArgs_push(NOT_SPECIFIED, sym->storage_type & 0x13, NOT_SPECIFIED, NOT_SPECIFIED, NOT_SPECIFIED, sym->relation);
 		} else {
 			error("Variable scope error!");
 		}
@@ -114,26 +114,29 @@ static void genFuncCallAsm(void)
 {
 
 	FuncArgs *args = FuncArgs_getTop();
-	uint32_t scope, value, size, index = 1;
+	uint32_t scope,  size, index, count;
+	uint64_t value;
 	char dest_reg[4], src_reg[4];
 
+	index = 0;
 	/*if funcName equal to PARAMETER, then this is parameter*/
 	while (strncmp(args->funcName, PARAMETER, strlen(PARAMETER)) == 0) {
 		scope = args->arg_scope;
-		value = *((uint32_t*)args->value_ref);
+		value = args->value;
+		count = FuncPara_count - index;
 
 		/*JCC all use 8-bytes regs*/
 		size = 8;
 
-		switch (index) {
+		switch (count) {
 		case 1:
-			strncpy(dest_reg, "rdx", 3);
+			strncpy(dest_reg, "rdi", 3);
 			break;
 		case 2:
 			strncpy(dest_reg, "rsi", 3);
 			break;
 		case 3:
-			strncpy(dest_reg, "rdi", 3);
+			strncpy(dest_reg, "rdx", 3);
 			break;
 		case 4:
 			strncpy(dest_reg, "rcx", 3);
@@ -165,7 +168,7 @@ static void genFuncCallAsm(void)
 		index++;
 	}
 	args = FuncArgs_getTop();
-	asmPrintf("    call    %s\n", args->funcName);
+	asmPrintf("    call    %s\n\n", args->funcName);
 }
 
 
@@ -189,8 +192,10 @@ void genFuncCall(Symbol *sym)
 	if (CodeGenStatus == FuncParaAccept) {
 		add_FuncPara(sym);
 		if (FuncPara_count == FuncParaIndex) {
-			set_CodeGenStatus(FuncParaClear, NOT_SPECIFIED);
 			genFuncCallAsm();
+			/*after generate asm,reset the parameter count*/
+			set_CodeGenStatus(FuncParaClear, NOT_SPECIFIED);
+			FuncParaIndex = 0;
 		}
 	}
 }

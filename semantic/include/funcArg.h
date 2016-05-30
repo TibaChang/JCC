@@ -26,10 +26,10 @@ typedef struct {
 	uint32_t arg_scope;/*local/global*/
 	char global_name[31];/*for global variable*/
 	int fp_offset;/*for local variable*/
-	void *value_ref;
+	uint64_t value;
 } FuncArgs;
 
-FuncArgs *FuncArgs_push(char *funcName, uint32_t arg_scope, char *global_name, uint32_t global_name_len, int offset, void *value);
+FuncArgs *FuncArgs_push(char *funcName, uint32_t arg_scope, char *global_name, uint32_t global_name_len, int offset, uint64_t value);
 FuncArgs *FuncArgs_getTop(void);
 void FuncArgs_pop(void);
 
