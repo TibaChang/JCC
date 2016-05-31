@@ -74,6 +74,9 @@ void init(void)
 	int_sym.storage_type = JC_GLOBAL | JC_CONST;
 	char_sym.type.data_type = T_CHAR;
 	char_sym.storage_type = JC_GLOBAL | JC_CONST;
+	ret_sym.type.data_type = T_NOT_TYPE;
+	ret_sym.storage_type = JC_RET_REG;
+
 
 	int_type.data_type = T_INT;
 	char_pointer_type.data_type = T_CHAR;

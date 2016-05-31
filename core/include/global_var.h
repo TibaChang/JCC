@@ -56,6 +56,7 @@ extern Type default_func_type;
 
 extern Symbol char_sym;
 extern Symbol int_sym;
+extern Symbol ret_sym;/*special symbol used for record register info*/
 
 extern uint32_t var_has_init;
 extern uint32_t FuncConstValFlag;

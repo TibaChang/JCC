@@ -63,8 +63,8 @@ uint32_t FindFreeReg(void)
 
 void FreeReg(uint32_t REGx)
 {
+	REG *target = &reg_pool[REGx];
 	if (reg_pool[REGx].usage & REG_IS_USING) { /*Free REG_IS_USING and REG_WILL_USE*/
-		REG *target = &reg_pool[REGx];
 		if (target->owner->storage_type & JC_CONST) { /*constant value in global*/
 			/*const value will not be modified*/
 			target->usage = REG_NOT_USING;
@@ -78,6 +78,8 @@ void FreeReg(uint32_t REGx)
 			target->usage = REG_NOT_USING;
 			instrMOV_REG_symOFFSET(8, get_tkSTR(target->owner->tk_code & JC_ValMASK), target->reg_name, reg_2);
 		}
+	} else if (reg_pool[REGx].usage == REG_RETURN_VAL) {
+		target->usage = REG_NOT_USING;
 	} else {
 		/*do nothing*/
 	}

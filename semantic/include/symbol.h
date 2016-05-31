@@ -29,6 +29,7 @@
 #define  JC_LVAL     0x0100  /*lvalue*/
 #define  JC_SYM      0x0200  /*symbol*/
 #define  JC_CONST    0x0010  /*pass a const value to function*/
+#define  JC_RET_REG  0xF000
 
 /*Symbol type*/
 #define  JC_ANOM        0x10000000/*anonymous symbol*/
@@ -38,14 +39,15 @@
 #define  JC_SymTypeMASK 0xF0000000
 
 /*Type code*/
-#define  T_INT     0
-#define	 T_CHAR    1
-#define	 T_VOID    2
-#define	 T_PTR     3
-#define	 T_FUNC    4
-#define	 T_STRUCT  5
-#define	 T_BTYPE   0x000F /*base type mask:"int" to "struct"*/
-#define	 T_ARRAY   0x0010
+#define  T_INT      0
+#define	 T_CHAR     1
+#define	 T_VOID     2
+#define	 T_PTR      3
+#define	 T_FUNC     4
+#define	 T_STRUCT   5
+#define	 T_BTYPE    0x000F /*base type mask:"int" to "struct"*/
+#define	 T_ARRAY    0x0010
+#define  T_NOT_TYPE 0xFFFF
 
 /*sym_push code*/
 #define NOT_SPECIFIED        0

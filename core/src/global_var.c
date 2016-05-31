@@ -42,6 +42,7 @@ Type default_func_type;
 
 Symbol char_sym;
 Symbol int_sym;
+Symbol ret_sym;
 
 uint32_t var_has_init;
 uint32_t FuncConstValFlag;
