@@ -19,12 +19,25 @@
 #include "var_storage.h"
 #include "global_var.h"
 #include "genInstr.h"
+#include "token.h"
 
 
 void genGlobalVar(Symbol *sym)
 {
+
+	/*for const char array*/
+	if ((sym->storage_type & JC_CONST) && (sym->type.data_type & T_ARRAY)) {
+		sym->relation = const_STR_index;
+		const_STR_index++;
+		asmPrintf("\n    .section    .rodata\n");
+		asmPrintf("    .align 8\n");
+		asmPrintf(".LC%d:\n", const_STR_index);
+		asmPrintf("    .string  %s\n\n", sourceSTR.data);
+		return;
+	}
+
 	uint32_t align, size, data_type;
-	char *var_name = get_tkSTR(sym->tk_code);
+	char *var_name = get_tkSTR(sym->tk_code);;
 	char *data_length;
 
 	data_type = sym->type.data_type & JC_ValMASK;

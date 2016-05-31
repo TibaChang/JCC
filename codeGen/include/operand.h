@@ -13,22 +13,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef __genVar_H_
-#define __genVar_H_
+#ifndef __OPERAND_H
+#define __OPERAND_H
 
 #include "symbol.h"
-#include "global_var.h"
+#include "stack.h"
 
+typedef struct {
+	Type data_type;
+	int value;/*constant value*/
+	Symbol *sym;
+} Operand;
 
-#define asmPrintf(...)  fprintf(output_File,__VA_ARGS__)
-
-#define dSIZE_8bits      "byte"
-#define dSIZE_32bits     "long"
-#define dSIZE_64bits     "quad"
-
-void genGlobalVar(Symbol *sym);
-void clearFP_offset(void);
-void genLocalVar(Symbol *sym);
+void operand_push(Symbol *sym, int value);
+void operand_pop(void);
+void operand_TopSwap(void);
 
 
 #endif

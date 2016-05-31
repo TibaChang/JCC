@@ -13,23 +13,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef __genVar_H_
-#define __genVar_H_
-
-#include "symbol.h"
+#include "operand.h"
+#include "exception.h"
 #include "global_var.h"
 
+void operand_push(Symbol *sym, int value)
+{
+	if (opTop >= opStack + (opStack_Size - 1)) {
+		error("opStack memory allocation failed");
+	}
 
-#define asmPrintf(...)  fprintf(output_File,__VA_ARGS__)
-
-#define dSIZE_8bits      "byte"
-#define dSIZE_32bits     "long"
-#define dSIZE_64bits     "quad"
-
-void genGlobalVar(Symbol *sym);
-void clearFP_offset(void);
-void genLocalVar(Symbol *sym);
+	opTop++;
+	opTop->value = value;
+	opTop->sym = sym;/*for const int/char, this will be NULL*/
+}
 
 
-#endif
+void operand_pop(void)
+{
+	opTop--;
+}
+
+
+void operand_TopSwap(void)
+{
+	Operand temp;
+	temp = opTop[0];
+	opTop[0] = opTop[-1];
+	opTop[-1] = temp;
+}
+
+
 

@@ -64,7 +64,7 @@ typedef struct Type {
 typedef struct Symbol {
 	uint32_t tk_code;     /*token encoding,v*/
 	uint32_t storage_type;/*scope / struct_align(JC_STRUCT)  */
-	int relation;         /*struct_size / struct_offset(JC_MEMBER) / -1 for not defined / tkValue */
+	int relation;         /*struct_size / struct_offset(JC_MEMBER) / -1 for not defined / tkValue / const string:symbol number */
 	int fp_offset;   /*local variable: fp offset */
 	struct Type type;     /*symbol type*/
 	struct Symbol *next;  /*pointer to relavent symbol,ex: struct member declaration list,in struct_declaration()*/

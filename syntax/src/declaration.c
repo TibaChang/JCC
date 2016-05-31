@@ -138,7 +138,7 @@ void external_declaration(uint32_t storage_type)
 				}
 
 				/*Avoiding gen code for "mother/symbol type" */
-				if (!(sym->tk_code & JC_SymTypeMASK & JC_LVAL)) {
+				if (!(sym->tk_code & JC_SymTypeMASK)) {
 					if (sym->storage_type & JC_GLOBAL) {
 						genGlobalVar(sym);
 					} else {

@@ -22,10 +22,12 @@
 
 /*instruction type*/
 #define VALUE_REG     0x0
-#define REG_REG       0x1
-#define VALUE_OFFSET  0x2
-#define OFFSET_REG    0x3
-#define symOFFSET_REG 0x4
+#define REG_OFFSET    0x1
+#define REG_REG       0x2
+#define VALUE_OFFSET  0x3
+#define OFFSET_REG    0x4
+#define symOFFSET_REG 0x5
+#define REG_symOFFSET 0x6
 
 /*code generation status*/
 #define FuncParaNum       0x1
@@ -35,11 +37,16 @@ void set_CodeGenStatus(uint32_t status, uint32_t arg);
 
 
 #define instrMOV_VAL_REG(byte_size,value,reg)          instrMOV(VALUE_REG, byte_size, value, reg, NULL, NOT_SPECIFIED, NULL)
-#define instrMOV_REG_REG(byte_size, reg_1, reg_2)      instrMOV(REG_REG, byte_size, NULL, reg_1, reg_2, NOT_SPECIFIED, NULL)
+#define instrMOV_REG_OFFSET(byte_size,reg_1,reg_2,offset_2)     instrMOV(REG_OFFSET, byte_size, NOT_SPECIFIED, reg_1, reg_2, offset_2, NULL)
+#define instrMOV_REG_REG(byte_size, reg_1, reg_2)      instrMOV(REG_REG, byte_size, NOT_SPECIFIED, reg_1, reg_2, NOT_SPECIFIED, NULL)
 #define instrMOV_VAL_OFFSET(byte_size, value, reg_1, offset_2)  instrMOV(VALUE_OFFSET, byte_size, value, reg_1, NULL, offset_2,NULL)
 #define instrMOV_OFFSET_REG(byte_size, reg_1, reg_2, offset_1)  instrMOV(OFFSET_REG, byte_size, NOT_SPECIFIED, reg_1, reg_2, offset_1,NULL)
 #define instrMOV_symOFFSET_REG(byte_size, sym_name, reg_1, reg_2)  instrMOV(symOFFSET_REG, byte_size, NOT_SPECIFIED, reg_1, reg_2, NOT_SPECIFIED,sym_name)
+#define instrMOV_REG_symOFFSET(byte_size, sym_name, reg_1, reg_2)  instrMOV(symOFFSET_REG, byte_size, NOT_SPECIFIED, reg_1, reg_2, NOT_SPECIFIED,sym_name)
 void instrMOV(uint32_t instrType, uint32_t byte_size, uint32_t value, char *reg_1, char *reg_2, uint32_t offset, char *sym_name);
+
+
+void genMUL(uint32_t op);
 
 
 

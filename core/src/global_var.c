@@ -40,6 +40,9 @@ Type char_pointer_type;
 Type int_type;
 Type default_func_type;
 
+Symbol char_sym;
+Symbol int_sym;
+
 uint32_t var_has_init;
 uint32_t FuncConstValFlag;
 
@@ -51,5 +54,12 @@ uint32_t FuncParaIndex;
 uint32_t CodeGenStatus;
 Stack FuncArg_stack;
 
+Operand opStack[opStack_Size];
+Operand *opTop = opStack;
+
+
+uint32_t const_STR_index = 0;
+
+REG reg_pool[REG_MAX - REG_BASE];
 
 

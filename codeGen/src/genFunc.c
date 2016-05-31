@@ -159,7 +159,7 @@ static void genFuncCallAsm(void)
 			instrMOV_VAL_REG(size, value, dest_reg);
 			break;
 		default:
-			error("argument scope error!");
+			interERROR("argument scope error!");
 			break;
 		}
 

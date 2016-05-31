@@ -96,8 +96,10 @@ Symbol *var_sym_put(Type *type, uint32_t storage_type, uint32_t tk, int value)
 		} else {
 			sym = sym_push(tk, type, storage_type | JC_SYM, value);
 		}
+	}/*else:const string symbol*/
+	else {
+		sym = sym_push(tk, type, storage_type, value);
 	}
-	/*else:const string symbol*/
 	return sym;
 }
 

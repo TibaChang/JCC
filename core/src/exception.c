@@ -22,14 +22,20 @@
 #include "exception.h"
 #include "lex.h"
 
+#define C_YELLOW      "\x1B[33;1m"
+
 static void handle_exception(int level, char *fmt, va_list ap)
 {
 	char buffer[1024];
 	vsprintf(buffer, fmt, ap);
 	if (compiler_stage == LEVEL_WARNING) {
 		printf("\nIn the file:%s, line number:%d ,Compiler WARNING:%s\n", cur_filename, cur_line_num, buffer);
-	} else {
+	} else if (compiler_stage == LEVEL_ERROR) {
 		printf("\nIn the file:%s, line number:%d ,Compiler ERROR:%s\n", cur_filename, cur_line_num, buffer);
+		exit(EXIT_FAILURE);
+	} else { /*INTERNAL_ERROR*/
+		printf("%s", C_YELLOW);
+		printf("\nIn the file:%s, line number:%d ,Compiler INTERNAL ERROR:%s\n", cur_filename, cur_line_num, buffer);
 		exit(EXIT_FAILURE);
 	}
 }
@@ -65,5 +71,12 @@ void skip(uint32_t tk)
 	getToken();
 }
 
+void interERROR(char *fmt, ...)
+{
+	va_list ap;
 
+	va_start(ap, fmt);
+	handle_exception(INTERNAL_ERROR, fmt, ap);
+	va_end(ap);
+}
 

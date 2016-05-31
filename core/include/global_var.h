@@ -25,6 +25,8 @@
 #include "dynSTR.h"
 #include "stack.h"
 #include "symbol.h"
+#include "operand.h"
+#include "reg.h"
 
 /*Lexcial analysis*/
 extern tkWord *tk_hashTable[MAX_KEY];
@@ -52,6 +54,9 @@ extern Type char_pointer_type;
 extern Type int_type;
 extern Type default_func_type;
 
+extern Symbol char_sym;
+extern Symbol int_sym;
+
 extern uint32_t var_has_init;
 extern uint32_t FuncConstValFlag;
 
@@ -62,6 +67,14 @@ extern uint32_t FuncPara_count;/*calculating function call parameter numbers*/
 extern uint32_t FuncParaIndex;/*current function parameter number*/
 extern uint32_t CodeGenStatus;
 extern Stack FuncArg_stack;/*used to store args information*/
+
+#define opStack_Size 256
+extern Operand opStack[opStack_Size];
+extern Operand *opTop;
+
+extern uint32_t const_STR_index;
+
+extern REG reg_pool[REG_MAX - REG_BASE]; /*reg_pool[0] will not be used*/
 
 /**************************************************************/
 #endif

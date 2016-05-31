@@ -49,15 +49,7 @@ static void instrAddSuffix(char *origin_instr, uint32_t byte_size)
 {
 	char *suffix;
 	switch (byte_size) {
-	/*
-		case 1:
-			suffix = "b";
-			break;
-		case 4:
-			suffix = "l";
-			break;
-	*/
-	/*JCC all use 8-bytes regs*/
+	/*JCC always use 8-bytes regs*/
 	case 1:
 	case 4:
 	case 8:
@@ -83,6 +75,9 @@ void instrMOV(uint32_t instrType, uint32_t byte_size, uint32_t value, char *reg_
 	case VALUE_REG:
 		asmPrintf("%s    $%d,%%%s\n", instr, value, reg_1);
 		break;
+	case REG_OFFSET:
+		asmPrintf("%s    %%%s, %d(%%%s)\n", instr, reg_1, offset, reg_2);
+		break;
 	case REG_REG:
 		asmPrintf("%s    %%%s, %%%s\n", instr, reg_1, reg_2);
 		break;
@@ -95,10 +90,48 @@ void instrMOV(uint32_t instrType, uint32_t byte_size, uint32_t value, char *reg_
 	case symOFFSET_REG:
 		asmPrintf("%s    %s(%%%s), %%%s\n", instr, sym_name, reg_1, reg_2);
 		break;
+	case REG_symOFFSET:
+		asmPrintf("%s    %%%s, %s(%%%s)\n", instr, reg_1, sym_name, reg_2);
+		break;
 	default:
 		error("MOV instruction type error");
 		break;
 	}
 }
+
+
+void genMUL(uint32_t op)
+{
+	char instr[6];
+	uint32_t reg;
+	switch (op) {
+	case tk_STAR:
+		strncpy(instr, "imulq", 5);
+		assignReg_twoFirst(REG_RAX);
+		reg = FindFreeReg();
+		assignReg_twoSecond(reg);
+		asmPrintf("    %s   %%%s, %%%s\n", instr, reg_pool[reg].reg_name, reg_pool[REG_RAX].reg_name);/*store to second reg*/
+		setReg_Return(REG_RAX);
+		setReg_Unused(reg);
+		break;
+	case tk_DIVIDE:
+	case tk_MOD:
+		strncpy(instr, "idivq", 5);
+		assignReg_twoFirst(REG_RAX);/*quotient*/
+		assignReg_twoSecond(REG_RDX);/*reaminder*/
+		asmPrintf("    %s   %%%s\n", instr, reg_pool[REG_RDX].reg_name); /*quotient:rax   ,  remainder:rdx*/
+		if (op == tk_MOD) {
+			instrMOV_REG_REG(8, reg_pool[REG_RDX].reg_name, reg_pool[REG_RAX].reg_name);
+		}
+		setReg_Return(REG_RAX);
+		setReg_Unused(REG_RDX);
+		break;
+	default:
+		interERROR("MUL type instruction generating error!");
+		break;
+	}
+}
+
+
 
 

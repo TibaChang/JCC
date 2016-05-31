@@ -27,7 +27,7 @@
 #include "symbol.h"
 #include "var_storage.h"
 #include "genFunc.h"
-
+#include "reg.h"
 
 int main(int argc, char **argv)
 {
@@ -69,6 +69,12 @@ void init(void)
 	stack_init(&global_sym_stack, 8);
 	stack_init(&FuncArg_stack, 8);
 
+
+	int_sym.type.data_type = T_INT;
+	int_sym.storage_type = JC_GLOBAL | JC_CONST;
+	char_sym.type.data_type = T_CHAR;
+	char_sym.storage_type = JC_GLOBAL | JC_CONST;
+
 	int_type.data_type = T_INT;
 	char_pointer_type.data_type = T_CHAR;
 	mk_pointer(&char_pointer_type);
@@ -76,6 +82,7 @@ void init(void)
 	default_func_type.ref = sym_push(JC_ANOM, &int_type, NOT_SPECIFIED, NOT_SPECIFIED);
 
 	clearVarInitFlag();
+	RegPoolInit();
 }
 
 void cleanup(void)

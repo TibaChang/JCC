@@ -25,6 +25,8 @@
 #include "var_storage.h"
 #include "genFunc.h"
 #include "genInstr.h"
+#include "operand.h"
+#include "genVar.h"
 
 /**************************************************
  * <expression>::=<assignment_expression>{<tk_COMMA><assignment_expression>}
@@ -121,10 +123,13 @@ void additive_expression(void)
  **************************************************/
 void multiplicative_expression(void)
 {
+	uint32_t tk;
 	unary_expression();
 	while ((cur_token == tk_STAR) || (cur_token == tk_DIVIDE) || (cur_token == tk_MOD)) {
+		tk = cur_token;
 		getToken();
 		unary_expression();
+		genMUL(tk);
 	}
 }
 
@@ -228,7 +233,7 @@ void primary_expression(void)
 {
 	uint32_t tk_expression;
 	Type type;
-	Symbol s;
+	//Symbol s;
 	Symbol *ss;
 
 	switch (cur_token) {
@@ -236,31 +241,38 @@ void primary_expression(void)
 		setVarInitFlag();
 
 		/*if pass parameter to a function*/
+		/*
 		if (CodeGenStatus == FuncParaAccept) {
 			setFuncConstValFlag();
 			s.type.data_type = T_INT;
 			genFuncCall(&s);
 			clearFuncConstValFlag();
 		}
+		*/
+		operand_push(&int_sym, tkValue);
 		getToken();
 		break;
 	case tk_cCHAR:
 		setVarInitFlag();
 
 		/*if pass parameter to a function*/
+		/*
 		if (CodeGenStatus == FuncParaAccept) {
 			setFuncConstValFlag();
 			s.type.data_type = T_CHAR;
 			genFuncCall(&s);
 			clearFuncConstValFlag();
 		}
+		*/
+		operand_push(&char_sym, tkValue);
 		getToken();
 		break;
 	case tk_cSTR:
 		type.data_type = T_CHAR;
 		mk_pointer(&type);
 		type.data_type |= T_ARRAY;
-		var_sym_put(&type, JC_GLOBAL, NOT_SPECIFIED, NOT_SPECIFIED);/*FIXME:string value*/
+		ss = var_sym_put(&type, JC_GLOBAL | JC_CONST, NOT_SPECIFIED, NOT_SPECIFIED);
+		genGlobalVar(ss);
 		initializer(&type);
 		break;
 	case tk_openPA:
@@ -282,8 +294,9 @@ void primary_expression(void)
 			ss = func_sym_push(tk_expression, &default_func_type); /*Allowing function can be invoked without declaration*/
 			ss->storage_type = JC_GLOBAL | JC_SYM;
 		}
+		operand_push(ss, NOT_SPECIFIED);
 		/*generating function call asm*/
-		genFuncCall(ss);
+		//genFuncCall(ss);
 		break;
 	}
 }
