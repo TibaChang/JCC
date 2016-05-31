@@ -31,11 +31,11 @@ void RegPoolInit(void)
 		reg_pool[i].owner = NULL;
 		reg_pool[i].usage = REG_NOT_USING;
 	}
-	strncpy(reg_pool[REG_RDI].reg_name, "rdi", 3);
-	strncpy(reg_pool[REG_RSI].reg_name, "rsi", 3);
-	strncpy(reg_pool[REG_RDX].reg_name, "rdx", 3);
-	strncpy(reg_pool[REG_RCX].reg_name, "rcx", 3);
-	strncpy(reg_pool[REG_RAX].reg_name, "rax", 3);
+	strcpy(reg_pool[REG_RDI].reg_name, "rdi");
+	strcpy(reg_pool[REG_RSI].reg_name, "rsi");
+	strcpy(reg_pool[REG_RDX].reg_name, "rdx");
+	strcpy(reg_pool[REG_RCX].reg_name, "rcx");
+	strcpy(reg_pool[REG_RAX].reg_name, "rax");
 }
 
 
@@ -44,16 +44,13 @@ uint32_t FindFreeReg(void)
 	for (int i = REG_BASE + 1; i < REG_MAX; i++) {
 		if (reg_pool[i].usage == REG_NOT_USING) {
 			return i;
-
 		}
 	}
-
 	for (int i = REG_BASE + 1; i < REG_MAX; i++) {
 		/*free the reg if it will not be used in the next step*/
 		if (reg_pool[i].usage & ~REG_WILL_USE) {
 			FreeReg(i);
 			return i;
-
 		}
 	}
 	interERROR("Finding free reg error!");
@@ -64,7 +61,7 @@ uint32_t FindFreeReg(void)
 void FreeReg(uint32_t REGx)
 {
 	REG *target = &reg_pool[REGx];
-	if (reg_pool[REGx].usage & REG_IS_USING) { /*Free REG_IS_USING and REG_WILL_USE*/
+	if (reg_pool[REGx].usage & REG_IS_USING) { /*Free REG_IS_USING*/
 		if (target->owner->storage_type & JC_CONST) { /*constant value in global*/
 			/*const value will not be modified*/
 			target->usage = REG_NOT_USING;
@@ -81,7 +78,7 @@ void FreeReg(uint32_t REGx)
 	} else if (reg_pool[REGx].usage == REG_RETURN_VAL) {
 		target->usage = REG_NOT_USING;
 	} else {
-		/*do nothing*/
+		interERROR("Freeing the reg with REG_WILL_USE");
 	}
 }
 
@@ -94,7 +91,7 @@ void assignReg(uint32_t REGx)
 	} else if (target->usage == REG_IS_USING) {
 		FreeReg(REGx);
 	} else {
-		interERROR("Internal error:reg usage error in Assigning!");
+		interERROR("reg usage error in Assigning!");
 	}
 	target->usage = REG_IS_USING;
 	target->owner = opTop->sym;
@@ -105,14 +102,14 @@ void assignReg(uint32_t REGx)
 
 	if (target->owner->storage_type & JC_GLOBAL) {
 		if (target->owner->storage_type & JC_LVAL) {
-			strncpy(src_reg, "rip", 3);
+			strcpy(src_reg, "rip");
 			instrMOV_symOFFSET_REG(8, get_tkSTR(target->owner->tk_code), src_reg, reg_pool[REGx].reg_name);
 		}
 		if (target->owner->storage_type & JC_CONST) {
 			instrMOV_VAL_REG(8, target->value, reg_pool[REGx].reg_name);
 		}
 	} else if (target->owner->storage_type & (JC_LOCAL | JC_LVAL)) {
-		strncpy(src_reg, "rbp", 3);
+		strcpy(src_reg, "rbp");
 		instrMOV_OFFSET_REG(8, src_reg, reg_pool[REGx].reg_name, target->owner->fp_offset);
 	}
 }

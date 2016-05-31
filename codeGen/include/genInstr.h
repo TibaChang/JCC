@@ -46,8 +46,10 @@ void set_CodeGenStatus(uint32_t status, uint32_t arg);
 void instrMOV(uint32_t instrType, uint32_t byte_size, uint32_t value, char *reg_1, char *reg_2, uint32_t offset, char *sym_name);
 
 
+#define RET_AT_TOP     0x1
+#define RET_AT_SECOND  0x2
 void genMUL(uint32_t op);
-
+void genADD(uint32_t op);
 
 
 #endif

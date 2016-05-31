@@ -22,6 +22,7 @@
 #include "lex.h"
 #include "statement.h"
 #include "expression.h"
+#include "reg.h"
 
 /********************************************
  * <statement>::=<compound_statement>

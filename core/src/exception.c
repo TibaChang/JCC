@@ -22,21 +22,27 @@
 #include "exception.h"
 #include "lex.h"
 
+#define C_NORMAL      "\x1B[0m"
 #define C_YELLOW      "\x1B[33;1m"
 
 static void handle_exception(int level, char *fmt, va_list ap)
 {
 	char buffer[1024];
 	vsprintf(buffer, fmt, ap);
+	compiler_stage = level;
 	if (compiler_stage == LEVEL_WARNING) {
+		printf("%s", C_YELLOW);
 		printf("\nIn the file:%s, line number:%d ,Compiler WARNING:%s\n", cur_filename, cur_line_num, buffer);
+		printf("%s", C_NORMAL);
 	} else if (compiler_stage == LEVEL_ERROR) {
+		printf("%s", C_YELLOW);
 		printf("\nIn the file:%s, line number:%d ,Compiler ERROR:%s\n", cur_filename, cur_line_num, buffer);
+		printf("%s", C_NORMAL);
 		exit(EXIT_FAILURE);
 	} else { /*INTERNAL_ERROR*/
 		printf("%s", C_YELLOW);
 		printf("\nIn the file:%s, line number:%d ,Compiler INTERNAL ERROR:%s\n", cur_filename, cur_line_num, buffer);
-		exit(EXIT_FAILURE);
+		printf("%s", C_NORMAL);
 	}
 }
 

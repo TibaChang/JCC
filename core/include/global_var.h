@@ -69,7 +69,7 @@ extern uint32_t FuncParaIndex;/*current function parameter number*/
 extern uint32_t CodeGenStatus;
 extern Stack FuncArg_stack;/*used to store args information*/
 
-#define opStack_Size 256
+#define opStack_Size 512
 extern Operand opStack[opStack_Size];
 extern Operand *opTop;
 

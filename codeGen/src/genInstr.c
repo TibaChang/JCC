@@ -99,27 +99,32 @@ void instrMOV(uint32_t instrType, uint32_t byte_size, uint32_t value, char *reg_
 	}
 }
 
-static void genMUL_rax(uint32_t op)
+static void genMUL_rax(uint32_t op, uint32_t mode)
 {
 	char instr[6];
 	uint32_t reg;
 
+	if (mode == RET_AT_TOP) {
+		operand_pop();
+	}
+
 	switch (op) {
 	case tk_STAR:
-		strncpy(instr, "imulq", 5);
+		strcpy(instr, "imulq");
 		reg = FindFreeReg();
 		assignReg(reg);
 		asmPrintf("    %s   %%%s, %%%s\n", instr, reg_pool[reg].reg_name, reg_pool[REG_RAX].reg_name);/*store to second reg*/
+		if (mode == RET_AT_SECOND) {
+			operand_pop();
+		}
 		setReg_Return(REG_RAX);
 		setReg_Unused(reg);
-		operand_push(&ret_sym, NOT_SPECIFIED);
 		break;
 	case tk_DIVIDE:
 	case tk_MOD:
-		strncpy(instr, "idivq", 5);
+		strcpy(instr, "idivq");
 		reg = FindFreeReg();
 		assignReg(reg);
-		instrMOV_REG_REG(8, reg_pool[REG_RAX].reg_name, reg_pool[reg].reg_name);
 		FreeReg(REG_RAX);
 		assignReg(REG_RAX);
 		asmPrintf("    %s   %%%s\n", instr, reg_pool[reg].reg_name); /*quotient:rax   ,  remainder:rdx*/
@@ -129,12 +134,12 @@ static void genMUL_rax(uint32_t op)
 		setReg_Return(REG_RAX);
 		setReg_Unused(REG_RDX);
 		setReg_Unused(reg);
-		operand_push(&ret_sym, NOT_SPECIFIED);
 		break;
 	default:
 		interERROR("MUL type instruction generating error!");
 		break;
 	}
+	operand_push(&ret_sym, NOT_SPECIFIED);
 
 }
 
@@ -144,15 +149,17 @@ void genMUL(uint32_t op)
 	char instr[6];
 	uint32_t reg;
 
-	if (opTop->sym->storage_type == JC_RET_REG) {
-		genMUL_rax(op);
-		operand_pop();
+	if (opTop->sym->storage_type == JC_RET_REG) {/*for some operand has higher priority than previous one*/
+		genMUL_rax(op, RET_AT_TOP);
+		return;
+	} else if (opTop[-1].sym->storage_type == JC_RET_REG) { /*for several same priority operand_push*/
+		genMUL_rax(op, RET_AT_SECOND);
 		return;
 	}
 
 	switch (op) {
 	case tk_STAR:
-		strncpy(instr, "imulq", 5);
+		strcpy(instr, "imulq");
 		reg = FindFreeReg();
 		assignReg_twoSecond(reg);
 		assignReg_twoFirst(REG_RAX);
@@ -163,7 +170,7 @@ void genMUL(uint32_t op)
 		break;
 	case tk_DIVIDE:
 	case tk_MOD:
-		strncpy(instr, "idivq", 5);
+		strcpy(instr, "idivq");
 		assignReg_twoSecond(REG_RDX);/*reaminder*/
 		assignReg_twoFirst(REG_RAX);/*quotient*/
 		asmPrintf("    %s   %%%s\n", instr, reg_pool[REG_RDX].reg_name); /*quotient:rax   ,  remainder:rdx*/
@@ -178,6 +185,73 @@ void genMUL(uint32_t op)
 		interERROR("MUL type instruction generating error!");
 		break;
 	}
+}
+
+
+static void genADD_rax(uint32_t op, uint32_t mode)
+{
+	char instr[5];
+	uint32_t reg;
+
+	switch (op) {
+	case tk_PLUS:
+		strcpy(instr, "addq");
+		break;
+	case tk_MINUS:
+		strcpy(instr, "subq");
+		break;
+	default:
+		interERROR("ADD type instruction generating error!");
+		break;
+	}
+	if (mode == RET_AT_TOP) {
+		operand_pop();
+	}
+	reg = FindFreeReg();
+	assignReg(reg);
+	asmPrintf("    %s    %%%s, %%%s\n", instr, reg_pool[reg].reg_name, reg_pool[REG_RAX].reg_name);/*store to second reg*/
+
+	if (mode == RET_AT_SECOND) {
+		operand_pop();
+	}
+
+	setReg_Return(REG_RAX);
+	setReg_Unused(reg);
+	operand_push(&ret_sym, NOT_SPECIFIED);
+}
+
+
+void genADD(uint32_t op)
+{
+	char instr[5];
+	uint32_t reg;
+
+	if (opTop->sym->storage_type == JC_RET_REG) {  /*for some operand has higher priority than previous one*/
+		genADD_rax(op, RET_AT_TOP);
+		return;
+	} else if (opTop[-1].sym->storage_type == JC_RET_REG) { /*for several same priority operand_push*/
+		genADD_rax(op, RET_AT_SECOND);
+		return;
+	}
+
+	switch (op) {
+	case tk_PLUS:
+		strcpy(instr, "addq");
+		break;
+	case tk_MINUS:
+		strcpy(instr, "subq");
+		break;
+	default:
+		interERROR("ADD type instruction generating error!");
+		break;
+	}
+	reg = FindFreeReg();
+	assignReg_twoSecond(reg);
+	assignReg_twoFirst(REG_RAX);
+	asmPrintf("    %s    %%%s, %%%s\n", instr, reg_pool[reg].reg_name, reg_pool[REG_RAX].reg_name);/*store to second reg*/
+	setReg_Return(REG_RAX);
+	setReg_Unused(reg);
+	operand_push(&ret_sym, NOT_SPECIFIED);
 }
 
 

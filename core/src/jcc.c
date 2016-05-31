@@ -40,7 +40,7 @@ int main(int argc, char **argv)
 
 	/*open the output file*/
 	char output_name[20];
-	strncpy(output_name, cur_filename, strlen(cur_filename));
+	strcpy(output_name, cur_filename);
 	output_name[strlen(cur_filename) - 2] = '\0';
 	strcat(output_name, ".s");
 	output_File = fopen(output_name, "w");
