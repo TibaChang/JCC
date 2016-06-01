@@ -31,7 +31,7 @@
 #define  JC_CONST    0x0010  /*pass a const value to function*/
 #define  JC_RET_REG  0xF000
 
-/*Symbol type*/
+/*Symbol type(with tk_code)*/
 #define  JC_ANOM        0x10000000/*anonymous symbol*/
 #define  JC_STRUCT      0x20000000/*struct symbol*/
 #define  JC_MEMBER      0x40000000/*struct member*/

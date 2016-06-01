@@ -42,7 +42,7 @@ void set_CodeGenStatus(uint32_t status, uint32_t arg);
 #define instrMOV_VAL_OFFSET(byte_size, value, reg_1, offset_2)  instrMOV(VALUE_OFFSET, byte_size, value, reg_1, NULL, offset_2,NULL)
 #define instrMOV_OFFSET_REG(byte_size, reg_1, reg_2, offset_1)  instrMOV(OFFSET_REG, byte_size, NOT_SPECIFIED, reg_1, reg_2, offset_1,NULL)
 #define instrMOV_symOFFSET_REG(byte_size, sym_name, reg_1, reg_2)  instrMOV(symOFFSET_REG, byte_size, NOT_SPECIFIED, reg_1, reg_2, NOT_SPECIFIED,sym_name)
-#define instrMOV_REG_symOFFSET(byte_size, sym_name, reg_1, reg_2)  instrMOV(symOFFSET_REG, byte_size, NOT_SPECIFIED, reg_1, reg_2, NOT_SPECIFIED,sym_name)
+#define instrMOV_REG_symOFFSET(byte_size, sym_name, reg_1, reg_2)  instrMOV(REG_symOFFSET, byte_size, NOT_SPECIFIED, reg_1, reg_2, NOT_SPECIFIED,sym_name)
 void instrMOV(uint32_t instrType, uint32_t byte_size, uint32_t value, char *reg_1, char *reg_2, uint32_t offset, char *sym_name);
 
 

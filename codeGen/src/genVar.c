@@ -13,6 +13,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <string.h>
 #include "genVar.h"
 #include "symbol.h"
 #include "exception.h"
@@ -20,6 +21,7 @@
 #include "global_var.h"
 #include "genInstr.h"
 #include "token.h"
+#include "operand.h"
 
 
 void genGlobalVar(Symbol *sym)
@@ -66,8 +68,8 @@ void genGlobalVar(Symbol *sym)
 		break;
 	}
 
-	/*Has init value*/
-	if (isVarHasInit()) {
+	/*Has init value(always),even non-init value also give 0*/
+	if ( 1 ) {
 		asmPrintf("    .globl   %s\n", var_name);
 		asmPrintf("    .data\n");
 		asmPrintf("    .align   %d\n", align);
@@ -82,7 +84,7 @@ void genGlobalVar(Symbol *sym)
 
 
 	} else { /*Without init value*/
-		asmPrintf(".comm   %s,%d,%d\n\n", var_name, size, align);
+		//asmPrintf(".comm   %s,%d,%d\n\n", var_name, size, align);
 	}
 }
 
@@ -107,13 +109,9 @@ void genLocalVar(Symbol *sym)
 	data_type = sym->type.data_type & JC_ValMASK;
 	switch (data_type) {
 	case T_INT:
-		size = 4;
-		break;
 	case T_PTR:
-		size = 8;
-		break;
 	case T_CHAR:
-		size = 1;
+		size = 8;
 		break;
 	case T_STRUCT:
 		size = (sym->type.ref->relation & 0xFFFF);
@@ -127,6 +125,58 @@ void genLocalVar(Symbol *sym)
 	updateSYM_FPoffset(sym, size);
 	instrMOV_VAL_OFFSET(size, sym->relation, "rbp", sym->fp_offset);
 	asmPrintf("\n");
+}
+
+void genVar(void)
+{
+    Symbol *pS;
+    pS = opTop->sym;
+    /*Avoiding gen code for "mother/symbol type" */     
+    if (!(pS->tk_code & JC_SymTypeMASK)) {
+        if ( (pS->storage_type & JC_GLOBAL)&&(pS->storage_type & JC_LVAL) ) {
+            genGlobalVar(pS);
+        } else if ( (pS->storage_type & JC_LOCAL)&&(pS->storage_type & JC_LVAL) ){
+            genLocalVar(pS);
+        }
+        operand_pop();
+    }
+}
+
+void genAssign(void)
+{
+    Symbol *Lsym = opTop[-1].sym;
+    Symbol *ret_sym = opTop->sym;
+    uint32_t temp_reg;
+    char dest_reg[4];
+
+    temp_reg = FindFreeReg();
+    assignReg(temp_reg);
+
+    /*if there is return operand, get it*/
+    if(ret_sym->storage_type & JC_RET_REG)
+    {
+        instrMOV_REG_REG(8, reg_pool[REG_RAX].reg_name, reg_pool[temp_reg].reg_name);
+        FreeReg(REG_RAX);
+    }
+
+    
+
+    if(Lsym->storage_type & JC_GLOBAL)
+    {
+        strcpy(dest_reg, "rip");
+        instrMOV_REG_symOFFSET(8, get_tkSTR(Lsym->tk_code & ~JC_SymTypeMASK), reg_pool[temp_reg].reg_name, dest_reg);
+    }
+    else if(Lsym->storage_type & JC_LOCAL)
+    {
+        strcpy(dest_reg, "rbp");
+        instrMOV_REG_OFFSET(8, reg_pool[temp_reg].reg_name, dest_reg, Lsym->fp_offset);
+    }else
+    {
+        interERROR("genAssign() error!");
+    }
+
+    FreeReg(temp_reg);
+
 }
 
 

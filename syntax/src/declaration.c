@@ -125,27 +125,16 @@ void external_declaration(uint32_t storage_type)
 				}
 				storage_type_1 |= storage_type;
 
+                tkValue = NOT_SPECIFIED;
 				if (cur_token == tk_ASSIGN) {
 					getToken();
 					initializer(&type);
+                    operand_pop();
 				}
 
-				/*push into symbol table*/
-				if (isVarHasInit()) {
-					sym = var_sym_put(&type, storage_type_1, tk, tkValue);
-				} else {
-					sym = var_sym_put(&type, storage_type_1, tk, NOT_SPECIFIED);
-				}
-
-				/*Avoiding gen code for "mother/symbol type" */
-				if (!(sym->tk_code & JC_SymTypeMASK)) {
-					if (sym->storage_type & JC_GLOBAL) {
-						genGlobalVar(sym);
-					} else {
-						genLocalVar(sym);
-					}
-				}
-				clearVarInitFlag();
+			    sym = var_sym_put(&type, storage_type_1, tk, tkValue);
+                operand_push(sym,tkValue);
+                genVar();
 			}
 
 			if (cur_token == tk_COMMA) {

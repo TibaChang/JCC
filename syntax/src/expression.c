@@ -43,6 +43,15 @@ void expression(void)
 }
 
 
+static void check_LValue(void)
+{
+    if( !(opTop->sym->storage_type & JC_LVAL) )
+    {
+        expect("LValue");
+    }
+}
+
+
 /**************************************************
  * <assignment_expression>::=<equality_expression>
  *                         | <unary_expression><tk_ASSIGN><assignment_expression>
@@ -55,8 +64,10 @@ void assignment_expression(void)
 {
 	equality_expression();
 	if (cur_token == tk_ASSIGN) {
+        check_LValue();
 		getToken();
 		assignment_expression();
+        genAssign();
 	}
 }
 
@@ -241,7 +252,7 @@ void primary_expression(void)
 
 	switch (cur_token) {
 	case tk_cINT:
-		setVarInitFlag();
+		//setVarInitFlag();
 
 		/*if pass parameter to a function*/
 		/*
@@ -256,7 +267,7 @@ void primary_expression(void)
 		getToken();
 		break;
 	case tk_cCHAR:
-		setVarInitFlag();
+		//setVarInitFlag();
 
 		/*if pass parameter to a function*/
 		/*
