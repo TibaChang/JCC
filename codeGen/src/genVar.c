@@ -69,7 +69,7 @@ void genGlobalVar(Symbol *sym)
 	}
 
 	/*Has init value(always),even non-init value also give 0*/
-	if ( 1 ) {
+	if (1) {
 		asmPrintf("    .globl   %s\n", var_name);
 		asmPrintf("    .data\n");
 		asmPrintf("    .align   %d\n", align);
@@ -129,53 +129,48 @@ void genLocalVar(Symbol *sym)
 
 void genVar(void)
 {
-    Symbol *pS;
-    pS = opTop->sym;
-    /*Avoiding gen code for "mother/symbol type" */     
-    if (!(pS->tk_code & JC_SymTypeMASK)) {
-        if ( (pS->storage_type & JC_GLOBAL)&&(pS->storage_type & JC_LVAL) ) {
-            genGlobalVar(pS);
-        } else if ( (pS->storage_type & JC_LOCAL)&&(pS->storage_type & JC_LVAL) ){
-            genLocalVar(pS);
-        }
-        operand_pop();
-    }
+	Symbol *pS;
+	pS = opTop->sym;
+	/*Avoiding gen code for "mother/symbol type" */
+	if (!(pS->tk_code & JC_SymTypeMASK)) {
+		if ((pS->storage_type & JC_GLOBAL) && (pS->storage_type & JC_LVAL)) {
+			genGlobalVar(pS);
+		} else if ((pS->storage_type & JC_LOCAL) && (pS->storage_type & JC_LVAL)) {
+			genLocalVar(pS);
+		}
+		operand_pop();
+	}
 }
 
 void genAssign(void)
 {
-    Symbol *Lsym = opTop[-1].sym;
-    Symbol *ret_sym = opTop->sym;
-    uint32_t temp_reg;
-    char dest_reg[4];
+	Symbol *Lsym = opTop[-1].sym;
+	Symbol *ret_sym = opTop->sym;
+	uint32_t temp_reg;
+	char dest_reg[4];
 
-    temp_reg = FindFreeReg();
-    assignReg(temp_reg);
+	temp_reg = FindFreeReg();
+	assignReg(temp_reg);
 
-    /*if there is return operand, get it*/
-    if(ret_sym->storage_type & JC_RET_REG)
-    {
-        instrMOV_REG_REG(8, reg_pool[REG_RAX].reg_name, reg_pool[temp_reg].reg_name);
-        FreeReg(REG_RAX);
-    }
+	/*if there is return operand, get it*/
+	if (ret_sym->storage_type & JC_RET_REG) {
+		instrMOV_REG_REG(8, reg_pool[REG_RAX].reg_name, reg_pool[temp_reg].reg_name);
+		FreeReg(REG_RAX);
+	}
 
-    
 
-    if(Lsym->storage_type & JC_GLOBAL)
-    {
-        strcpy(dest_reg, "rip");
-        instrMOV_REG_symOFFSET(8, get_tkSTR(Lsym->tk_code & ~JC_SymTypeMASK), reg_pool[temp_reg].reg_name, dest_reg);
-    }
-    else if(Lsym->storage_type & JC_LOCAL)
-    {
-        strcpy(dest_reg, "rbp");
-        instrMOV_REG_OFFSET(8, reg_pool[temp_reg].reg_name, dest_reg, Lsym->fp_offset);
-    }else
-    {
-        interERROR("genAssign() error!");
-    }
 
-    FreeReg(temp_reg);
+	if (Lsym->storage_type & JC_GLOBAL) {
+		strcpy(dest_reg, "rip");
+		instrMOV_REG_symOFFSET(8, get_tkSTR(Lsym->tk_code & ~JC_SymTypeMASK), reg_pool[temp_reg].reg_name, dest_reg);
+	} else if (Lsym->storage_type & JC_LOCAL) {
+		strcpy(dest_reg, "rbp");
+		instrMOV_REG_OFFSET(8, reg_pool[temp_reg].reg_name, dest_reg, Lsym->fp_offset);
+	} else {
+		interERROR("genAssign() error!");
+	}
+
+	FreeReg(temp_reg);
 
 }
 

@@ -45,10 +45,9 @@ void expression(void)
 
 static void check_LValue(void)
 {
-    if( !(opTop->sym->storage_type & JC_LVAL) )
-    {
-        expect("LValue");
-    }
+	if (!(opTop->sym->storage_type & JC_LVAL)) {
+		expect("LValue");
+	}
 }
 
 
@@ -64,10 +63,10 @@ void assignment_expression(void)
 {
 	equality_expression();
 	if (cur_token == tk_ASSIGN) {
-        check_LValue();
+		check_LValue();
 		getToken();
 		assignment_expression();
-        genAssign();
+		genAssign();
 	}
 }
 

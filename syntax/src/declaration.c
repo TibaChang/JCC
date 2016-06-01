@@ -125,16 +125,16 @@ void external_declaration(uint32_t storage_type)
 				}
 				storage_type_1 |= storage_type;
 
-                tkValue = NOT_SPECIFIED;
+				tkValue = NOT_SPECIFIED;
 				if (cur_token == tk_ASSIGN) {
 					getToken();
 					initializer(&type);
-                    operand_pop();
+					operand_pop();
 				}
 
-			    sym = var_sym_put(&type, storage_type_1, tk, tkValue);
-                operand_push(sym,tkValue);
-                genVar();
+				sym = var_sym_put(&type, storage_type_1, tk, tkValue);
+				operand_push(sym, tkValue);
+				genVar();
 			}
 
 			if (cur_token == tk_COMMA) {
