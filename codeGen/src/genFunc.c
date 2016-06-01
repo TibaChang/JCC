@@ -65,7 +65,7 @@ void genFuncProlog(Symbol *sym)
 void genFuncEpilog(Symbol *sym)
 {
 	char *func_name = get_tkSTR(sym->tk_code & JC_ValMASK);
-	if (strncmp("main", func_name, 4) == 0) { /*if this is main function*/
+	if (strcmp("main", func_name) == 0) { /*if this is main function*/
 		asmPrintf("\n    leave\n");
 	} else {
 		asmPrintf("    popq    %%rbp\n");
@@ -92,17 +92,17 @@ static void add_FuncPara(Symbol *sym)
 	if (sym->type.data_type == T_FUNC) {
 		char FuncName[31];
 		memset(FuncName, '\0', 31);
-		strncpy(FuncName, get_tkSTR(sym->tk_code), strlen(get_tkSTR(sym->tk_code)));
-		FuncArgs_push(FuncName, NOT_SPECIFIED, NOT_SPECIFIED, strlen(get_tkSTR(sym->tk_code)), NOT_SPECIFIED, NOT_SPECIFIED);
+		strcpy(FuncName, get_tkSTR(sym->tk_code));
+		FuncArgs_push(FuncName, NOT_SPECIFIED, NOT_SPECIFIED, NOT_SPECIFIED, NOT_SPECIFIED);
 	} else {
 		if (sym->storage_type & JC_GLOBAL) {
 			char GlobalVar_name[31];
-			strncpy(GlobalVar_name, get_tkSTR(sym->tk_code), strlen(get_tkSTR(sym->tk_code)));
-			FuncArgs_push(NOT_SPECIFIED, sym->storage_type & 0x13, GlobalVar_name, strlen(get_tkSTR(sym->tk_code)), sym->fp_offset, sym->relation);
+			strcpy(GlobalVar_name, get_tkSTR(sym->tk_code));
+			FuncArgs_push(NOT_SPECIFIED, sym->storage_type & 0x13, GlobalVar_name, sym->fp_offset, sym->relation);
 		} else if (sym->storage_type & JC_LOCAL) {
-			FuncArgs_push(NOT_SPECIFIED, sym->storage_type & 0x13, NOT_SPECIFIED, NOT_SPECIFIED, sym->fp_offset , sym->relation);
+			FuncArgs_push(NOT_SPECIFIED, sym->storage_type & 0x13, NOT_SPECIFIED, sym->fp_offset , sym->relation);
 		} else if (sym->storage_type & JC_CONST) {
-			FuncArgs_push(NOT_SPECIFIED, sym->storage_type & 0x13, NOT_SPECIFIED, NOT_SPECIFIED, NOT_SPECIFIED, sym->relation);
+			FuncArgs_push(NOT_SPECIFIED, sym->storage_type & 0x13, NOT_SPECIFIED, NOT_SPECIFIED, sym->relation);
 		} else {
 			error("Variable scope error!");
 		}
@@ -120,7 +120,7 @@ static void genFuncCallAsm(void)
 
 	index = 0;
 	/*if funcName equal to PARAMETER, then this is parameter*/
-	while (strncmp(args->funcName, PARAMETER, strlen(PARAMETER)) == 0) {
+	while (strcmp(args->funcName, PARAMETER) == 0) {
 		scope = args->arg_scope;
 		value = args->value;
 		count = FuncPara_count - index;
@@ -130,16 +130,16 @@ static void genFuncCallAsm(void)
 
 		switch (count) {
 		case 1:
-			strncpy(dest_reg, "rdi", 3);
+			strcpy(dest_reg, "rdi");
 			break;
 		case 2:
-			strncpy(dest_reg, "rsi", 3);
+			strcpy(dest_reg, "rsi");
 			break;
 		case 3:
-			strncpy(dest_reg, "rdx", 3);
+			strcpy(dest_reg, "rdx");
 			break;
 		case 4:
-			strncpy(dest_reg, "rcx", 3);
+			strcpy(dest_reg, "rcx");
 			break;
 		default:
 			error("JCC does not support more than 4 arguments!");
@@ -148,11 +148,11 @@ static void genFuncCallAsm(void)
 
 		switch (scope) {
 		case JC_GLOBAL:
-			strncpy(src_reg, "rip", 3);
+			strcpy(src_reg, "rip");
 			instrMOV_symOFFSET_REG(size, args->global_name, src_reg, dest_reg);
 			break;
 		case JC_LOCAL:
-			strncpy(src_reg, "rbp", 3);
+			strcpy(src_reg, "rbp");
 			instrMOV_OFFSET_REG(size, src_reg, dest_reg, args->fp_offset);
 			break;
 		case JC_CONST:
@@ -183,7 +183,7 @@ void genFuncCall(Symbol *sym)
 		return;
 	}
 	if (isFuncPassConstVal() == FuncIsPassingConstVal) {
-		//if we pass const int/char, the sym will be NULL
+		/*if we pass const int/char, the sym will be NULL*/
 		sym = &s;
 		sym->storage_type = JC_CONST;
 		sym->relation = tkValue;

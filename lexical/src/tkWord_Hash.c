@@ -122,11 +122,11 @@ tkWord *tkW_insert(char *p)
 	uint32_t key_no;
 	uint32_t length;
 
-	key_no = hash_func(p, strlen(p));
+	key_no = hash_func(p, strlen(p)+1);
 	tkp = tkW_search(p, key_no);
 
 	if (tkp == NULL) {
-		length = strlen(p);
+		length = strlen(p)+1;
 		tkp = (tkWord*)mallocZ(sizeof(tkWord) + length + 1);
 		tkp->next = tk_hashTable[key_no];
 		tk_hashTable[key_no] = tkp;

@@ -19,17 +19,17 @@
 #include <string.h>
 #include "symbol.h"
 
-FuncArgs *FuncArgs_push(char *funcName, uint32_t arg_scope, char *global_name, uint32_t global_name_len, int offset, uint64_t value)
+FuncArgs *FuncArgs_push(char *funcName, uint32_t arg_scope, char *global_name, int offset, uint64_t value)
 {
 	FuncArgs args, *p;
 	if (funcName != NOT_SPECIFIED) {
 		strcpy(args.funcName, funcName);
 	} else {
-		strncpy(args.funcName, PARAMETER, strlen(PARAMETER));
+		strcpy(args.funcName, PARAMETER);
 	}
 
 	if (global_name != NOT_SPECIFIED) {
-		strncpy(args.global_name, global_name, global_name_len);
+		strcpy(args.global_name, global_name);
 	}
 	args.arg_scope = arg_scope;
 	args.fp_offset = offset;

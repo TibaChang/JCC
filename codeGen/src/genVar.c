@@ -47,8 +47,8 @@ void genGlobalVar(Symbol *sym)
 	case T_INT:
 	case T_PTR:
 	case T_CHAR:
-		align = 8;
-		size = 8;
+		align = BYTE_8;
+		size = BYTE_8;
 		data_length = dSIZE_64bits;
 		break;
 		break;
@@ -104,7 +104,7 @@ void genLocalVar(Symbol *sym)
 	case T_INT:
 	case T_PTR:
 	case T_CHAR:
-		size = 8;
+		size = BYTE_8;
 		break;
 	case T_STRUCT:
 		size = (sym->type.ref->relation & 0xFFFF);
@@ -147,7 +147,7 @@ void genAssign(void)
 
 	/*if there is return operand, get it*/
 	if (ret_sym->storage_type & JC_RET_REG) {
-		instrMOV_REG_REG(8, reg_pool[REG_RAX].reg_name, reg_pool[temp_reg].reg_name);
+		instrMOV_REG_REG(BYTE_8, reg_pool[REG_RAX].reg_name, reg_pool[temp_reg].reg_name);
 		FreeReg(REG_RAX);
 	}
 
@@ -155,10 +155,10 @@ void genAssign(void)
 
 	if (Lsym->storage_type & JC_GLOBAL) {
 		strcpy(dest_reg, "rip");
-		instrMOV_REG_symOFFSET(8, get_tkSTR(Lsym->tk_code & ~JC_SymTypeMASK), reg_pool[temp_reg].reg_name, dest_reg);
+		instrMOV_REG_symOFFSET(BYTE_8, get_tkSTR(Lsym->tk_code & ~JC_SymTypeMASK), reg_pool[temp_reg].reg_name, dest_reg);
 	} else if (Lsym->storage_type & JC_LOCAL) {
 		strcpy(dest_reg, "rbp");
-		instrMOV_REG_OFFSET(8, reg_pool[temp_reg].reg_name, dest_reg, Lsym->fp_offset);
+		instrMOV_REG_OFFSET(BYTE_8, reg_pool[temp_reg].reg_name, dest_reg, Lsym->fp_offset);
 	} else {
 		interERROR("genAssign() error!");
 	}

@@ -50,9 +50,9 @@ static void instrAddSuffix(char *origin_instr, uint32_t byte_size)
 	char *suffix;
 	switch (byte_size) {
 	/*JCC always use 8-bytes regs*/
-	case 1:
-	case 4:
-	case 8:
+	case BYTE_1:
+	case BYTE_4:
+	case BYTE_8:
 		suffix = "q";
 		break;
 	default:
@@ -129,7 +129,7 @@ static void genMUL_rax(uint32_t op, uint32_t mode)
 		assignReg(REG_RAX);
 		asmPrintf("    %s   %%%s\n", instr, reg_pool[reg].reg_name); /*quotient:rax   ,  remainder:rdx*/
 		if (op == tk_MOD) {
-			instrMOV_REG_REG(8, reg_pool[REG_RDX].reg_name, reg_pool[REG_RAX].reg_name);
+			instrMOV_REG_REG(BYTE_8, reg_pool[REG_RDX].reg_name, reg_pool[REG_RAX].reg_name);
 		}
 		setReg_Return(REG_RAX);
 		setReg_Unused(REG_RDX);
@@ -175,7 +175,7 @@ void genMUL(uint32_t op)
 		assignReg_twoFirst(REG_RAX);/*quotient*/
 		asmPrintf("    %s   %%%s\n", instr, reg_pool[REG_RDX].reg_name); /*quotient:rax   ,  remainder:rdx*/
 		if (op == tk_MOD) {
-			instrMOV_REG_REG(8, reg_pool[REG_RDX].reg_name, reg_pool[REG_RAX].reg_name);
+			instrMOV_REG_REG(BYTE_8, reg_pool[REG_RDX].reg_name, reg_pool[REG_RAX].reg_name);
 		}
 		setReg_Return(REG_RAX);
 		setReg_Unused(REG_RDX);

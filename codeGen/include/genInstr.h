@@ -29,6 +29,11 @@
 #define symOFFSET_REG 0x5
 #define REG_symOFFSET 0x6
 
+/*Instruction postfix size*/
+#define BYTE_1    0x1
+#define BYTE_4    0x4
+#define BYTE_8    0x8
+
 /*code generation status*/
 #define FuncParaNum       0x1
 #define FuncParaAccept    0x2
