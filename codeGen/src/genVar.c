@@ -45,19 +45,12 @@ void genGlobalVar(Symbol *sym)
 	data_type = sym->type.data_type & JC_ValMASK;
 	switch (data_type) {
 	case T_INT:
-		align = 4;
-		size = 4;
-		data_length = dSIZE_32bits;
-		break;
 	case T_PTR:
+	case T_CHAR:
 		align = 8;
 		size = 8;
 		data_length = dSIZE_64bits;
 		break;
-	case T_CHAR:
-		align = 1;
-		size = 1;
-		data_length = dSIZE_8bits;
 		break;
 	case T_STRUCT:
 		align = (sym->type.ref->storage_type & 0xF);
