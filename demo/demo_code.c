@@ -1,9 +1,12 @@
 
 
+char *global_str = "global_var \n";
 
 void main()
 {
-    printf("test str\n");
+    int a = 5;
+    char *local_str = "local_str\n";
+    printf("test str%s %s \n",local_str,global_str);
 }
 
 

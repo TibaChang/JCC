@@ -129,9 +129,8 @@ void external_declaration(uint32_t storage_type)
 				if (cur_token == tk_ASSIGN) {
 					getToken();
 					initializer(&type);
-					operand_pop();
+					//operand_pop();
 				}
-
 				sym = var_sym_put(&type, storage_type_1, tk, tkValue);
 				operand_push(sym, tkValue);
 				genVar();

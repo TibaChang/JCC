@@ -73,7 +73,12 @@ void genGlobalVar(Symbol *sym)
 		asmPrintf("    .size    %s, %d\n", var_name, size);
 		asmPrintf("%s:\n", var_name);
 		if (data_type != T_STRUCT) {
-			asmPrintf("    .%s    %d\n\n", data_length, sym->relation);
+			/*if it is pointer to char*/
+			if ((data_type & T_PTR) && (sym->type.ref->type.data_type & T_CHAR)) {
+				asmPrintf("    .%s    .LC%d\n\n", data_length, const_STR_index);
+			} else {
+				asmPrintf("    .%s    %d\n\n", data_length, sym->relation);
+			}
 		} else {
 			error("JCC does not support initialization with struct declaration");
 		}
@@ -119,7 +124,13 @@ void genLocalVar(Symbol *sym)
 
 	asmPrintf_func("    subq    $%d, %%rsp\n", size);
 	updateSYM_FPoffset(sym, size);
-	instrMOV_VAL_OFFSET(size, sym->relation, "rbp", sym->fp_offset);
+
+	/*if it is pointer to char*/
+	if ((sym->type.data_type & T_PTR) && (sym->type.ref->type.data_type & T_CHAR)) {
+		asmPrintf_func("    movq    $.LC%d, %d(%%rbp)\n", const_STR_index, sym->fp_offset);
+	} else {
+		instrMOV_VAL_OFFSET(size, sym->relation, "rbp", sym->fp_offset);
+	}
 	asmPrintf_func("\n");
 }
 
