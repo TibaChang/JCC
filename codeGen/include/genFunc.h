@@ -22,12 +22,6 @@
 
 #define asmPrintf_func(...)  fprintf(func_File,__VA_ARGS__)
 
-#define FuncIsPassingConstVal     1
-#define FuncNotPassingConstVal    0
-
-void setFuncConstValFlag(void);
-void clearFuncConstValFlag(void);
-uint32_t isFuncPassConstVal(void);
 
 void genFileTitle(void);
 void genFuncProlog(Symbol *sym);

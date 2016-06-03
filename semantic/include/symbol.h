@@ -37,6 +37,7 @@
 #define  JC_MEMBER      0x40000000/*struct member*/
 #define  JC_PARAMS      0x80000000/*function parameters*/
 #define  JC_SymTypeMASK 0xF0000000
+#define  JC_IF          0x01000000/*get this when JCC encounter the end of the if scope*/
 
 /*Type code*/
 #define  T_INT      0

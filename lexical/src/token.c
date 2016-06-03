@@ -157,6 +157,7 @@ void getToken(void)
 			getCHAR();
 			if (cur_CHAR == '=') {
 				cur_token = tk_NEQ;
+				getCHAR();
 			} else {
 				error("The COMPILER DOR NOT SUPPORT \"!\" operand. \n");
 			}

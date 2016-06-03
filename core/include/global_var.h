@@ -57,6 +57,7 @@ extern Type default_func_type;
 extern Symbol char_sym;
 extern Symbol int_sym;
 extern Symbol ret_sym;/*special symbol used for record register info*/
+extern Symbol *prev_sym;
 
 extern uint32_t var_has_init;
 extern uint32_t FuncConstValFlag;
@@ -77,6 +78,10 @@ extern Operand *opTop;
 extern uint32_t const_STR_index;
 
 extern REG reg_pool[REG_MAX - REG_BASE]; /*reg_pool[0] will not be used*/
+
+/*if label count,ex:  .L2 */
+extern uint32_t condtion_label_count;
+extern uint32_t nested_if_count;
 
 /**************************************************************/
 #endif

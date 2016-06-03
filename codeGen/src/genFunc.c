@@ -25,26 +25,6 @@
 #include "var_storage.h"
 #include "global_var.h"
 
-void setFuncConstValFlag(void)
-{
-	FuncConstValFlag = FuncIsPassingConstVal;
-}
-
-void clearFuncConstValFlag(void)
-{
-	FuncConstValFlag = FuncNotPassingConstVal;
-}
-
-uint32_t isFuncPassConstVal(void)
-{
-	if (FuncConstValFlag == FuncIsPassingConstVal) {
-		return FuncIsPassingConstVal;
-	} else {
-		return FuncNotPassingConstVal;
-	}
-}
-
-
 void genFileTitle(void)
 {
 	asmPrintf(".file   \"%s\"\n\n\n", cur_filename);
@@ -73,92 +53,6 @@ void genFuncEpilog(Symbol *sym)
 	}
 	asmPrintf_func("    ret\n");
 	asmPrintf_func("    .size   %s, .-%s\n\n", func_name, func_name);
-}
-
-
-
-static void add_FuncPara(Symbol *sym)
-{
-	if (sym->type.data_type == T_FUNC) {
-		char FuncName[31];
-		memset(FuncName, '\0', 31);
-		strcpy(FuncName, get_tkSTR(sym->tk_code));
-		FuncArgs_push(FuncName, NOT_SPECIFIED, NOT_SPECIFIED, NOT_SPECIFIED, NOT_SPECIFIED);
-	} else {
-		if (sym->storage_type & JC_GLOBAL) {
-			char GlobalVar_name[31];
-			strcpy(GlobalVar_name, get_tkSTR(sym->tk_code));
-			FuncArgs_push(NOT_SPECIFIED, sym->storage_type & 0x13, GlobalVar_name, sym->fp_offset, sym->relation);
-		} else if (sym->storage_type & JC_LOCAL) {
-			FuncArgs_push(NOT_SPECIFIED, sym->storage_type & 0x13, NOT_SPECIFIED, sym->fp_offset , sym->relation);
-		} else if (sym->storage_type & JC_CONST) {
-			FuncArgs_push(NOT_SPECIFIED, sym->storage_type & 0x13, NOT_SPECIFIED, NOT_SPECIFIED, sym->relation);
-		} else {
-			error("Variable scope error!");
-		}
-		FuncParaIndex++;
-	}
-}
-
-static void genFuncCallAsm(void)
-{
-
-	FuncArgs *args = FuncArgs_getTop();
-	uint32_t scope,  size, index, count;
-	uint64_t value;
-	char dest_reg[4], src_reg[4];
-
-	index = 0;
-	/*if funcName equal to PARAMETER, then this is parameter*/
-	while (strcmp(args->funcName, PARAMETER) == 0) {
-		scope = args->arg_scope;
-		value = args->value;
-		count = FuncPara_count - index;
-
-		/*JCC all use 8-bytes regs*/
-		size = 8;
-
-		switch (count) {
-		case 1:
-			strcpy(dest_reg, "rdi");
-			break;
-		case 2:
-			strcpy(dest_reg, "rsi");
-			break;
-		case 3:
-			strcpy(dest_reg, "rdx");
-			break;
-		case 4:
-			strcpy(dest_reg, "rcx");
-			break;
-		default:
-			error("JCC does not support more than 4 arguments!");
-			break;
-		}
-
-		switch (scope) {
-		case JC_GLOBAL:
-			strcpy(src_reg, "rip");
-			instrMOV_symOFFSET_REG(size, args->global_name, src_reg, dest_reg);
-			break;
-		case JC_LOCAL:
-			strcpy(src_reg, "rbp");
-			instrMOV_OFFSET_REG(size, src_reg, dest_reg, args->fp_offset);
-			break;
-		case JC_CONST:
-			instrMOV_VAL_REG(size, value, dest_reg);
-			break;
-		default:
-			interERROR("argument scope error!");
-			break;
-		}
-
-		FuncArgs_pop();
-		args = FuncArgs_getTop();
-		index++;
-	}
-	args = FuncArgs_getTop();
-	asmPrintf_func("    call    %s\n\n", args->funcName);
 }
 
 

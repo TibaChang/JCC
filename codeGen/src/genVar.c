@@ -164,6 +164,8 @@ void genAssign(void)
 	if (ret_sym->storage_type & JC_RET_REG) {
 		instrMOV_REG_REG(BYTE_8, reg_pool[REG_RAX].reg_name, reg_pool[temp_reg].reg_name);
 		FreeReg(REG_RAX);
+	} else if (ret_sym->storage_type == (JC_GLOBAL | JC_CONST)) {
+		instrMOV_VAL_REG(BYTE_8, opTop->value, reg_pool[temp_reg].reg_name);
 	}
 
 
@@ -179,7 +181,8 @@ void genAssign(void)
 	}
 
 	FreeReg(temp_reg);
-
+	operand_pop();
+	operand_pop();
 }
 
 

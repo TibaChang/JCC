@@ -79,10 +79,13 @@ void assignment_expression(void)
  **************************************************/
 void equality_expression(void)
 {
+	uint32_t tk_code;
 	relational_expression();
 	while ((cur_token == tk_EQ) || (cur_token == tk_NEQ)) {
+		tk_code = cur_token;
 		getToken();
 		relational_expression();
+		genCMP(tk_code);
 	}
 }
 
@@ -98,10 +101,13 @@ void equality_expression(void)
  **************************************************/
 void relational_expression(void)
 {
+	uint32_t tk_code;
 	additive_expression();
 	while ((cur_token == tk_LT) || (cur_token == tk_LEQ) || (cur_token == tk_GT) || (cur_token == tk_GEQ)) {
+		tk_code = cur_token;
 		getToken();
 		additive_expression();
+		genCMP(tk_code);
 	}
 }
 

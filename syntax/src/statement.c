@@ -23,6 +23,9 @@
 #include "statement.h"
 #include "expression.h"
 #include "reg.h"
+#include "genFunc.h"
+#include "operand.h"
+#include "genInstr.h"
 
 /********************************************
  * <statement>::=<compound_statement>
@@ -121,15 +124,22 @@ void expression_statement(void)
  ********************************************/
 void if_statement(uint32_t *break_sym, uint32_t *continue_sym)
 {
+	nested_if_count++;
 	getToken();
 	skip(tk_openPA);
 	expression();
 	skip(tk_closePA);
+	genJMP();
 	statement(break_sym, continue_sym);
+	if ((opTop->tk_code == JC_IF) && (nested_if_count == 1)) {
+		asmPrintf_func(".L%d:\n", condtion_label_count);
+		operand_pop();
+	}
 	if (cur_token == kw_ELSE) {
 		getToken();
 		statement(break_sym, continue_sym);
 	}
+	nested_if_count--;
 }
 
 

@@ -23,6 +23,7 @@ typedef struct {
 	Type data_type;
 	int value;/*constant value*/
 	Symbol *sym;
+	uint32_t tk_code;/*record relation operator,such as > >= < <= == */
 } Operand;
 
 void operand_push(Symbol *sym, int value);

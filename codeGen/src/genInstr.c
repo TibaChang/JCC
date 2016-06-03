@@ -257,4 +257,58 @@ void genADD(uint32_t op)
 
 
 
+/*always put first var at RSI,second var at RDI,please note the order of parameters for cmp instruction*/
+void genCMP(uint32_t op)
+{
+	FreeReg(REG_RDI);
+	assignReg(REG_RDI);
+	FreeReg(REG_RSI);
+	assignReg(REG_RSI);
+	asmPrintf_func("    cmpq    %%rdi,%%rsi\n");
+	FreeReg(REG_RDI);
+	FreeReg(REG_RSI);
+
+	operand_push(NULL, NOT_SPECIFIED);
+	opTop->tk_code = op;
+}
+
+void genJMP(void)
+{
+	uint32_t op = opTop->tk_code;
+	char condition_code[4];
+	operand_pop();
+	switch (op) {
+	case tk_EQ:
+		strcpy(condition_code, "jne");
+		break;
+	case tk_NEQ:
+		strcpy(condition_code, "je");
+		break;
+	case tk_LT:
+		strcpy(condition_code, "jge");
+		break;
+	case tk_LEQ:
+		strcpy(condition_code, "jg");
+		break;
+	case tk_GT:
+		strcpy(condition_code, "jle");
+		break;
+	case tk_GEQ:
+		strcpy(condition_code, "jl");
+		break;
+	default:
+		interERROR("genIF with wrong op");
+		break;
+	}
+	if (nested_if_count == 1) {
+		condtion_label_count++;
+	}
+	asmPrintf_func("    %s  .L%d\n", condition_code, condtion_label_count);
+
+	operand_push(NULL, NOT_SPECIFIED);
+	opTop->tk_code = JC_IF;
+}
+
+
+
 

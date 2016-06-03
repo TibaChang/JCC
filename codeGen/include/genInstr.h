@@ -55,7 +55,8 @@ void instrMOV(uint32_t instrType, uint32_t byte_size, uint32_t value, char *reg_
 #define RET_AT_SECOND  0x2
 void genMUL(uint32_t op);
 void genADD(uint32_t op);
-
+void genCMP(uint32_t op);
+void genJMP(void);
 
 #endif
 
