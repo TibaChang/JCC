@@ -63,6 +63,7 @@ extern uint32_t FuncConstValFlag;
 
 /*Code generation*/
 extern FILE *output_File;
+extern FILE *func_File;
 extern uint32_t FP_offset;/*local variable frame pointer offset*/
 extern uint32_t FuncPara_count;/*calculating function call parameter numbers*/
 extern uint32_t FuncParaIndex;/*current function parameter number*/

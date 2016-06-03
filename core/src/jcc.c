@@ -28,13 +28,50 @@
 #include "var_storage.h"
 #include "genFunc.h"
 #include "reg.h"
+#include "genVar.h"
+#include "exception.h"
+
+static void close_FILE()
+{
+	char c;
+
+	fclose(output_File);
+	fclose(func_File);
+
+	/*open the output file*/
+	char output_name[20];
+	strcpy(output_name, cur_filename);
+	output_name[strlen(cur_filename) - 2] = '\0';
+	strcat(output_name, ".s");
+	output_File = fopen(output_name, "a+");
+	if (!output_File) {
+		interERROR("Opening output file error for copy!");
+		exit(EXIT_FAILURE);
+	}
+	/*open the file for functions*/
+	strcpy(output_name, cur_filename);
+	output_name[strlen(cur_filename) - 2] = '\0';
+	strcat(output_name, ".f");
+	func_File = fopen(output_name, "r");
+	if (!func_File) {
+		interERROR("Opening temportary function file error for copy!");
+		exit(EXIT_FAILURE);
+	}
+
+	while ((c = fgetc(func_File)) != EOF) {
+		fputc(c, output_File);
+	}
+	fclose(cur_File);
+	fclose(output_File);
+	fclose(func_File);
+}
 
 int main(int argc, char **argv)
 {
 	cur_File = fopen(argv[1], "r");
 	if (!cur_File) {
-		printf("Opening JCC source file failed!\n");
-		return -1;
+		interERROR("Opening JCC source file failed!\n");
+		exit(EXIT_FAILURE);
 	}
 	cur_filename = argv[1];
 
@@ -44,7 +81,20 @@ int main(int argc, char **argv)
 	output_name[strlen(cur_filename) - 2] = '\0';
 	strcat(output_name, ".s");
 	output_File = fopen(output_name, "w");
-	genFileTitle(output_File, output_name);
+	if (!output_File) {
+		interERROR("Opening output file error!");
+		exit(EXIT_FAILURE);
+	}
+	/*open the file for functions*/
+	strcpy(output_name, cur_filename);
+	output_name[strlen(cur_filename) - 2] = '\0';
+	strcat(output_name, ".f");
+	func_File = fopen(output_name, "w");
+	if (!func_File) {
+		interERROR("Opening temportary function file error!");
+		exit(EXIT_FAILURE);
+	}
+	genFileTitle();
 
 
 	init();
@@ -54,8 +104,8 @@ int main(int argc, char **argv)
 	translation_unit();
 
 	cleanup();
-	fclose(cur_File);
-	fclose(output_File);
+
+	close_FILE();
 	printf("Code Generation SUCCESS! File: %s \n\n", argv[1]);
 	return 0;
 }

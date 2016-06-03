@@ -14,6 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <string.h>
+#include <stdio.h>
 #include "genVar.h"
 #include "symbol.h"
 #include "exception.h"
@@ -31,6 +32,7 @@ void genGlobalVar(Symbol *sym)
 	if ((sym->storage_type & JC_CONST) && (sym->type.data_type & T_ARRAY)) {
 		sym->relation = const_STR_index;
 		const_STR_index++;
+
 		asmPrintf("\n    .section    .rodata\n");
 		asmPrintf("    .align 8\n");
 		asmPrintf(".LC%d:\n", const_STR_index);

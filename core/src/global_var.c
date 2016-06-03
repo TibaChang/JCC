@@ -31,7 +31,6 @@ char cur_CHAR;
 FILE *cur_File;
 
 
-
 /*Semantic analysis*/
 Stack global_sym_stack;
 Stack local_sym_stack;
@@ -49,6 +48,7 @@ uint32_t FuncConstValFlag;
 
 /*Code generation*/
 FILE *output_File;
+FILE *func_File;
 uint32_t FP_offset;
 uint32_t FuncPara_count;
 uint32_t FuncParaIndex;

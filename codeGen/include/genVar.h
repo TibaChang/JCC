@@ -26,6 +26,7 @@
 #define dSIZE_32bits     "long"
 #define dSIZE_64bits     "quad"
 
+
 void genGlobalVar(Symbol *sym);
 void clearFP_offset(void);
 void genLocalVar(Symbol *sym);

@@ -18,6 +18,7 @@
 #include "genVar.h"
 #include "exception.h"
 #include "global_var.h"
+#include "genFunc.h"
 
 void set_CodeGenStatus(uint32_t status, uint32_t arg)
 {
@@ -70,28 +71,28 @@ void instrMOV(uint32_t instrType, uint32_t byte_size, uint32_t value, char *reg_
 	char instr[5] = "mov";
 	instrAddSuffix(instr, byte_size);
 
-	asmPrintf("    ");
+	asmPrintf_func("    ");
 	switch (instrType) {
 	case VALUE_REG:
-		asmPrintf("%s    $%d,%%%s\n", instr, value, reg_1);
+		asmPrintf_func("%s    $%d,%%%s\n", instr, value, reg_1);
 		break;
 	case REG_OFFSET:
-		asmPrintf("%s    %%%s, %d(%%%s)\n", instr, reg_1, offset, reg_2);
+		asmPrintf_func("%s    %%%s, %d(%%%s)\n", instr, reg_1, offset, reg_2);
 		break;
 	case REG_REG:
-		asmPrintf("%s    %%%s, %%%s\n", instr, reg_1, reg_2);
+		asmPrintf_func("%s    %%%s, %%%s\n", instr, reg_1, reg_2);
 		break;
 	case VALUE_OFFSET:
-		asmPrintf("%s    $%d, %d(%%%s)\n", instr, value, offset, reg_1);
+		asmPrintf_func("%s    $%d, %d(%%%s)\n", instr, value, offset, reg_1);
 		break;
 	case OFFSET_REG:
-		asmPrintf("%s    %d(%%%s), %%%s\n", instr, offset, reg_1, reg_2);
+		asmPrintf_func("%s    %d(%%%s), %%%s\n", instr, offset, reg_1, reg_2);
 		break;
 	case symOFFSET_REG:
-		asmPrintf("%s    %s(%%%s), %%%s\n", instr, sym_name, reg_1, reg_2);
+		asmPrintf_func("%s    %s(%%%s), %%%s\n", instr, sym_name, reg_1, reg_2);
 		break;
 	case REG_symOFFSET:
-		asmPrintf("%s    %%%s, %s(%%%s)\n", instr, reg_1, sym_name, reg_2);
+		asmPrintf_func("%s    %%%s, %s(%%%s)\n", instr, reg_1, sym_name, reg_2);
 		break;
 	default:
 		error("MOV instruction type error");
@@ -113,7 +114,7 @@ static void genMUL_rax(uint32_t op, uint32_t mode)
 		strcpy(instr, "imulq");
 		reg = FindFreeReg();
 		assignReg(reg);
-		asmPrintf("    %s   %%%s, %%%s\n", instr, reg_pool[reg].reg_name, reg_pool[REG_RAX].reg_name);/*store to second reg*/
+		asmPrintf_func("    %s   %%%s, %%%s\n", instr, reg_pool[reg].reg_name, reg_pool[REG_RAX].reg_name);/*store to second reg*/
 		if (mode == RET_AT_SECOND) {
 			operand_pop();
 		}
@@ -127,7 +128,7 @@ static void genMUL_rax(uint32_t op, uint32_t mode)
 		assignReg(reg);
 		FreeReg(REG_RAX);
 		assignReg(REG_RAX);
-		asmPrintf("    %s   %%%s\n", instr, reg_pool[reg].reg_name); /*quotient:rax   ,  remainder:rdx*/
+		asmPrintf_func("    %s   %%%s\n", instr, reg_pool[reg].reg_name); /*quotient:rax   ,  remainder:rdx*/
 		if (op == tk_MOD) {
 			instrMOV_REG_REG(BYTE_8, reg_pool[REG_RDX].reg_name, reg_pool[REG_RAX].reg_name);
 		}
@@ -163,7 +164,7 @@ void genMUL(uint32_t op)
 		reg = FindFreeReg();
 		assignReg_twoSecond(reg);
 		assignReg_twoFirst(REG_RAX);
-		asmPrintf("    %s   %%%s, %%%s\n", instr, reg_pool[reg].reg_name, reg_pool[REG_RAX].reg_name);/*store to second reg*/
+		asmPrintf_func("    %s   %%%s, %%%s\n", instr, reg_pool[reg].reg_name, reg_pool[REG_RAX].reg_name);/*store to second reg*/
 		setReg_Return(REG_RAX);
 		setReg_Unused(reg);
 		operand_push(&ret_sym, NOT_SPECIFIED);
@@ -173,7 +174,7 @@ void genMUL(uint32_t op)
 		strcpy(instr, "idivq");
 		assignReg_twoSecond(REG_RDX);/*reaminder*/
 		assignReg_twoFirst(REG_RAX);/*quotient*/
-		asmPrintf("    %s   %%%s\n", instr, reg_pool[REG_RDX].reg_name); /*quotient:rax   ,  remainder:rdx*/
+		asmPrintf_func("    %s   %%%s\n", instr, reg_pool[REG_RDX].reg_name); /*quotient:rax   ,  remainder:rdx*/
 		if (op == tk_MOD) {
 			instrMOV_REG_REG(BYTE_8, reg_pool[REG_RDX].reg_name, reg_pool[REG_RAX].reg_name);
 		}
@@ -209,7 +210,7 @@ static void genADD_rax(uint32_t op, uint32_t mode)
 	}
 	reg = FindFreeReg();
 	assignReg(reg);
-	asmPrintf("    %s    %%%s, %%%s\n", instr, reg_pool[reg].reg_name, reg_pool[REG_RAX].reg_name);/*store to second reg*/
+	asmPrintf_func("    %s    %%%s, %%%s\n", instr, reg_pool[reg].reg_name, reg_pool[REG_RAX].reg_name);/*store to second reg*/
 
 	if (mode == RET_AT_SECOND) {
 		operand_pop();
@@ -248,7 +249,7 @@ void genADD(uint32_t op)
 	reg = FindFreeReg();
 	assignReg_twoSecond(reg);
 	assignReg_twoFirst(REG_RAX);
-	asmPrintf("    %s    %%%s, %%%s\n", instr, reg_pool[reg].reg_name, reg_pool[REG_RAX].reg_name);/*store to second reg*/
+	asmPrintf_func("    %s    %%%s, %%%s\n", instr, reg_pool[reg].reg_name, reg_pool[REG_RAX].reg_name);/*store to second reg*/
 	setReg_Return(REG_RAX);
 	setReg_Unused(reg);
 	operand_push(&ret_sym, NOT_SPECIFIED);

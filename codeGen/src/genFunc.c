@@ -14,6 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <string.h>
+#include <stdlib.h>
 #include "genFunc.h"
 #include "genVar.h"
 #include "token.h"
@@ -44,21 +45,21 @@ uint32_t isFuncPassConstVal(void)
 }
 
 
-void genFileTitle(FILE * file, char *file_name)
+void genFileTitle(void)
 {
-	fprintf(file, ".file   \"%s\"\n\n\n", file_name);
+	asmPrintf(".file   \"%s\"\n\n\n", cur_filename);
 }
 
 
 void genFuncProlog(Symbol *sym)
 {
 	char *func_name = get_tkSTR(sym->tk_code & JC_ValMASK);
-	asmPrintf("\n    .text\n");
-	asmPrintf("    .globl  %s\n", func_name);
-	asmPrintf("    .type   %s, @function\n", func_name);
-	asmPrintf("%s:\n", func_name);
-	asmPrintf("    pushq   %%rbp\n");
-	asmPrintf("    movq    %%rsp, %%rbp\n\n");
+	asmPrintf_func("\n    .text\n");
+	asmPrintf_func("    .globl  %s\n", func_name);
+	asmPrintf_func("    .type   %s, @function\n", func_name);
+	asmPrintf_func("%s:\n", func_name);
+	asmPrintf_func("    pushq   %%rbp\n");
+	asmPrintf_func("    movq    %%rsp, %%rbp\n\n");
 }
 
 
@@ -66,12 +67,12 @@ void genFuncEpilog(Symbol *sym)
 {
 	char *func_name = get_tkSTR(sym->tk_code & JC_ValMASK);
 	if (strcmp("main", func_name) == 0) { /*if this is main function*/
-		asmPrintf("\n    leave\n");
+		asmPrintf_func("\n    leave\n");
 	} else {
-		asmPrintf("    popq    %%rbp\n");
+		asmPrintf_func("    popq    %%rbp\n");
 	}
-	asmPrintf("    ret\n");
-	asmPrintf("    .size   %s, .-%s\n\n", func_name, func_name);
+	asmPrintf_func("    ret\n");
+	asmPrintf_func("    .size   %s, .-%s\n\n", func_name, func_name);
 }
 
 
@@ -168,7 +169,7 @@ static void genFuncCallAsm(void)
 		index++;
 	}
 	args = FuncArgs_getTop();
-	asmPrintf("    call    %s\n\n", args->funcName);
+	asmPrintf_func("    call    %s\n\n", args->funcName);
 }
 
 

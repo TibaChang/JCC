@@ -86,7 +86,7 @@ gdb_traverse_stack:$(TARGET)
 
 
 clean:
-	rm -f $(TARGET) demo/demo_code.s
+	rm -f $(TARGET) demo/demo_code.s demo/demo_code.f
 
 
 cscope:
