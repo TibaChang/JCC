@@ -21,6 +21,7 @@
 #include "var_storage.h"
 #include "global_var.h"
 #include "genInstr.h"
+#include "genFunc.h"
 #include "token.h"
 #include "operand.h"
 
@@ -116,10 +117,10 @@ void genLocalVar(Symbol *sym)
 		break;
 	}
 
-	asmPrintf("    subq    $%d, %%rsp\n", size);
+	asmPrintf_func("    subq    $%d, %%rsp\n", size);
 	updateSYM_FPoffset(sym, size);
 	instrMOV_VAL_OFFSET(size, sym->relation, "rbp", sym->fp_offset);
-	asmPrintf("\n");
+	asmPrintf_func("\n");
 }
 
 void genVar(void)
