@@ -159,7 +159,6 @@ void genAssign(void)
 	char dest_reg[4];
 
 	temp_reg = FindFreeReg();
-	assignReg(temp_reg);
 
 	/*if there is return operand, get it*/
 	if (ret_sym->storage_type & JC_RET_REG) {

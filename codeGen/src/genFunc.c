@@ -216,7 +216,8 @@ void genFuncCall(uint32_t argc)
 			}
 		}
 	}
-
+	FreeReg(REG_RAX);
+	instrMOV_VAL_REG(BYTE_8, 0, reg_pool[REG_RAX].reg_name);
 	asmPrintf_func("    call    %s\n\n", get_tkSTR(opTop->sym->tk_code));
 	operand_pop();
 }

@@ -117,7 +117,7 @@ void assignReg(uint32_t REGx)
 	} else if ((target->owner->storage_type & (JC_LOCAL)) && (target->owner->storage_type & (JC_LVAL))) {
 		strcpy(src_reg, "rbp");
 		instrMOV_OFFSET_REG(8, src_reg, reg_pool[REGx].reg_name, target->owner->fp_offset);
-	} else if ((target->owner->type.data_type & T_PTR) && (target->owner->type.ref->type.data_type & T_CHAR)) {
+	} else {
 		if (target->owner->tk_code != 0x0) {
 			strcpy(src_reg, "rip");
 			instrMOV_symOFFSET_REG(8, get_tkSTR(target->owner->tk_code), src_reg, reg_pool[REGx].reg_name);
