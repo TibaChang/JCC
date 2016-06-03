@@ -4,18 +4,19 @@ CFLAGS := -O0 -std=gnu99 -g3 -Wall -Werror -Wno-unused-function -Wno-unused-but-
 JCC_DEBUG := JCC_DEBUG
 
 
-LEX_DIR          := ./lexical
-SYNTAX_DIR       := ./syntax
-SEMANTIC_DIR     := ./semantic
-CODEGEN_DIR      := ./codeGen
-CORE_DIR         := ./core
+LEX_DIR          := lexical
+SYNTAX_DIR       := syntax
+SEMANTIC_DIR     := semantic
+CODEGEN_DIR      := codeGen
+CORE_DIR         := core
 SRC_DIR          := src
 INCLUDE_DIR      := include
-DEMO_DIR         := ./demo
+DEMO_DIR         := demo
 
 DEMO_FILE_NAME   := demo_code
 DEMO_SOURCE_FILE := $(DEMO_DIR)/$(DEMO_FILE_NAME).c
-DEMO_OUTPUT_FILE := $(DEMO_DIR)/$(DEMO_FILE_NAME).s
+DEMO_ASM_FILE    := $(DEMO_DIR)/$(DEMO_FILE_NAME).s
+DEMO_ELF_FILE    := $(DEMO_DIR)/$(DEMO_FILE_NAME)
 
 define DIR_Variable_Creator
 	$(1)_INCLUDES_DIR   := $($(1)_DIR)/$(INCLUDE_DIR)
@@ -61,7 +62,7 @@ $(eval $(call All_Variable,LEX,SYNTAX,SEMANTIC,CODEGEN,CORE))
 TARGET := JCC
 
 
-.PHONY: demo clean astyle cscope
+.PHONY: demo demo_asm demo_link clean astyle cscope
 
 
 all:$(TARGET)
@@ -75,8 +76,14 @@ $(TARGET):$(CORE_SOURCE) $(LEX_SOURCE) $(SYNTAX_SOURCE) $(SEMANTIC_SOURCE) $(COD
           $^ -o $@
 
 demo:$(TARGET)
-	./JCC $(DEMO_SOURCE_FILE)
-	cat $(DEMO_OUTPUT_FILE)
+	./$(TARGET) $(DEMO_SOURCE_FILE)
+	cat $(DEMO_ASM_FILE)
+
+demo_link:$(TARGET)
+	./$(TARGET) $(DEMO_SOURCE_FILE)
+	cat $(DEMO_ASM_FILE)
+	gcc $(DEMO_ASM_FILE) -o $(DEMO_ELF_FILE)
+
 
 demo_gdb:$(TARGET)
 	gdbtui -x ./demo/test_autoGDB --args ./$(TARGET) $(DEMO_SOURCE_FILE)
@@ -86,7 +93,7 @@ gdb_traverse_stack:$(TARGET)
 
 
 clean:
-	rm -f $(TARGET) demo/demo_code.s demo/demo_code.f
+	rm -f $(TARGET) $(DEMO_DIR)/$(DEMO_FILE_NAME).f $(DEMO_ASM_FILE) $(DEMO_ELF_FILE)
 
 
 cscope:

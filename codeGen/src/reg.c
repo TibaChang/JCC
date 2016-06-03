@@ -22,6 +22,7 @@
 #include "operand.h"
 #include "genInstr.h"
 #include "exception.h"
+#include "genFunc.h"
 
 
 void RegPoolInit(void)
@@ -36,6 +37,8 @@ void RegPoolInit(void)
 	strcpy(reg_pool[REG_RDX].reg_name, "rdx");
 	strcpy(reg_pool[REG_RCX].reg_name, "rcx");
 	strcpy(reg_pool[REG_RAX].reg_name, "rax");
+	strcpy(reg_pool[REG_R8].reg_name, "r8");
+	strcpy(reg_pool[REG_R9].reg_name, "r9");
 }
 
 
@@ -77,6 +80,8 @@ void FreeReg(uint32_t REGx)
 		}
 	} else if (reg_pool[REGx].usage == REG_RETURN_VAL) {
 		target->usage = REG_NOT_USING;
+	} else if (reg_pool[REGx].usage == REG_NOT_USING) {
+		/*do nothing*/
 	} else {
 		interERROR("Freeing the reg with REG_WILL_USE");
 	}
@@ -100,7 +105,8 @@ void assignReg(uint32_t REGx)
 
 	char src_reg[4];
 
-	if (target->owner->storage_type & JC_GLOBAL) {
+
+	if ((target->owner->storage_type & JC_GLOBAL) && !(target->owner->type.data_type & T_PTR)) {
 		if (target->owner->storage_type & JC_LVAL) {
 			strcpy(src_reg, "rip");
 			instrMOV_symOFFSET_REG(8, get_tkSTR(target->owner->tk_code), src_reg, reg_pool[REGx].reg_name);
@@ -108,9 +114,17 @@ void assignReg(uint32_t REGx)
 		if (target->owner->storage_type & JC_CONST) {
 			instrMOV_VAL_REG(8, target->value, reg_pool[REGx].reg_name);
 		}
-	} else if (target->owner->storage_type & (JC_LOCAL | JC_LVAL)) {
+	} else if ((target->owner->storage_type & (JC_LOCAL)) && (target->owner->storage_type & (JC_LVAL))) {
 		strcpy(src_reg, "rbp");
 		instrMOV_OFFSET_REG(8, src_reg, reg_pool[REGx].reg_name, target->owner->fp_offset);
+	} else if ((target->owner->type.data_type & T_PTR) && (target->owner->type.ref->type.data_type & T_CHAR)) {
+		if (target->owner->tk_code != 0x0) {
+			strcpy(src_reg, "rip");
+			instrMOV_symOFFSET_REG(8, get_tkSTR(target->owner->tk_code), src_reg, reg_pool[REGx].reg_name);
+		} else {
+			/*const str,not variable*/
+			asmPrintf_func("    movq    $.LC%d, %%%s\n", target->owner->fp_offset, reg_pool[REGx].reg_name);
+		}
 	}
 }
 

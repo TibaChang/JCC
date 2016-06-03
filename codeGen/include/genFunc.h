@@ -32,7 +32,7 @@ uint32_t isFuncPassConstVal(void);
 void genFileTitle(void);
 void genFuncProlog(Symbol *sym);
 void genFuncEpilog(Symbol *sym);
-void genFuncCall(Symbol *sym);
+void genFuncCall(uint32_t argc);
 
 #endif
 

@@ -38,6 +38,8 @@ void genGlobalVar(Symbol *sym)
 		asmPrintf("    .align 8\n");
 		asmPrintf(".LC%d:\n", const_STR_index);
 		asmPrintf("    .string  %s\n\n", sourceSTR.data);
+
+		sym->fp_offset = const_STR_index;
 		return;
 	}
 

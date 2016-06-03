@@ -77,17 +77,6 @@ void genFuncEpilog(Symbol *sym)
 
 
 
-static void calcFuncParaNum(Symbol *sym)
-{
-	Symbol *s;
-	uint32_t para_count = 0;
-	for (s = sym->type.ref->next; s != NULL ; s = s->next) {
-		para_count++;
-	}
-	set_CodeGenStatus(FuncParaNum, para_count);
-}
-
-
 static void add_FuncPara(Symbol *sym)
 {
 	if (sym->type.data_type == T_FUNC) {
@@ -173,31 +162,62 @@ static void genFuncCallAsm(void)
 }
 
 
-void genFuncCall(Symbol *sym)
+void genFuncCall(uint32_t argc)
 {
-	Symbol s;
-
-	if (sym->type.data_type == T_FUNC) {
-		set_CodeGenStatus(FuncParaAccept, NOT_SPECIFIED);
-		calcFuncParaNum(sym);
-		add_FuncPara(sym);
-		return;
-	}
-	if (isFuncPassConstVal() == FuncIsPassingConstVal) {
-		/*if we pass const int/char, the sym will be NULL*/
-		sym = &s;
-		sym->storage_type = JC_CONST;
-		sym->relation = tkValue;
-	}
-
-	if (CodeGenStatus == FuncParaAccept) {
-		add_FuncPara(sym);
-		if (FuncPara_count == FuncParaIndex) {
-			genFuncCallAsm();
-			/*after generate asm,reset the parameter count*/
-			set_CodeGenStatus(FuncParaClear, NOT_SPECIFIED);
-			FuncParaIndex = 0;
+	char dest_reg[4];
+	for (int i = argc; i > 0; i--) {
+		switch (i) {
+		case 4:/*arg 4*/
+			FreeReg(REG_RCX);
+			strcpy(dest_reg, reg_pool[REG_RCX].reg_name);
+			assignReg(REG_RCX);
+			reg_pool[REG_RCX].usage |= REG_WILL_USE;
+			break;
+		case 3:/*arg 3*/
+			FreeReg(REG_RDX);
+			strcpy(dest_reg, reg_pool[REG_RDX].reg_name);
+			assignReg(REG_RDX);
+			reg_pool[REG_RDX].usage |= REG_WILL_USE;
+			break;
+		case 2:/*arg 2*/
+			FreeReg(REG_RSI);
+			strcpy(dest_reg, reg_pool[REG_RSI].reg_name);
+			assignReg(REG_RSI);
+			reg_pool[REG_RSI].usage |= REG_WILL_USE;
+			break;
+		case 1:/*arg 1*/
+			FreeReg(REG_RDI);
+			strcpy(dest_reg, reg_pool[REG_RDI].reg_name);
+			assignReg(REG_RDI);
+			reg_pool[REG_RDI].usage |= REG_WILL_USE;
+			break;
+		default:
+			error("JCC only suppory at most 4 arguments!");
+			break;
 		}
 	}
+
+	/*printf does not need function defintion,so we need to free the reg status manually*/
+	if (strcmp(get_tkSTR(opTop->sym->tk_code), "printf") == 0) {
+		for (int i = argc; i > 0; i--) {
+			switch (i) {
+			case 4:/*arg 4*/
+				setReg_Unused(REG_RCX);
+				break;
+			case 3:/*arg 3*/
+				setReg_Unused(REG_RDX);
+				break;
+			case 2:/*arg 2*/
+				setReg_Unused(REG_RSI);
+				break;
+			case 1:/*arg 1*/
+				setReg_Unused(REG_RDI);
+				break;
+			}
+		}
+	}
+
+	asmPrintf_func("    call    %s\n\n", get_tkSTR(opTop->sym->tk_code));
+	operand_pop();
 }
 

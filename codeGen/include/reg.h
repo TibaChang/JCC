@@ -25,7 +25,9 @@
 #define  REG_RDX       0x3
 #define  REG_RCX       0x4
 #define  REG_RAX       0x5
-#define  REG_MAX       REG_RAX+1
+#define  REG_R8        0x6
+#define  REG_R9        0x7
+#define  REG_MAX       REG_R9+1
 
 #define  REG_NOT_USING   0xF000
 #define  REG_IS_USING    0x0F00

@@ -286,7 +286,7 @@ void primary_expression(void)
 		type.data_type |= T_ARRAY;
 		ss = var_sym_put(&type, JC_GLOBAL | JC_CONST, NOT_SPECIFIED, NOT_SPECIFIED);
 		genGlobalVar(ss);
-		operand_push(ss,NOT_SPECIFIED);
+		operand_push(ss, NOT_SPECIFIED);
 		initializer(&type);
 		break;
 	case tk_openPA:
@@ -309,8 +309,6 @@ void primary_expression(void)
 			ss->storage_type = JC_GLOBAL | JC_SYM;
 		}
 		operand_push(ss, NOT_SPECIFIED);
-		/*generating function call asm*/
-		//genFuncCall(ss);
 		break;
 	}
 }
@@ -321,17 +319,39 @@ void primary_expression(void)
  **************************************************/
 void argument_expression_list(void)
 {
+	Symbol *func_definition_sym;/*mother/base symbol*/
+	Symbol *func_para_sym;/*parameter symbol*/
+	func_definition_sym = opTop->sym->type.ref;
+	func_para_sym = func_definition_sym->next;
+	/*if JCC need to check return type in future,we can use the func_definition_sym->type.data_type*/
+
+	uint32_t args_num = 0;
+
 	getToken();
 	if (cur_token != tk_closePA) {
 		while (1) {
 			assignment_expression();
+			args_num++;
+
+			/*if there are next parameters in the function definition */
+			if (func_para_sym) {
+				func_para_sym = func_para_sym->next;
+			}
+
 			if (cur_token == tk_closePA) {
 				break;
 			}
 			skip(tk_COMMA);
 		}
 	}
+
+	if (func_para_sym) {
+		error("actual parameters less than the function definition requests");
+	}
+
 	skip(tk_closePA);
+	/*generating function call asm*/
+	genFuncCall(args_num);
 }
 
 
