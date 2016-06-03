@@ -286,7 +286,7 @@ void primary_expression(void)
 		type.data_type |= T_ARRAY;
 		ss = var_sym_put(&type, JC_GLOBAL | JC_CONST, NOT_SPECIFIED, NOT_SPECIFIED);
 		genGlobalVar(ss);
-		//operand_push(ss,NOT_SPECIFIED);
+		operand_push(ss,NOT_SPECIFIED);
 		initializer(&type);
 		break;
 	case tk_openPA:

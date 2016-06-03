@@ -59,7 +59,7 @@ void translation_unit(void)
  * int a;                        V
  * int add(int x,int y)          V
  * {
- *     int z;
+ *     int z;                    V
  *     z = x+y;
  * }
  *
@@ -129,7 +129,10 @@ void external_declaration(uint32_t storage_type)
 				if (cur_token == tk_ASSIGN) {
 					getToken();
 					initializer(&type);
-					//operand_pop();
+                    /* In variable declaration,JCC does not need the corresponding operand,but so pop it
+                     * The operand_push in primary_expression() is for statement()
+                     */
+                    operand_pop();
 				}
 				sym = var_sym_put(&type, storage_type_1, tk, tkValue);
 				operand_push(sym, tkValue);
