@@ -137,13 +137,17 @@ void if_statement(uint32_t *break_sym, uint32_t *continue_sym)
 	skip(tk_closePA);
 	genJMP();
 	statement(break_sym, continue_sym);
+	if (cur_token == kw_ELSE) {
+		asmPrintf_func("    jmp  .L%d\n", condtion_label_count);
+	}
 	if (opTop->tk_code & JC_IF) {
-		asmPrintf_func(".L%d:\n", opTop->tk_code & JC_IF_NESTED_MASK);
+		asmPrintf_func(".L%d:", opTop->tk_code & JC_IF_NESTED_MASK);
 		operand_pop();
 	}
 	if (cur_token == kw_ELSE) {
 		getToken();
 		statement(break_sym, continue_sym);
+		asmPrintf_func(".L%d:\n", condtion_label_count++);
 	}
 }
 

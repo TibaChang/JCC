@@ -1,4 +1,5 @@
 
+
 char gc = 'c';
 
 void main()
@@ -7,18 +8,14 @@ void main()
     char *test = "end\n";
     int a = 5;
     int c = 1000;
-    if(100 == 5)
+    if(a != c)
     {
-        printf("if_1\n");
-
-    }
-
-    if(100 == 100)
+        a = c;
+        printf("IF\n");
+    }else 
     {
-        printf("if_1_1\n");
+        printf("else\n");
     }
-
-
     printf("%s",test);
 }
 
