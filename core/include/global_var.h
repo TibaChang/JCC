@@ -83,5 +83,7 @@ extern REG reg_pool[REG_MAX - REG_BASE]; /*reg_pool[0] will not be used*/
 extern uint32_t condtion_label_count;
 extern uint32_t nested_if_count;
 
+extern uint32_t for_label_count;
+
 /**************************************************************/
 #endif

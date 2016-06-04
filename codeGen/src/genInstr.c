@@ -272,7 +272,7 @@ void genCMP(uint32_t op)
 	opTop->tk_code = op;
 }
 
-void genJMP(void)
+void genJMP_IF(void)
 {
 	uint32_t op = opTop->tk_code;
 	char condition_code[4];
@@ -297,7 +297,7 @@ void genJMP(void)
 		strcpy(condition_code, "jl");
 		break;
 	default:
-		interERROR("genIF with wrong op");
+		interERROR("genJMP_IF with wrong op");
 		break;
 	}
 
@@ -307,5 +307,36 @@ void genJMP(void)
 }
 
 
+void genJMP_FOR(void)
+{
+	uint32_t op = opTop->tk_code;
+	char condition_code[4];
+	operand_pop();
+	switch (op) {
+	case tk_EQ:
+		strcpy(condition_code, "jne");
+		break;
+	case tk_NEQ:
+		strcpy(condition_code, "je");
+		break;
+	case tk_LT:
+		strcpy(condition_code, "jge");
+		break;
+	case tk_LEQ:
+		strcpy(condition_code, "jg");
+		break;
+	case tk_GT:
+		strcpy(condition_code, "jle");
+		break;
+	case tk_GEQ:
+		strcpy(condition_code, "jl");
+		break;
+	default:
+		interERROR("genJMP_FOR with wrong op");
+		break;
+	}
+	for_label_count++;
+	asmPrintf_func("    %s  .F%d\n", condition_code, for_label_count);
+}
 
 

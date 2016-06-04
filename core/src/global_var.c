@@ -61,4 +61,5 @@ uint32_t const_STR_index = 0;
 REG reg_pool[REG_MAX - REG_BASE];
 uint32_t condtion_label_count = 0;
 uint32_t nested_if_count = 0;
+uint32_t for_label_count = 0;
 

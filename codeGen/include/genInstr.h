@@ -56,7 +56,8 @@ void instrMOV(uint32_t instrType, uint32_t byte_size, uint32_t value, char *reg_
 void genMUL(uint32_t op);
 void genADD(uint32_t op);
 void genCMP(uint32_t op);
-void genJMP(void);
+void genJMP_IF(void);
+void genJMP_FOR(void);
 
 #endif
 

@@ -124,10 +124,6 @@ void expression_statement(void)
  ********************************************/
 void if_statement(uint32_t *break_sym, uint32_t *continue_sym)
 {
-	if (opTop->tk_code & JC_IF) {
-		asmPrintf_func(".L%d:\n", opTop->tk_code & JC_IF_NESTED_MASK);
-		operand_pop();
-	}
 	operand_push(NULL, NOT_SPECIFIED);
 	opTop->tk_code = JC_IF | condtion_label_count;
 
@@ -135,13 +131,13 @@ void if_statement(uint32_t *break_sym, uint32_t *continue_sym)
 	skip(tk_openPA);
 	expression();
 	skip(tk_closePA);
-	genJMP();
+	genJMP_IF();
 	statement(break_sym, continue_sym);
 	if (cur_token == kw_ELSE) {
 		asmPrintf_func("    jmp  .L%d\n", condtion_label_count);
 	}
 	if (opTop->tk_code & JC_IF) {
-		asmPrintf_func(".L%d:", opTop->tk_code & JC_IF_NESTED_MASK);
+		asmPrintf_func(".L%d:\n", opTop->tk_code & JC_IF_NESTED_MASK);
 		operand_pop();
 	}
 	if (cur_token == kw_ELSE) {
@@ -161,16 +157,17 @@ void for_statement(uint32_t *break_sym, uint32_t *continue_sym)
 	getToken();
 	skip(tk_openPA);
 	if (cur_token != tk_SEMICOLON) {
-		/*The reason why we do not use expression_statement() is due to expression_statement() may indent the code!*/
 		expression();
 	}
 	skip(tk_SEMICOLON);
 
+	asmPrintf_func(".F%d:\n", for_label_count);
+
 	if (cur_token != tk_SEMICOLON) {
-		/*The reason why we do not use expression_statement() is due to expression_statement() may indent the code!*/
 		expression();
 	}
 	skip(tk_SEMICOLON);
+	genJMP_FOR();
 
 	if (cur_token != tk_closePA) {
 		expression();
@@ -178,6 +175,8 @@ void for_statement(uint32_t *break_sym, uint32_t *continue_sym)
 
 	skip(tk_closePA);
 	statement(break_sym, continue_sym);
+	asmPrintf_func("    jmp  .F%d\n", for_label_count - 1);
+	asmPrintf_func(".F%d:\n", for_label_count++);
 }
 
 

@@ -164,8 +164,12 @@ void genAssign(void)
 	if (ret_sym->storage_type & JC_RET_REG) {
 		instrMOV_REG_REG(BYTE_8, reg_pool[REG_RAX].reg_name, reg_pool[temp_reg].reg_name);
 		FreeReg(REG_RAX);
-	} else if (ret_sym->storage_type == (JC_GLOBAL | JC_CONST)) {
+	} else if (ret_sym->storage_type == (JC_GLOBAL | JC_CONST)) {/*const char or int*/
 		instrMOV_VAL_REG(BYTE_8, opTop->value, reg_pool[temp_reg].reg_name);
+	} else if (ret_sym->storage_type & JC_GLOBAL) { /*only one global variable*/
+		instrMOV_symOFFSET_REG(BYTE_8, get_tkSTR(ret_sym->tk_code & ~JC_SymTypeMASK), "rip", reg_pool[temp_reg].reg_name);
+	} else if (ret_sym->storage_type & JC_LOCAL) { /*only one local variable*/
+		instrMOV_OFFSET_REG(BYTE_8, "rbp", reg_pool[temp_reg].reg_name, ret_sym->fp_offset);
 	}
 
 
