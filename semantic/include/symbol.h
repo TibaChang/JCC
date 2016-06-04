@@ -32,12 +32,13 @@
 #define  JC_RET_REG  0xF000
 
 /*Symbol type(with tk_code)*/
-#define  JC_ANOM        0x10000000/*anonymous symbol*/
-#define  JC_STRUCT      0x20000000/*struct symbol*/
-#define  JC_MEMBER      0x40000000/*struct member*/
-#define  JC_PARAMS      0x80000000/*function parameters*/
-#define  JC_SymTypeMASK 0xF0000000
-#define  JC_IF          0x01000000/*get this when JCC encounter the end of the if scope*/
+#define  JC_ANOM            0x10000000/*anonymous symbol*/
+#define  JC_STRUCT          0x20000000/*struct symbol*/
+#define  JC_MEMBER          0x40000000/*struct member*/
+#define  JC_PARAMS          0x80000000/*function parameters*/
+#define  JC_SymTypeMASK     0xF0000000
+#define  JC_IF              0x01000000/*get this when JCC encounter the end of the if scope*/
+#define  JC_IF_NESTED_MASK  0x000000FF/*get the label count*/
 
 /*Type code*/
 #define  T_INT      0

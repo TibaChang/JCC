@@ -124,22 +124,27 @@ void expression_statement(void)
  ********************************************/
 void if_statement(uint32_t *break_sym, uint32_t *continue_sym)
 {
-	nested_if_count++;
+	if (opTop->tk_code & JC_IF) {
+		asmPrintf_func(".L%d:\n", opTop->tk_code & JC_IF_NESTED_MASK);
+		operand_pop();
+	}
+	operand_push(NULL, NOT_SPECIFIED);
+	opTop->tk_code = JC_IF | condtion_label_count;
+
 	getToken();
 	skip(tk_openPA);
 	expression();
 	skip(tk_closePA);
 	genJMP();
 	statement(break_sym, continue_sym);
-	if ((opTop->tk_code == JC_IF) && (nested_if_count == 1)) {
-		asmPrintf_func(".L%d:\n", condtion_label_count);
+	if (opTop->tk_code & JC_IF) {
+		asmPrintf_func(".L%d:\n", opTop->tk_code & JC_IF_NESTED_MASK);
 		operand_pop();
 	}
 	if (cur_token == kw_ELSE) {
 		getToken();
 		statement(break_sym, continue_sym);
 	}
-	nested_if_count--;
 }
 
 

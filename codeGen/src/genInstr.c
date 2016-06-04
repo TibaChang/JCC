@@ -300,13 +300,10 @@ void genJMP(void)
 		interERROR("genIF with wrong op");
 		break;
 	}
-	if (nested_if_count == 1) {
-		condtion_label_count++;
-	}
-	asmPrintf_func("    %s  .L%d\n", condition_code, condtion_label_count);
 
-	operand_push(NULL, NOT_SPECIFIED);
-	opTop->tk_code = JC_IF;
+	asmPrintf_func("    %s  .L%d\n", condition_code, opTop->tk_code & JC_IF_NESTED_MASK);
+	condtion_label_count++;
+
 }
 
 

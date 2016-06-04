@@ -3,22 +3,22 @@ char gc = 'c';
 
 void main()
 {
-    int cc = 'c';
+    char cc = 'c';
     char *test = "end\n";
     int a = 5;
     int c = 1000;
-    if(100 != 5)
+    if(100 == 5)
     {
-        printf("correct\n");
-        if( 100 != 5)
-        {
-            printf("nested if!\n");
-        }
-        if( gc == cc)
-        {
-            printf("nested if!\n");
-        }
+        printf("if_1\n");
+
     }
+
+    if(100 == 100)
+    {
+        printf("if_1_1\n");
+    }
+
+
     printf("%s",test);
 }
 
