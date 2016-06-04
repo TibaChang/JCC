@@ -23,7 +23,6 @@
 #include "lex.h"
 #include "expression.h"
 #include "symbol.h"
-#include "var_storage.h"
 #include "genVar.h"
 #include "genFunc.h"
 
@@ -132,7 +131,6 @@ void external_declaration(uint32_t storage_type)
 					/* In variable declaration,JCC does not need the corresponding operand,but so pop it
 					 * The operand_push in primary_expression() is for statement()
 					 */
-					prev_sym = opTop->sym;
 					operand_pop();
 				}
 				sym = var_sym_put(&type, storage_type_1, tk, tkValue);

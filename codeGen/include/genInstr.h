@@ -34,12 +34,6 @@
 #define BYTE_4    0x4
 #define BYTE_8    0x8
 
-/*code generation status*/
-#define FuncParaNum       0x1
-#define FuncParaAccept    0x2
-#define FuncParaClear     0x0
-void set_CodeGenStatus(uint32_t status, uint32_t arg);
-
 
 #define instrMOV_VAL_REG(byte_size,value,reg)          instrMOV(VALUE_REG, byte_size, value, reg, NULL, NOT_SPECIFIED, NULL)
 #define instrMOV_REG_OFFSET(byte_size,reg_1,reg_2,offset_2)     instrMOV(REG_OFFSET, byte_size, NOT_SPECIFIED, reg_1, reg_2, offset_2, NULL)

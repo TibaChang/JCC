@@ -57,19 +57,11 @@ extern Type default_func_type;
 extern Symbol char_sym;
 extern Symbol int_sym;
 extern Symbol ret_sym;/*special symbol used for record register info*/
-extern Symbol *prev_sym;
-
-extern uint32_t var_has_init;
-extern uint32_t FuncConstValFlag;
 
 /*Code generation*/
 extern FILE *output_File;
 extern FILE *func_File;
 extern uint32_t FP_offset;/*local variable frame pointer offset*/
-extern uint32_t FuncPara_count;/*calculating function call parameter numbers*/
-extern uint32_t FuncParaIndex;/*current function parameter number*/
-extern uint32_t CodeGenStatus;
-extern Stack FuncArg_stack;/*used to store args information*/
 
 #define opStack_Size 512
 extern Operand opStack[opStack_Size];
@@ -80,10 +72,8 @@ extern uint32_t const_STR_index;
 extern REG reg_pool[REG_MAX - REG_BASE]; /*reg_pool[0] will not be used*/
 
 /*if label count,ex:  .L2 */
-extern uint32_t condtion_label_count;
-extern uint32_t nested_if_count;
-
-extern uint32_t for_label_count;
+extern uint32_t condtion_label_count;/*for "if"*/
+extern uint32_t for_label_count;/*for "for"*/
 
 /**************************************************************/
 #endif

@@ -20,24 +20,6 @@
 #include "global_var.h"
 #include "genFunc.h"
 
-void set_CodeGenStatus(uint32_t status, uint32_t arg)
-{
-	switch (status) {
-	case FuncParaNum:
-		FuncPara_count = arg;
-		break;
-	case FuncParaAccept:
-		CodeGenStatus = FuncParaAccept;
-		break;
-	case FuncParaClear:
-		FuncPara_count = 0;
-		CodeGenStatus = FuncParaClear;
-		break;
-	default:
-		error("CodeGen status error!");
-		break;
-	}
-}
 
 
 /* Suffix	Name	      Size

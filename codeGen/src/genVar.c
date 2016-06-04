@@ -18,7 +18,6 @@
 #include "genVar.h"
 #include "symbol.h"
 #include "exception.h"
-#include "var_storage.h"
 #include "global_var.h"
 #include "genInstr.h"
 #include "genFunc.h"

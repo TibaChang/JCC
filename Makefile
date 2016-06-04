@@ -1,5 +1,5 @@
 CC := gcc
-CFLAGS := -O0 -std=gnu99 -g3 -Wall -Werror -Wno-unused-function -Wno-unused-but-set-variable
+CFLAGS := -O0 -std=gnu99 -g3 -Wall -Werror
 
 JCC_DEBUG := JCC_DEBUG
 

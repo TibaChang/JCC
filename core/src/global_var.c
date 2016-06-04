@@ -30,7 +30,6 @@ char *cur_filename;
 char cur_CHAR;
 FILE *cur_File;
 
-
 /*Semantic analysis*/
 Stack global_sym_stack;
 Stack local_sym_stack;
@@ -42,24 +41,16 @@ Type default_func_type;
 Symbol char_sym;
 Symbol int_sym;
 Symbol ret_sym;
-Symbol *prev_sym;
-
-uint32_t var_has_init;
-uint32_t FuncConstValFlag;
 
 /*Code generation*/
 FILE *output_File;
 FILE *func_File;
 uint32_t FP_offset;
-uint32_t FuncPara_count;
-uint32_t FuncParaIndex;
 uint32_t CodeGenStatus;
-Stack FuncArg_stack;
 Operand opStack[opStack_Size];
 Operand *opTop = opStack;
 uint32_t const_STR_index = 0;
 REG reg_pool[REG_MAX - REG_BASE];
 uint32_t condtion_label_count = 0;
-uint32_t nested_if_count = 0;
 uint32_t for_label_count = 0;
 

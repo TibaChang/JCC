@@ -25,7 +25,6 @@
 #include "declaration.h"
 #include "stack.h"
 #include "symbol.h"
-#include "var_storage.h"
 #include "genFunc.h"
 #include "reg.h"
 #include "genVar.h"
@@ -117,8 +116,6 @@ void init(void)
 
 	stack_init(&local_sym_stack, 8);
 	stack_init(&global_sym_stack, 8);
-	stack_init(&FuncArg_stack, 8);
-
 
 	int_sym.type.data_type = T_INT;
 	int_sym.storage_type = JC_GLOBAL | JC_CONST;
@@ -134,7 +131,6 @@ void init(void)
 	default_func_type.data_type = T_FUNC;
 	default_func_type.ref = sym_push(JC_ANOM, &int_type, NOT_SPECIFIED, NOT_SPECIFIED);
 
-	clearVarInitFlag();
 	RegPoolInit();
 }
 
@@ -143,7 +139,6 @@ void cleanup(void)
 	sym_pop(&global_sym_stack, NULL);
 	stack_destroy(&local_sym_stack);
 	stack_destroy(&global_sym_stack);
-	stack_destroy(&FuncArg_stack);
 
 	printf("\ntkTable.count = %d \n", tkTable.count);
 

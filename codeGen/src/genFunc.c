@@ -20,9 +20,7 @@
 #include "token.h"
 #include "exception.h"
 #include "symbol.h"
-#include "funcArg.h"
 #include "genInstr.h"
-#include "var_storage.h"
 #include "global_var.h"
 
 void genFileTitle(void)

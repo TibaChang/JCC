@@ -22,7 +22,6 @@
 #include "exception.h"
 #include "lex.h"
 #include "statement.h"
-#include "var_storage.h"
 #include "genFunc.h"
 #include "genInstr.h"
 #include "operand.h"
