@@ -252,37 +252,14 @@ void primary_expression(void)
 {
 	uint32_t tk_expression;
 	Type type;
-	//Symbol s;
 	Symbol *ss;
 
 	switch (cur_token) {
 	case tk_cINT:
-		//setVarInitFlag();
-
-		/*if pass parameter to a function*/
-		/*
-		if (CodeGenStatus == FuncParaAccept) {
-			setFuncConstValFlag();
-			s.type.data_type = T_INT;
-			genFuncCall(&s);
-			clearFuncConstValFlag();
-		}
-		*/
 		operand_push(&int_sym, tkValue);
 		getToken();
 		break;
 	case tk_cCHAR:
-		//setVarInitFlag();
-
-		/*if pass parameter to a function*/
-		/*
-		if (CodeGenStatus == FuncParaAccept) {
-			setFuncConstValFlag();
-			s.type.data_type = T_CHAR;
-			genFuncCall(&s);
-			clearFuncConstValFlag();
-		}
-		*/
 		operand_push(&char_sym, tkValue);
 		getToken();
 		break;

@@ -128,7 +128,7 @@ void genLocalVar(Symbol *sym)
 	updateSYM_FPoffset(sym, size);
 
 	/*if it is pointer to char*/
-	if ((sym->type.data_type & T_PTR) && (sym->type.ref->type.data_type & T_CHAR)) {
+	if ((sym->type.data_type & T_PTR) && (sym->type.ref->type.data_type == T_CHAR)) {
 		asmPrintf_func("    movq    $.LC%d, %d(%%rbp)\n", const_STR_index, sym->fp_offset);
 	} else {
 		instrMOV_VAL_OFFSET(size, sym->relation, "rbp", sym->fp_offset);
