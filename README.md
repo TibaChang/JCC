@@ -1,9 +1,7 @@
 # JCC
 Jared's C Compiler : Build a mini C compiler(x86-64) from scratch.
 
-This is an unfinished C compiler.
-====================================
-This is a term-project for [NCKU compiler system course](http://class-qry.acad.ncku.edu.tw/syllabus/online_display.php?syear=0104&sem=2&co_no=Q355300&class_code=).
+**This is a term-project for [NCKU compiler system course](http://class-qry.acad.ncku.edu.tw/syllabus/online_display.php?syear=0104&sem=2&co_no=Q355300&class_code=).**
 
 
 Quick Start:
