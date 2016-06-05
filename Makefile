@@ -62,7 +62,7 @@ $(eval $(call All_Variable,LEX,SYNTAX,SEMANTIC,CODEGEN,CORE))
 TARGET := JCC
 
 
-.PHONY: demo demo_asm demo_link clean astyle cscope
+.PHONY: demo clean astyle cscope
 
 
 all:$(TARGET)
@@ -76,10 +76,6 @@ $(TARGET):$(CORE_SOURCE) $(LEX_SOURCE) $(SYNTAX_SOURCE) $(SEMANTIC_SOURCE) $(COD
           $^ -o $@
 
 demo:$(TARGET)
-	./$(TARGET) $(DEMO_SOURCE_FILE)
-	cat $(DEMO_ASM_FILE)
-
-demo_link:$(TARGET)
 	./$(TARGET) $(DEMO_SOURCE_FILE)
 	cat $(DEMO_ASM_FILE)
 	gcc $(DEMO_ASM_FILE) -o $(DEMO_ELF_FILE)

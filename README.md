@@ -69,7 +69,18 @@ make demo
 
 Phase 4:Code Generation
 ---------------------------
-NOT doen!
+JCC does not support the fully function as the lexical and semantic phases in code generation due to time limitted.
+What JCC is able to do please refer to the [next chapter](https://github.com/JaredCJR/JCC#phase-4code-generation).
+- How to demo:
+```
+git checkout DEMO_CodeGen
+make clean
+make demo
+./demo/demo_code
+```
+![alt tag](https://raw.githubusercontent.com/JaredCJR/JCC/master/demo/pictures/phase_codeGen.jpg)
+- JCC uses a fibonacci sequence with iterative method as the demo code to show what JCC can.
+  - This picture only shows part of the results.
 
 
 Supported Functionality
@@ -294,6 +305,29 @@ Phase 3:Semantic Analysis
 - The correspoind behavior of the semantics can see the comments inside the source files in the [syntax dir](https://github.com/JaredCJR/JCC/tree/master/syntax/src) and the [demo_result.txt](https://github.com/JaredCJR/JCC/tree/master/demo/demo_result.txt),which explains elaborately!
   - You can see the explaination in [demo_result.txt](https://github.com/JaredCJR/JCC/tree/master/demo/demo_result.txt) after `<=================`
 
+Phase 4:Code Generation
+---------------------------
+- As the above says,JCC's code generation does not support the full functionalities as the previous phases.
+**Supported semantic code generation:**
+- `if(expression)`
+- `if(expression){ statement }else{ statement }`
+- `for(expression;expression;expression)`
+  - NOTE:Both `if`, `if else` and `for` does not support `self recursive`
+  - However, `for statement` inside `for statement` are supported,vice versa.
+- `declaration` always before `statement`
+  - declaration
+    - JCC does not check type for variable assignment,if and only if there is LValue at the left side.
+- use `printf` as the C89 <stdio.h> usage.
+  - JCC does not support fully function call,excluding `printf`
+- Arthimatic
+  - `+` and `-` can be use together
+    - `Ex: int a = 5+100-10000;`
+      - variable on the left side is also supported.
+  - `*` , `/` and `%` can be use together
+    - `Ex: int a = 1000*5%79`
+      - variable on the left side is also supported.
+- See [demo_code.c](https://github.com/JaredCJR/JCC/blob/master/demo/demo_code.c) to know the real situation!
+
 
 How to debug the JCC
 ===========================
@@ -306,14 +340,13 @@ How to debug the JCC
     - It will call `gdb` or `gdbtui` with JCC to load the default demo source file.
     - You can write a `gdb script` for `gdb` family,such as the branch `DEMO_SEMANTIC` does.
 
-
-
-
-
 AUTHOR:
 ====================================
 - Jia-Rung Chang(張家榮/Jared)
-    - National Cheng Kung University,Taiwan
-    - Major in Engineering Science(Computer Science)
     - email: jaredcjr.tw@gmail.com
+	- Education
+		- 2016/09 ~ future
+			- Master in Department of Computer Science,National Chiao Tung University,Taiwan
+		- 2012/09 ~ 2016/06
+            - Bachelor in Department of Engineering Science,National Cheng Kung University,Taiwan
 
