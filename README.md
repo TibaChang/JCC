@@ -76,7 +76,9 @@ make demo
 Phase 4:Code Generation
 ---------------------------
 JCC does not support the fully function as the `lexical and semantic phases` in code generation due to time limitted.
-What JCC is able to do,please refer to the [next chapter](https://github.com/JaredCJR/JCC#phase-4code-generation).
+
+What JCC is able to do,please refer to the [next chapter](https://github.com/JaredCJR/JCC#supported-functionality).
+
 - How to demo:
 ```
 git checkout DEMO_CodeGen
@@ -373,4 +375,9 @@ AUTHOR:
 			- Master in Department of Computer Science,National Chiao Tung University,Taiwan
 		- 2012/09 ~ 2016/06
             - Bachelor in Department of Engineering Science,National Cheng Kung University,Taiwan
+
+Licensing
+========================
+[GPLv3](http://www.gnu.org/licenses/)
+
 
