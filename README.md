@@ -1,22 +1,26 @@
 # JCC
 Jared's C Compiler : Build a mini C compiler(x86-64) from scratch.
 
-**This is a term-project for [NCKU compiler system course](http://class-qry.acad.ncku.edu.tw/syllabus/online_display.php?syear=0104&sem=2&co_no=Q355300&class_code=).**
+![alt tag](https://raw.githubusercontent.com/JaredCJR/JCC/master/demo/pictures/logo.jpg)
+
+**This is a term-project for [NCKU compiler-system course](http://class-qry.acad.ncku.edu.tw/syllabus/online_display.php?syear=0104&sem=2&co_no=Q355300&class_code=).**
 
 
 Quick Start:
 ====================================
 All the toolchain you need is GCC on Linux based system.
-Tested Platform: Ubuntu 16.04(x64)(gcc version 5.3.1 20160413 (Ubuntu 5.3.1-14ubuntu2) )
+Tested Platform: Ubuntu 16.04(x86-64)(gcc version 5.3.1 20160413 (Ubuntu 5.3.1-14ubuntu2) )
 
 ```
 git clone https://github.com/JaredCJR/JCC
 cd JCC
 ```
+Then,jump to the specific `Phase` to see the guide.
+
 
 Phase 1:Lexical Analysis
 ---------------------------
-- This is a Token Colorer,it will color the target file tokens,and print in the terminal colorfully.
+- This is a Token Colorer,it will color the tokens in the target source file,and print in the terminal colorfully.
 - Using the lexical analysis to identify tokens for coloring.
 - How to demo:
 ```
@@ -29,8 +33,9 @@ make demo
 
 Phase 2:Syntax Analysis
 ---------------------------
-- This is a Syntax Indenter,it will indent the codes with basic functionalities and Token Colorer.
-- Using syntax analysis to check basic grammars , based on Token Colorer.
+- This is a Syntax Indenter,it will indent the tokens with basic functionalities and Token Colorer.
+- Using syntax analysis to check basic grammars , based on `Token Colorer(Phase 1)`.
+  - Indent the code after the end of grammar for demonstrating the `Syntax Analysis`
 - How to demo:
 ```
 git checkout DEMO_SYNTAX
@@ -44,9 +49,11 @@ make demo
 Phase 3:Semantic Analysis
 ---------------------------
 - This will scan the source files and record the corresponding information into the `symbol table`.
-- `Symbol table` contains two stack -> `global_sym_stack` and `local_sym_stack`
+  - `Symbol table` contains two stack -> `global_sym_stack` and `local_sym_stack`
 - The correspoind behavior of the semantics can see the comments inside the source files in the [syntax dir](https://github.com/JaredCJR/JCC/tree/master/syntax/src) and the [demo_result.txt](https://github.com/JaredCJR/JCC/tree/master/demo/demo_result.txt),which explains elaborately!
   - You can see the explaination in [demo_result.txt](https://github.com/JaredCJR/JCC/tree/master/demo/demo_result.txt) after `<=================`
+  - JCC's `semantic analysis` is much powerful than the JCC's `code generation`.This is because the time limitted during the semester.
+    - If you would like to know more details,you should trace the stack with `gdb`,the pre-defined gdb tracing srcipt is ready.
 - How to demo:
 ```
 git checkout DEMO_SEMANTIC
@@ -61,14 +68,14 @@ make demo
   - GDB do the automatic test based on the [GDB script](https://github.com/JaredCJR/JCC/tree/master/demo/demo_autoGDB)
 
 **IMPORTANT**
-- If you would like to see the stack change on your own source code,the local stack will destroied after the `index` leave `local scope`
+- If you would like to see the stack change on your own source code,the local stack will be destroied after the `index` leave `local scope`.
   - We only have one `local stack` for `symbol table` ,so the `local stack` will no longer exist after the `index` move outside the corresponding scope.
 
 
 Phase 4:Code Generation
 ---------------------------
-JCC does not support the fully function as the lexical and semantic phases in code generation due to time limitted.
-What JCC is able to do please refer to the [next chapter](https://github.com/JaredCJR/JCC#phase-4code-generation).
+JCC does not support the fully function as the `lexical and semantic phases` in code generation due to time limitted.
+What JCC is able to do,please refer to the [next chapter](https://github.com/JaredCJR/JCC#phase-4code-generation).
 - How to demo:
 ```
 git checkout DEMO_CodeGen
@@ -77,7 +84,7 @@ make demo
 ./demo/demo_code
 ```
 ![alt tag](https://raw.githubusercontent.com/JaredCJR/JCC/master/demo/pictures/phase_codeGen.jpg)
-- JCC uses a fibonacci sequence with iterative method as the demo code to show what JCC can.
+- JCC uses a fibonacci sequence with iterative method as the demo code to show what JCC is able to do!
   - This picture only shows part of the results.
 
 
@@ -132,18 +139,27 @@ Phase 1:Lexical Analysis
   - user defined
     - Ex:`int user_ident;` (`user_ident` will be added.)
 
+**IMPORTANT:Not all the tokens will be dealed in the `Phase 2 to Phase 4`**
+
+
 Phase 2:Syntax Analysis
 ---------------------------
+
+- JCC divides `Syntax Analysis into 3 sub-phase`
+  - `Declaration`
+  - `Expression`
+  - `Statement`
+- All the implementing details can be saw in the [source code](https://github.com/JaredCJR/JCC/tree/master/syntax/src).
 
 **Declaration**
 
 - In JCC,
-  - All of the code must start with declaration.
+  - All of the program of JCC must start with declaration.
     - Ex:`int x = 10;`
     - Ex:`int add(int x,int y);`
     - Ex:`add(1,2);`
     - Ex:`void main(){ }`
-  - The `{ }` in above example,meaning `compound statement`,and you could use `statement` inside.
+      - The `{ }` in above example,meaning `compound statement`,and you could use `statement` inside.
 
 ```
  * <translation_unit>::={<external_declaration>}<tk_EOF>
@@ -305,26 +321,35 @@ Phase 3:Semantic Analysis
 
 Phase 4:Code Generation
 ---------------------------
-- As the above says,JCC's code generation does not support the full functionalities as the previous phases.
+- As the above says,JCC's `code generation` does not support the full functionalities as the previous phases.
 **Supported semantic code generation:**
 - `if(expression)`
 - `if(expression){ statement }else{ statement }`
 - `for(expression;expression;expression)`
   - NOTE:Both `if`, `if else` and `for` does not support `self recursive`
   - However, `for statement` inside `for statement` are supported,vice versa.
+    - If you would like to make JCC support `self recursive`,you need to give the `jmp relevant instruction` a pseudo label,and replace it after the most outside `if` or `for` is scanned.
 - `declaration` always before `statement`
   - declaration
     - JCC does not check type for variable assignment,if and only if there is LValue at the left side.
 - use `printf` as the C89 <stdio.h> usage.
   - JCC does not support fully function call,excluding `printf`
+  - If you would like to accomplish the function call functionality of JCC
+    - Some part of the functionalities are done,such as `passing at most 4 arguments`
+    - Need to do:
+      - `passing return value`
 - Arthimatic
   - `+` and `-` can be use together
     - `Ex: int a = 5+100-10000;`
-      - variable on the left side is also supported.
+    - `Ex: a = b+c-100;`
+      - if `b` and `c` are already declared.
   - `*` , `/` and `%` can be use together
     - `Ex: int a = 1000*5%79`
-      - variable on the left side is also supported.
+    - `Ex: a = b*c%100;`
+      - if `b` and `c` are already declared.
 - See [demo_code.c](https://github.com/JaredCJR/JCC/blob/master/demo/demo_code.c) to know the real situation!
+  - JCC currently does not support mixing `+` or `-` with `*` or `/`or `%`.
+    - If you would like to support this functionality,all you need is to provide temporary registers or creat a space in local stack to store the temporary value.
 
 
 How to debug the JCC
