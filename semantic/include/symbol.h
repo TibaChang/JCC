@@ -29,7 +29,8 @@
 #define  JC_LVAL     0x0100  /*lvalue*/
 #define  JC_SYM      0x0200  /*symbol*/
 #define  JC_CONST    0x0010  /*pass a const value to function*/
-#define  JC_RET_REG  0xF000
+#define  JC_RET_REG  0x1000
+#define  JC_VAR_INIT 0x2000
 
 /*Symbol type(with tk_code)*/
 #define  JC_ANOM            0x10000000/*anonymous symbol*/
@@ -43,12 +44,12 @@
 #define  JC_FOR_NESTED_MASK 0x000000FF/*get the for label count*/
 
 /*Type code*/
-#define  T_INT      0
-#define	 T_CHAR     1
-#define	 T_VOID     2
-#define	 T_PTR      3
-#define	 T_FUNC     4
-#define	 T_STRUCT   5
+#define  T_INT      1
+#define	 T_CHAR     2
+#define	 T_VOID     3
+#define	 T_PTR      4
+#define	 T_FUNC     5
+#define	 T_STRUCT   6
 #define	 T_BTYPE    0x000F /*base type mask:"int" to "struct"*/
 #define	 T_ARRAY    0x0010
 #define  T_NOT_TYPE 0xFFFF

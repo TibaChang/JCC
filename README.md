@@ -320,7 +320,6 @@ Phase 4:Code Generation
 - Arthimatic
   - `+` and `-` can be use together
     - `Ex: int a = 5+100-x;`
-      - NOTE:JCC does not support `minus a constant`,you should assign the negative number to a variable,and use the variable.
   - `*` , `/` and `%` can be use together
     - `Ex: int a = 1000*5%79`
       - variable on the left side is also supported.

@@ -128,7 +128,7 @@ void getToken(void)
 			if (cur_CHAR == '>') {
 				cur_token = tk_POINTTO;
 				getCHAR();
-			} else if ((cur_CHAR <= '9') && (cur_CHAR >= '0')) {
+			} else if ((opTop->tk_code == JC_VAR_INIT) && (cur_CHAR <= '9') && (cur_CHAR >= '0')) {
 				parse_num();
 				cur_token = tk_cINT;
 				tkValue = -tkValue;
