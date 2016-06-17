@@ -182,6 +182,8 @@ void if_statement(uint32_t *break_sym, uint32_t *continue_sym)
  *******************************************/
 void for_statement(uint32_t *break_sym, uint32_t *continue_sym)
 {
+	uint32_t for_label;
+
 	getToken();
 	skip(tk_openPA);
 	if (cur_token != tk_SEMICOLON) {
@@ -189,7 +191,11 @@ void for_statement(uint32_t *break_sym, uint32_t *continue_sym)
 	}
 	skip(tk_SEMICOLON);
 
+	for_label_count++;
 	asmPrintf_func(".F%d:\n", for_label_count);
+	operand_push(NULL, NOT_SPECIFIED);
+	for_label = JC_FOR | for_label_count;
+	opTop->tk_code = for_label;
 
 	if (cur_token != tk_SEMICOLON) {
 		expression();
@@ -203,8 +209,8 @@ void for_statement(uint32_t *break_sym, uint32_t *continue_sym)
 
 	skip(tk_closePA);
 	statement(break_sym, continue_sym);
-	asmPrintf_func("    jmp  .F%d\n", for_label_count - 1);
-	asmPrintf_func(".F%d:\n", for_label_count++);
+	asmPrintf_func("    jmp  .F%d\n", for_label & JC_FOR_NESTED_MASK);
+	asmPrintf_func("\n.F_END_%d:\n", for_label & JC_FOR_NESTED_MASK);
 }
 
 

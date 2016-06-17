@@ -311,7 +311,7 @@ Phase 4:Code Generation
 - `if(expression){ statement }else{ statement }`
   - Supporting recursive `if` or `if else`.
 - `for(expression;expression;expression)`
-  - NOTE:Both `for` does not support `self recursive`
+  - Supporting recursive `for`
 - `declaration` always before `statement`
   - declaration
     - JCC does not check type for variable assignment,if and only if there is LValue at the left side.
@@ -319,8 +319,8 @@ Phase 4:Code Generation
   - JCC does not support fully function call,excluding `printf`
 - Arthimatic
   - `+` and `-` can be use together
-    - `Ex: int a = 5+100-10000;`
-      - variable on the left side is also supported.
+    - `Ex: int a = 5+100-x;`
+      - NOTE:JCC does not support `minus a constant`,you should assign the negative number to a variable,and use the variable.
   - `*` , `/` and `%` can be use together
     - `Ex: int a = 1000*5%79`
       - variable on the left side is also supported.

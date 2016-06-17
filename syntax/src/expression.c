@@ -122,6 +122,7 @@ void additive_expression(void)
 {
 	uint32_t tk;
 	multiplicative_expression();
+	/*JCC does not support minus a constant value."ex:i = i -1" */
 	while ((cur_token == tk_PLUS) || (cur_token == tk_MINUS)) {
 		tk = cur_token;
 		getToken();

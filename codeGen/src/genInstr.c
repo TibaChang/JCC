@@ -315,8 +315,8 @@ void genJMP_FOR(void)
 		interERROR("genJMP_FOR with wrong op");
 		break;
 	}
-	for_label_count++;
-	asmPrintf_func("    %s  .F%d\n", condition_code, for_label_count);
+	asmPrintf_func("    %s  .F_END_%d\n", condition_code, opTop->tk_code & JC_FOR_NESTED_MASK);
+	operand_pop();
 }
 
 
