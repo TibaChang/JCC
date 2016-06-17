@@ -14,17 +14,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __JCC_H_
-#define __JCC_H_
+#ifndef __AUX_FUNC_H
+#define __AUX_FUNC_H
 
-typedef enum {
-	LEX_NORMAL,
-	LEX_SEPARATOR
-} LexState;
+#include "stdio.h"
 
-
-void init(void);
-void cleanup(void);
-void close_FILE(void);
+void replace_output(char *target_original, char *target_new);
 
 #endif

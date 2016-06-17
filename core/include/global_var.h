@@ -61,6 +61,7 @@ extern Symbol ret_sym;/*special symbol used for record register info*/
 /*Code generation*/
 extern FILE *output_File;
 extern FILE *func_File;
+extern char func_File_name[30];
 extern uint32_t FP_offset;/*local variable frame pointer offset*/
 
 #define opStack_Size 512

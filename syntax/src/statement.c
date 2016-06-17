@@ -15,6 +15,9 @@
  */
 
 #include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "declaration.h"
 #include "global_var.h"
 #include "token.h"
@@ -26,6 +29,7 @@
 #include "genFunc.h"
 #include "operand.h"
 #include "genInstr.h"
+#include "auxFunc.h"
 
 /********************************************
  * <statement>::=<compound_statement>
@@ -124,8 +128,11 @@ void expression_statement(void)
  ********************************************/
 void if_statement(uint32_t *break_sym, uint32_t *continue_sym)
 {
+	uint32_t after_if = JC_IF | condtion_label_count;
+	uint32_t fix_label;
 	operand_push(NULL, NOT_SPECIFIED);
-	opTop->tk_code = JC_IF | condtion_label_count;
+	opTop->tk_code = after_if;
+	condtion_label_count++;
 
 	getToken();
 	skip(tk_openPA);
@@ -134,16 +141,37 @@ void if_statement(uint32_t *break_sym, uint32_t *continue_sym)
 	genJMP_IF();
 	statement(break_sym, continue_sym);
 	if (cur_token == kw_ELSE) {
-		asmPrintf_func("    jmp  .L%d\n", condtion_label_count);
+		operand_push(NULL, NOT_SPECIFIED);
+		opTop->tk_code = JC_IF | condtion_label_count;
+		condtion_label_count++;
+
+		asmPrintf_func("    jmp  .L%d\n", after_if & JC_IF_NESTED_MASK);
 	}
 	if (opTop->tk_code & JC_IF) {
+		fix_label = opTop->tk_code & JC_IF_NESTED_MASK;
 		asmPrintf_func(".L%d:\n", opTop->tk_code & JC_IF_NESTED_MASK);
 		operand_pop();
 	}
+
+	/*prepare for replace previous label*/
+	char target_original[13];
+	char target_new[13];
+	sprintf(target_original, "%s%d", ".L_ELSE", after_if & JC_IF_NESTED_MASK);
+
 	if (cur_token == kw_ELSE) {
 		getToken();
 		statement(break_sym, continue_sym);
-		asmPrintf_func(".L%d:\n", condtion_label_count++);
+
+		/*replace previous ".L_ELSE+(after_if)" with ".L(fix_label)" */
+		sprintf(target_new, ".L%d\n", fix_label);
+		replace_output(target_original, target_new);
+
+		asmPrintf_func(".L%d:\n", (opTop->tk_code & JC_IF_NESTED_MASK));
+		operand_pop();
+	} else {
+		/*replace ".L_ELSE+(after_if)" with ".L(after_if)"*/
+		sprintf(target_new, ".L%d\n", after_if & JC_IF_NESTED_MASK);
+		replace_output(target_original, target_new);
 	}
 }
 

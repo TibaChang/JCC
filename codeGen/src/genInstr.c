@@ -283,9 +283,7 @@ void genJMP_IF(void)
 		break;
 	}
 
-	asmPrintf_func("    %s  .L%d\n", condition_code, (opTop->tk_code & JC_IF_NESTED_MASK));
-	condtion_label_count++;
-
+	asmPrintf_func("    %s  .L_ELSE%d\n", condition_code, (opTop->tk_code & JC_IF_NESTED_MASK));
 }
 
 

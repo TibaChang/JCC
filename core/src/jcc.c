@@ -30,7 +30,7 @@
 #include "genVar.h"
 #include "exception.h"
 
-static void close_FILE()
+void close_FILE(void)
 {
 	char c;
 
@@ -48,10 +48,7 @@ static void close_FILE()
 		exit(EXIT_FAILURE);
 	}
 	/*open the file for functions*/
-	strcpy(output_name, cur_filename);
-	output_name[strlen(cur_filename) - 2] = '\0';
-	strcat(output_name, ".f");
-	func_File = fopen(output_name, "r");
+	func_File = fopen(func_File_name, "r");
 	if (!func_File) {
 		interERROR("Opening temportary function file error for copy!");
 		exit(EXIT_FAILURE);
@@ -85,10 +82,10 @@ int main(int argc, char **argv)
 		exit(EXIT_FAILURE);
 	}
 	/*open the file for functions*/
-	strcpy(output_name, cur_filename);
-	output_name[strlen(cur_filename) - 2] = '\0';
-	strcat(output_name, ".f");
-	func_File = fopen(output_name, "w");
+	strcpy(func_File_name, cur_filename);
+	func_File_name[strlen(cur_filename) - 2] = '\0';
+	strcat(func_File_name, ".f");
+	func_File = fopen(func_File_name, "w");
 	if (!func_File) {
 		interERROR("Opening temportary function file error!");
 		exit(EXIT_FAILURE);

@@ -21,6 +21,7 @@
 #include "tkWord_Hash.h"
 #include "exception.h"
 #include "lex.h"
+#include "jcc.h"
 
 #define C_NORMAL      "\x1B[0m"
 #define C_YELLOW      "\x1B[33;1m"
@@ -38,6 +39,7 @@ static void handle_exception(int level, char *fmt, va_list ap)
 		printf("%s", C_YELLOW);
 		printf("\nIn the file:%s, line number:%d ,Compiler ERROR:%s\n", cur_filename, cur_line_num, buffer);
 		printf("%s", C_NORMAL);
+		close_FILE();
 		exit(EXIT_FAILURE);
 	} else { /*INTERNAL_ERROR*/
 		printf("%s", C_YELLOW);

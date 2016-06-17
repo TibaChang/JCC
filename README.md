@@ -309,9 +309,9 @@ Phase 4:Code Generation
 **Supported semantic code generation:**
 - `if(expression)`
 - `if(expression){ statement }else{ statement }`
+  - Supporting recursive `if` or `if else`.
 - `for(expression;expression;expression)`
-  - NOTE:Both `if`, `if else` and `for` does not support `self recursive`
-  - However, `for statement` inside `for statement` are supported,vice versa.
+  - NOTE:Both `for` does not support `self recursive`
 - `declaration` always before `statement`
   - declaration
     - JCC does not check type for variable assignment,if and only if there is LValue at the left side.

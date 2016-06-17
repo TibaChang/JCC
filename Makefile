@@ -89,7 +89,7 @@ gdb_traverse_stack:$(TARGET)
 
 
 clean:
-	rm -f $(TARGET) $(DEMO_DIR)/$(DEMO_FILE_NAME).f $(DEMO_ASM_FILE) $(DEMO_ELF_FILE)
+	rm -f $(TARGET) $(DEMO_DIR)/$(DEMO_FILE_NAME).f $(DEMO_ASM_FILE) $(DEMO_ELF_FILE) temp.s
 
 
 cscope:
