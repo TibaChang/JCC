@@ -65,6 +65,9 @@ typedef enum {
 	kw_RETURN,   // return
 	kw_SIZEOF,   // sizeof
 
+	/*SPECIAL KEYWORDS*/
+	kw_PRINTF,   //printf
+
 	/*IDENTIFIERS*/
 	tk_IDENT
 } TOKEN;

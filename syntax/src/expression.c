@@ -277,10 +277,11 @@ void primary_expression(void)
 		expression();
 		skip(tk_closePA);
 		break;
+	case kw_PRINTF:
 	default:
 		tk_expression = cur_token;
 		getToken();
-		if (tk_expression < tk_IDENT) {
+		if ((tk_expression < tk_IDENT) && (tk_expression != kw_PRINTF)) {
 			expect("Identifier or constant value(char/string/number)");
 		}
 		ss = sym_search(tk_expression);

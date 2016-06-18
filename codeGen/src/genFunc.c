@@ -90,7 +90,7 @@ void genFuncCall(uint32_t argc)
 	}
 
 	/*printf does not need function defintion,so we need to free the reg status manually*/
-	if (strcmp(get_tkSTR(opTop->sym->tk_code), "printf") == 0) {
+	if ((opTop->sym->tk_code) == kw_PRINTF) {
 		for (int i = argc; i > 0; i--) {
 			switch (i) {
 			case 4:/*arg 4*/
