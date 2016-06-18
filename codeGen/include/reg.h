@@ -45,6 +45,7 @@ typedef struct {
 void RegPoolInit(void);
 uint32_t FindFreeReg(void);
 void FreeReg(uint32_t REGx);
+void FreeAllReg(void);
 void assignReg(uint32_t REGx);
 void assignReg_twoFirst(uint32_t REGx);
 void assignReg_twoSecond(uint32_t REGx);

@@ -87,6 +87,12 @@ void FreeReg(uint32_t REGx)
 	}
 }
 
+void FreeAllReg(void)
+{
+	for (int i = REG_BASE + 1; i < REG_MAX; i++) {
+		FreeReg(i);
+	}
+}
 
 void assignReg(uint32_t REGx)
 {

@@ -498,22 +498,23 @@ void parameter_type_list(Type *type)
  ****************************************/
 void funcbody(Symbol *sym)
 {
-	/*generating function prolog*/
-	genFuncProlog(sym);
-
 	/*put an anonymous symbol in local symbol table*/
 	sym_direct_push(&local_sym_stack, JC_ANOM, &int_type, NOT_SPECIFIED);
 
 	/* reset the FP offset variable */
 	clearFP_offset();
 
+	/*generating function prolog*/
+	genFuncProlog(sym);
+
 	compound_statement(NULL, NULL);
+
+	/*generating function epilog*/
+	FreeAllReg();
+	genFuncEpilog(sym);
 
 	/*clear local symbol stack*/
 	sym_pop(&local_sym_stack, NULL);
-
-	/*generating function epilog*/
-	genFuncEpilog(sym);
 }
 
 

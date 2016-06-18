@@ -349,6 +349,14 @@ Phase 4:Code Generation
     - `Ex: int a = 1000*5%79`
     - `Ex: a = b*c%100;`
       - if `b` and `c` are already declared.
+- Function Call
+  - if function return type is `int` or `char`
+    - return value is accepted.
+      - `Ex:a = test();`
+        - However,JCC does not support mutiple function call arthimatic.
+          - `Ex:a = test() + test();  will cause error!`
+  - JCC does not support `expression` as parameter.
+    - `Ex:add(1+2,3); will cause error!`
 - See [demo_code.c](https://github.com/JaredCJR/JCC/blob/master/demo/demo_code.c) to know the real situation!
   - JCC currently does not support mixing `+` or `-` with `*` or `/`or `%`.
     - If you would like to support this functionality,all you need is to provide temporary registers or creat a space in local stack to store the temporary value.

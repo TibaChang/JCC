@@ -29,6 +29,7 @@
 
 void genGlobalVar(Symbol *sym);
 void clearFP_offset(void);
+void updateSYM_FPoffset(Symbol *sym, uint32_t size);
 void genLocalVar(Symbol *sym);
 void genVar(void);
 void genAssign(void);

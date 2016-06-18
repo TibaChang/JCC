@@ -336,6 +336,10 @@ void argument_expression_list(void)
 	skip(tk_closePA);
 	/*generating function call asm*/
 	genFuncCall(args_num);
+	if ((func_definition_sym->type.data_type & T_INT) || (func_definition_sym->type.data_type & T_CHAR)) {
+		operand_push(NULL, NOT_SPECIFIED);
+		opTop->data_type.data_type = JC_FUNC_RET;
+	}
 }
 
 

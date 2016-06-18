@@ -47,7 +47,7 @@ FILE *output_File;
 FILE *func_File;
 char func_File_name[30];
 
-uint32_t FP_offset;
+uint32_t FP_offset = 0;
 uint32_t CodeGenStatus;
 Operand opStack[opStack_Size];
 Operand *opTop = opStack;

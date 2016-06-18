@@ -28,9 +28,24 @@ void genFileTitle(void)
 	asmPrintf(".file   \"%s\"\n\n\n", cur_filename);
 }
 
+static uint32_t calc_func_argc(Symbol *sym)
+{
+	uint32_t count = 0;
+	Symbol *sym_para = sym->type.ref;
+	while (sym_para->next != NULL) {
+		sym_para = sym_para->next;
+		count++;
+	}
+	return count;
+}
 
 void genFuncProlog(Symbol *sym)
 {
+	uint32_t func_argc;
+	uint32_t size = BYTE_8;
+	Symbol *sym_para;
+	Symbol *var_sym;
+	char src_reg[4], dest_reg[4];
 	char *func_name = get_tkSTR(sym->tk_code & JC_ValMASK);
 	asmPrintf_func("\n    .text\n");
 	asmPrintf_func("    .globl  %s\n", func_name);
@@ -38,6 +53,48 @@ void genFuncProlog(Symbol *sym)
 	asmPrintf_func("%s:\n", func_name);
 	asmPrintf_func("    pushq   %%rbp\n");
 	asmPrintf_func("    movq    %%rsp, %%rbp\n\n");
+
+	strcpy(dest_reg, "rbp");
+	func_argc = calc_func_argc(sym);
+	for (int i = 0; i < func_argc; i++) {
+		switch (i) {
+		case 0:
+			strcpy(src_reg, reg_pool[REG_RDI].reg_name);
+			sym_para = sym->type.ref->next;
+			var_sym = var_sym_put(&(sym_para->type), JC_LOCAL | JC_LVAL, (sym_para->tk_code & JC_TK_MASK), NOT_SPECIFIED);
+			asmPrintf_func("    subq    $%d, %%rsp\n", size);
+			updateSYM_FPoffset(var_sym, size);
+			instrMOV_REG_OFFSET(BYTE_8, src_reg, dest_reg, var_sym->fp_offset);
+			break;
+		case 1:
+			strcpy(src_reg, reg_pool[REG_RSI].reg_name);
+			sym_para = sym->type.ref->next->next;
+			var_sym = var_sym_put(&(sym_para->type), JC_LOCAL | JC_LVAL, (sym_para->tk_code & JC_TK_MASK), NOT_SPECIFIED);
+			asmPrintf_func("    subq    $%d, %%rsp\n", size);
+			updateSYM_FPoffset(var_sym, size);
+			instrMOV_REG_OFFSET(BYTE_8, src_reg, dest_reg, var_sym->fp_offset);
+			break;
+		case 2:
+			strcpy(src_reg, reg_pool[REG_RDX].reg_name);
+			sym_para = sym->type.ref->next->next->next;
+			var_sym = var_sym_put(&(sym_para->type), JC_LOCAL | JC_LVAL, (sym_para->tk_code & JC_TK_MASK), NOT_SPECIFIED);
+			asmPrintf_func("    subq    $%d, %%rsp\n", size);
+			updateSYM_FPoffset(var_sym, size);
+			instrMOV_REG_OFFSET(BYTE_8, src_reg, dest_reg, var_sym->fp_offset);
+			break;
+		case 3:
+			strcpy(src_reg, reg_pool[REG_RCX].reg_name);
+			sym_para = sym->type.ref->next->next->next->next;
+			var_sym = var_sym_put(&(sym_para->type), JC_LOCAL | JC_LVAL, (sym_para->tk_code & JC_TK_MASK), NOT_SPECIFIED);
+			asmPrintf_func("    subq    $%d, %%rsp\n", size);
+			updateSYM_FPoffset(var_sym, size);
+			instrMOV_REG_OFFSET(BYTE_8, src_reg, dest_reg, var_sym->fp_offset);
+			break;
+		default:
+			interERROR("JCC only support at most 4 args");
+			break;
+		}
+	}
 }
 
 
@@ -47,6 +104,7 @@ void genFuncEpilog(Symbol *sym)
 	if (strcmp("main", func_name) == 0) { /*if this is main function*/
 		asmPrintf_func("\n    leave\n");
 	} else {
+		instrMOV_REG_REG(BYTE_8, "rbp", "rsp");
 		asmPrintf_func("    popq    %%rbp\n");
 	}
 	asmPrintf_func("    ret\n");
@@ -57,6 +115,7 @@ void genFuncEpilog(Symbol *sym)
 void genFuncCall(uint32_t argc)
 {
 	char dest_reg[4];
+	FreeAllReg();
 	for (int i = argc; i > 0; i--) {
 		switch (i) {
 		case 4:/*arg 4*/
@@ -107,9 +166,9 @@ void genFuncCall(uint32_t argc)
 				break;
 			}
 		}
+		instrMOV_VAL_REG(BYTE_8, 0, reg_pool[REG_RAX].reg_name);
 	}
 	FreeReg(REG_RAX);
-	instrMOV_VAL_REG(BYTE_8, 0, reg_pool[REG_RAX].reg_name);
 	asmPrintf_func("    call    %s\n\n", get_tkSTR(opTop->sym->tk_code));
 	operand_pop();
 }

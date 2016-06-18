@@ -244,6 +244,19 @@ void return_statement(void)
 
 	if (cur_token != tk_SEMICOLON) {
 		expression();
+		/*for doing expression that has return value,it should be stored in RAX*/
+		if (opTop->sym->storage_type & JC_RET_REG) {
+			/*do nothing*/
+		} else if (opTop->sym->storage_type & JC_LOCAL) { /*for local variable*/
+			instrMOV_OFFSET_REG(BYTE_8, "rbp", reg_pool[REG_RAX].reg_name, opTop->sym->fp_offset);
+		} else if (opTop->sym->storage_type & JC_CONST) { /*for const value*/
+			instrMOV_VAL_REG(BYTE_8, opTop->value, reg_pool[REG_RAX].reg_name);
+		} else if (opTop->sym->storage_type & JC_GLOBAL) { /*for global variable*/
+			instrMOV_symOFFSET_REG(BYTE_8, get_tkSTR(opTop->sym->tk_code), "rip", reg_pool[REG_RAX].reg_name);
+		} else {
+			error("return ERROR");
+		}
+		operand_pop();
 	}
 	skip(tk_SEMICOLON);
 }
