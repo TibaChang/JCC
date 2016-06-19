@@ -326,6 +326,18 @@ Phase 4:Code Generation
 ---------------------------
 - As the above says,JCC's `code generation` does not support the full functionalities as the previous phases.
 **Supported semantic code generation:**
+- `Variable` supporting:
+  - `global variable`
+  - `local variable`
+    - including
+      - `int`
+      - `char`
+      - special `char *`
+        - Ex:  `char* string = "TEST string"`
+        - YOU SHOULD NOT MODIFY THE `char *` VARIABLE!
+          - Ex: The behavior of `string = "abc"` is unpredictable.(`string` declaration is as the previous example)
+
+
 - `if(expression)`
 - `if(expression){ statement }else{ statement }`
   - Supporting recursive `if` or `if else`.
