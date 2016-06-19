@@ -106,17 +106,18 @@ static void genMUL_rax(uint32_t op, uint32_t mode)
 	case tk_DIVIDE:
 	case tk_MOD:
 		strcpy(instr, "idivq");
-		reg = FindFreeReg();
-		assignReg(reg);
+		FreeReg(REG_RCX);
+		assignReg(REG_RCX);
 		FreeReg(REG_RAX);
 		assignReg(REG_RAX);
-		asmPrintf_func("    %s   %%%s\n", instr, reg_pool[reg].reg_name); /*quotient:rax   ,  remainder:rdx*/
+		asmPrintf_func("    cqo\n");/*negative idiv : http://stackoverflow.com/questions/10343155/x86-assembly-handling-the-idiv-instruction*/
+		asmPrintf_func("    %s   %%%s\n", instr, reg_pool[REG_RCX].reg_name); /*quotient:rax   ,  remainder:rdx*/
 		if (op == tk_MOD) {
 			instrMOV_REG_REG(BYTE_8, reg_pool[REG_RDX].reg_name, reg_pool[REG_RAX].reg_name);
 		}
 		setReg_Return(REG_RAX);
 		setReg_Unused(REG_RDX);
-		setReg_Unused(reg);
+		setReg_Unused(REG_RCX);
 		break;
 	default:
 		interERROR("MUL type instruction generating error!");
@@ -154,14 +155,16 @@ void genMUL(uint32_t op)
 	case tk_DIVIDE:
 	case tk_MOD:
 		strcpy(instr, "idivq");
-		assignReg_twoSecond(REG_RDX);/*reaminder*/
+		assignReg_twoSecond(REG_RCX);/*reaminder*/
 		assignReg_twoFirst(REG_RAX);/*quotient*/
-		asmPrintf_func("    %s   %%%s\n", instr, reg_pool[REG_RDX].reg_name); /*quotient:rax   ,  remainder:rdx*/
+		asmPrintf_func("    cqo\n");/*negative idiv : http://stackoverflow.com/questions/10343155/x86-assembly-handling-the-idiv-instruction*/
+		asmPrintf_func("    %s   %%%s\n", instr, reg_pool[REG_RCX].reg_name); /*quotient:rax   ,  remainder:rdx*/
 		if (op == tk_MOD) {
 			instrMOV_REG_REG(BYTE_8, reg_pool[REG_RDX].reg_name, reg_pool[REG_RAX].reg_name);
 		}
 		setReg_Return(REG_RAX);
 		setReg_Unused(REG_RDX);
+		setReg_Unused(REG_RCX);
 		operand_push(&ret_sym, NOT_SPECIFIED);
 		break;
 	default:

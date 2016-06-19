@@ -343,8 +343,9 @@ Phase 4:Code Generation
 - I/O:`scanf` and `printf`
   - use `printf` as the C89 <stdio.h> usage.
   - use `scanf` as the C99 <stdio.h> usage.
-      - Need to do:
-        - passing `return value` from either I/O function.
+    - Only support at most `4 arguments`.
+    - Need to do:
+      - passing `return value` from either I/O function.
 
 
 - Arthimatic
@@ -359,11 +360,14 @@ Phase 4:Code Generation
 
 
 - Function Call
+  - Only support at most `4 arguments`.
   - if function return type is `int` or `char`
-    - return value is accepted.
+    - return value is accepted in limitted sutuation.
       - `Ex:a = test();`
         - However,JCC does not support mutiple function call arthimatic.
           - `Ex:a = test() + test();  will cause error!`
+      - `return` in `if` or `for` will not work.
+        - Therefore,`recursive function call` is imposible in JCC.
   - JCC does not support `expression` as parameter.
     - `Ex:add(1+2,3); will cause error!`
 
