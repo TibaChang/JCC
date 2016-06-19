@@ -69,6 +69,7 @@ void init_lex(void)
 		{kw_SIZEOF,    NULL,   "sizeof",           strlen("sizeof") + 1},
 
 		{kw_PRINTF,    NULL,   "printf",           strlen("printf") + 1},
+		{kw_SCANF,     NULL,   "scanf",            strlen("scanf") + 1},
 
 		/*For the foe loop below*/
 		{0,           NULL,   NULL,          0}

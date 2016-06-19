@@ -67,6 +67,7 @@ typedef enum {
 
 	/*SPECIAL KEYWORDS*/
 	kw_PRINTF,   //printf
+	kw_SCANF,    //scanf
 
 	/*IDENTIFIERS*/
 	tk_IDENT

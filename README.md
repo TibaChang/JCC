@@ -329,17 +329,24 @@ Phase 4:Code Generation
 - `if(expression)`
 - `if(expression){ statement }else{ statement }`
   - Supporting recursive `if` or `if else`.
+
+
 - `for(expression;expression;expression)`
   - Supporting recursive `for`
+
+
 - `declaration` always before `statement`
   - declaration
     - JCC does not check type for variable assignment,if and only if there is LValue at the left side.
-- use `printf` as the C89 <stdio.h> usage.
-  - JCC does not support fully function call,excluding `printf`
-  - If you would like to accomplish the function call functionality of JCC
-    - Some part of the functionalities are done,such as `passing at most 4 arguments`
-    - Need to do:
-      - `passing return value`
+
+
+- I/O:`scanf` and `printf`
+  - use `printf` as the C89 <stdio.h> usage.
+  - use `scanf` as the C99 <stdio.h> usage.
+      - Need to do:
+        - passing `return value` from either I/O function.
+
+
 - Arthimatic
   - `+` and `-` can be use together
     - `Ex: int a = 5+100-10000;`
@@ -349,6 +356,8 @@ Phase 4:Code Generation
     - `Ex: int a = 1000*5%79`
     - `Ex: a = b*c%100;`
       - if `b` and `c` are already declared.
+
+
 - Function Call
   - if function return type is `int` or `char`
     - return value is accepted.
@@ -357,6 +366,8 @@ Phase 4:Code Generation
           - `Ex:a = test() + test();  will cause error!`
   - JCC does not support `expression` as parameter.
     - `Ex:add(1+2,3); will cause error!`
+
+
 - See [demo_code.c](https://github.com/JaredCJR/JCC/blob/master/demo/demo_code.c) to know the real situation!
   - JCC currently does not support mixing `+` or `-` with `*` or `/`or `%`.
     - If you would like to support this functionality,all you need is to provide temporary registers or creat a space in local stack to store the temporary value.

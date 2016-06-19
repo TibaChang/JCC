@@ -171,6 +171,7 @@ void genAssign(void)
 		} else {
 			interERROR("genAssign() error!");
 		}
+		asmPrintf_func("\n");
 		operand_pop();
 		return;
 
@@ -198,9 +199,6 @@ void genAssign(void)
 			interERROR("genAssign() error!");
 		}
 	}
-
-
-
 
 	FreeReg(temp_reg);
 	operand_pop();

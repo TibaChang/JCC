@@ -1,11 +1,11 @@
 
-
-
 void main()
 {
-    int term = 44;
+    int term;
 	int first = 0, second = 1, next, i;
  
+    printf("Please input the term number for Fibonacci sequence:\n");
+    scanf("%d",&term);
    	printf("First %d terms of Fibonacci series are :\n",term);
  
    	for ( i = 0 ; i < term ; )
@@ -24,5 +24,4 @@ void main()
         i =i+1;
     }
 }
-
 

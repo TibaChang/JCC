@@ -148,8 +148,8 @@ void genFuncCall(uint32_t argc)
 		}
 	}
 
-	/*printf does not need function defintion,so we need to free the reg status manually*/
-	if ((opTop->sym->tk_code) == kw_PRINTF) {
+	/*printf and scanf does not need function defintion,so we need to free the reg status manually*/
+	if ((opTop->sym->tk_code == kw_PRINTF) || (opTop->sym->tk_code == kw_SCANF)) {
 		for (int i = argc; i > 0; i--) {
 			switch (i) {
 			case 4:/*arg 4*/
@@ -168,8 +168,15 @@ void genFuncCall(uint32_t argc)
 		}
 		instrMOV_VAL_REG(BYTE_8, 0, reg_pool[REG_RAX].reg_name);
 	}
-	FreeReg(REG_RAX);
-	asmPrintf_func("    call    %s\n\n", get_tkSTR(opTop->sym->tk_code));
-	operand_pop();
+
+	if (opTop->sym->tk_code == kw_SCANF) {
+		FreeReg(REG_RAX);
+		asmPrintf_func("    call    %s\n\n", "__isoc99_scanf");
+		operand_pop();
+	} else {
+		FreeReg(REG_RAX);
+		asmPrintf_func("    call    %s\n\n", get_tkSTR(opTop->sym->tk_code));
+		operand_pop();
+	}
 }
 

@@ -97,6 +97,7 @@ void FreeAllReg(void)
 void assignReg(uint32_t REGx)
 {
 	REG *target = &reg_pool[REGx];
+	char src_reg[4];
 	if (target->usage == REG_NOT_USING) {
 		/*do nothing*/
 	} else if (target->usage == REG_IS_USING) {
@@ -109,8 +110,17 @@ void assignReg(uint32_t REGx)
 	target->value = opTop->value;
 	operand_pop();
 
-	char src_reg[4];
-
+	if (opTop->tk_code == JC_getREFERENCE) {
+		if ((target->owner->storage_type & JC_GLOBAL) && !(target->owner->type.data_type & T_PTR)) {
+			asmPrintf_func("    movq    $%s, %%%s\n", get_tkSTR(target->owner->tk_code), reg_pool[REGx].reg_name);
+		} else if ((target->owner->storage_type & (JC_LOCAL)) && (target->owner->storage_type & (JC_LVAL))) {
+			asmPrintf_func("    leaq    %d(%%%s), %%%s\n", target->owner->fp_offset, "rbp", reg_pool[REGx].reg_name);
+		} else {
+			error("JCC's get reference is limitted");
+		}
+		operand_pop();
+		return;
+	}
 
 	if ((target->owner->storage_type & JC_GLOBAL) && !(target->owner->type.data_type & T_PTR)) {
 		if (target->owner->storage_type & JC_LVAL) {

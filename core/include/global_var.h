@@ -51,6 +51,7 @@ extern Stack global_sym_stack;
 extern Stack local_sym_stack;
 
 extern Type char_pointer_type;
+extern Type void_type;
 extern Type int_type;
 extern Type default_func_type;
 

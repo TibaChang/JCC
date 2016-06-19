@@ -35,6 +35,7 @@ Stack global_sym_stack;
 Stack local_sym_stack;
 
 Type char_pointer_type;
+Type void_type;
 Type int_type;
 Type default_func_type;
 

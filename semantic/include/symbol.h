@@ -44,6 +44,7 @@
 #define  JC_IF_NESTED_MASK  0x000000FF/*get the if label count*/
 #define  JC_FOR             0x02000000/*get this when JCC encounter the end of the for scope*/
 #define  JC_FOR_NESTED_MASK 0x000000FF/*get the for label count*/
+#define  JC_getREFERENCE     0x04000000/*ex: &var*/
 
 /*Type code*/
 #define  T_INT      1

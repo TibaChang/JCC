@@ -26,6 +26,7 @@ void operand_push(Symbol *sym, int value)
 	opTop++;
 	opTop->value = value;
 	opTop->sym = sym;/*for const int/char, this will be NULL*/
+	opTop->tk_code = NOT_SPECIFIED;
 }
 
 

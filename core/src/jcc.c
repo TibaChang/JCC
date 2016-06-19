@@ -122,11 +122,12 @@ void init(void)
 	ret_sym.storage_type = JC_RET_REG;
 
 
+	void_type.data_type = T_VOID;
 	int_type.data_type = T_INT;
 	char_pointer_type.data_type = T_CHAR;
 	mk_pointer(&char_pointer_type);
 	default_func_type.data_type = T_FUNC;
-	default_func_type.ref = sym_push(JC_ANOM, &int_type, NOT_SPECIFIED, NOT_SPECIFIED);
+	default_func_type.ref = sym_push(JC_ANOM, &void_type, NOT_SPECIFIED, NOT_SPECIFIED);
 
 	RegPoolInit();
 }
